@@ -1,0 +1,9 @@
+{
+    "*.{js,ts,tsx,jsx,md}": [
+        "eslint --quiet --fix",
+        'react-scripts test --bail --watchAll=false --findRelatedTests --passWithNoTests'
+    ],
+    '*.{js,ts,tsx,scss,css,md}': [
+        'prettier --write'
+    ]
+}
