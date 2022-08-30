@@ -21,7 +21,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "lint": "npx eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix",
+    "lint:staged": "lint-staged",
+    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
+    "prettier": "prettier src --check",
+    "prepare": "cd .. && husky install frontend/.husky"
   },
   "eslintConfig": {
     "extends": [
@@ -42,7 +47,11 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^8.21.0",
-    "eslint-plugin-react": "^7.30.1"
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.1",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.7.1"
   }
 }
