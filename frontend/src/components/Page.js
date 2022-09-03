@@ -1,15 +1,25 @@
-import { forwardRef } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { forwardRef } from 'react';
 import { Box } from '@mui/material';
+import { DRAWER_WIDTH } from '../const/Size';
 
-const Page = forwardRef(({ title = '', children, meta, ...others }, ref) => (
+const Page = forwardRef(({ children, title = '', meta, ...others }, ref) => (
   <>
     <Helmet>
-      <title>{`${title} | CodePair`}</title>
+      <title>{`${title} | PeerPrep`}</title>
       {meta}
     </Helmet>
 
-    <Box ref={ref} {...others}>
+    <Box
+      ref={ref}
+      {...others}
+      sx={{
+        '@media only screen and (min-width: 1200px)': {
+          width: `calc(100% - ${DRAWER_WIDTH + 1}px)`,
+          marginLeft: `${DRAWER_WIDTH}px`
+        }
+      }}
+    >
       {children}
     </Box>
   </>
