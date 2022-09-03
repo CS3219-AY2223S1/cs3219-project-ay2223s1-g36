@@ -13,7 +13,7 @@ import WidgetSummary from './widget/WidgetSummary';
 export default function ModalMatch() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = (reason) => {
+  const handleClose = (event, reason) => {
     if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
       setOpen(false);
     }
