@@ -22,6 +22,7 @@ export default function NavItem({ item, active }) {
         position: 'relative',
         textTransform: 'capitalize',
         color: '#637381',
+        paddingLeft: '0',
         borderRadius: '8px',
         ...(isActivePage && activePageStyle)
       }}
