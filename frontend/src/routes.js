@@ -3,6 +3,7 @@ import DashboardLayout from './layouts/dashboard';
 
 import Dashboard from './pages/Dashboard';
 import SignupPage from './pages/Signup';
+import ProfilePage from './pages/Profile';
 
 export default function Router() {
   return useRoutes([
@@ -15,6 +16,10 @@ export default function Router() {
       path: '/signup',
       element: <SignupPage />,
       children: [{ path: '*', element: <SignupPage /> }]
+    {
+      path: '/',
+      element: <DashboardLayout />,
+      children: [{ path: 'profile', element: <ProfilePage /> }]
     }
   ]);
 }

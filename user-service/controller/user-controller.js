@@ -33,6 +33,7 @@ export async function createUser(req, res) {
 }
 
 export async function loginUser(req, res) {
+    const SECRET_JWT_KEY = 'g36_secret_cjyk';
     try {
         const { username, password } = req.body;
         if (username && password) {
@@ -43,9 +44,13 @@ export async function loginUser(req, res) {
 
                 // Generate JWT
                 // TO-DO: double check the usage and appropriate parameters to pass in
-                var token = jwt.sign(username, 'g36_secret_cjyk');
-                
-                return res.status(200).json({message: `${username} is logged in.`, token: token});
+                var timestamp = Date.now();
+                const token = jwt.sign({username, timestamp}, SECRET_JWT_KEY);
+
+                return res.status(200)
+                            // .setHeader('Set-Cookie', ['token='+token])
+                            .cookie('token', token, { httpOnly: true })
+                            .json({message: `${username} is logged in.`, token: token});
             } else {
                 console.log(`Login failed.`);
                 return res.status(401).json({message: `Login failed. Access denied.`});

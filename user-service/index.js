@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }))
@@ -16,6 +17,7 @@ router.post('/', createUser)
 
 router.post('/login/', loginUser)
 
+app.use(cookieParser());
 app.use('/api/user', router).all((_, res) => {
     res.setHeader('content-type', 'application/json')
     res.setHeader('Access-Control-Allow-Origin', '*')
