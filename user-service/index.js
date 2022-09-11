@@ -1,14 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import { createUser, loginUser } from './controller/user-controller.js';
-// import passport from 'passport';
-// import passportLocalMongoose from 'passport-local-mongoose';
+import { authenticateUser, createUser, loginUser } from './controller/user-controller.js';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cors()) // config cors so that front-end can use
 app.options('*', cors())
+app.use(cookieParser())
 
 const router = express.Router()
 
@@ -16,6 +16,10 @@ const router = express.Router()
 router.get('/', (_, res) => res.send('Hello World from user-service'))
 router.post('/register', createUser)
 router.post('/login', loginUser)
+
+router.post('/auth', authenticateUser, (req, res) => {
+    res.status(200).send("Welcome!");
+});
 
 
 app.use('/api/user', router).all((_, res) => {

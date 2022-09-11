@@ -2,7 +2,10 @@ import { ormCreateUser as _createUser } from '../model/user-orm.js'
 import { ormCheckUserExistence as _checkUser } from '../model/user-orm.js'
 import { ormCheckCredentials as _checkCredentials } from '../model/user-orm.js'
 import { ormSaveToken as _saveToken } from '../model/user-orm.js'
+import { ormCheckToken as _checkToken } from '../model/user-orm.js'
 import bcrypt from 'bcrypt';
+import jwt from'jsonwebtoken';
+import { findUser } from '../model/repository.js';
 
 export async function createUser(req, res) {
     try {
@@ -51,17 +54,19 @@ export async function loginUser(req, res) {
         const [userLogin, userDetails] = await _checkCredentials(username, password);
 
         // Prevents user from logging in via the same token
-
+        const {token} = req.cookies;
+        if (userDetails.token == token && await _checkToken(token)) {
+            return res.status(400).json({message: 'User is already logged in!'})
+        } 
 
         // Locate user and authenticate the login
         if (userLogin) {
             console.log(`Successful login!`);
 
-            // Generate JWT
-            // TODO: double check the usage and appropriate parameters to pass in
+            // Generate JWT and send the cookie to user
             const [tokenSaved, token] = await _saveToken(username);
             if (tokenSaved) {
-                return res.status(200).json({message: `${username} is logged in.`, token: token});
+                return res.status(200).cookie({"token":token}).json({message: `${username} is logged in.`, username: username, token: token});
             } else {
                 return res.status(500).json({message: 'Error creating JWT token'});
             }
@@ -72,7 +77,24 @@ export async function loginUser(req, res) {
 
     } catch (err) {
         console.log(err)
-        return res.status(500).json({message: 'Database failure!'})
+        return res.status(500).json({message: 'Error logging in! Please check credentials'})
+    }
+}
+
+// Middleware for user authentication before action takes place
+export async function authenticateUser(req, res, next) {
+    try {
+        const {token} = req.cookies;
+        if (!token) {
+            return next('Please login to access the data');
+        }
+
+        // Check that token is correct and matches with database
+        validToken = await _checkToken();
+        next();
+    } catch (error) {
+        console.log(error);
+        return res.status(401).json({message: `${error}`});
     }
 }
 

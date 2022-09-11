@@ -32,7 +32,7 @@ export async function ormCreateUser(username, password) {
 export async function ormCheckUserExistence(username) {
     try {
         const user = await findUser({username});
-        if (user && user.length) {
+        if (user) {
             console.log("user-orm: User already exists");
             return true;
         } else {
@@ -95,9 +95,16 @@ export async function ormSaveToken(username) {
     }
 }
 
-// export async function ormLogOut(username, token) {
-//     try {
+export async function ormCheckToken(token) {
+    try {
+        // Check that token is correct and matches with database
+        const verify = await jwt.verify(token, process.env.TOKEN_KEY);
+        user = await findUser({user_id: verify.user_id});
 
-//     }
-// }
+        return true;
+    } catch (err) {
+        return {err};
+    }
+}
+
 
