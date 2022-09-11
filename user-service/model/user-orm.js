@@ -14,7 +14,8 @@ import mongoose from 'mongoose';
  */
 export async function ormCreateUser(username, password) {
     try {
-        const newUser = await createUser({username, password});
+        const encryptedPassword = await bcrypt.hash(password, 10);
+        const newUser = await createUser({username, password: encryptedPassword});
         newUser.save();
         return true;
     } catch (err) {
@@ -112,6 +113,21 @@ export async function ormDeleteUser(username) {
     try {
         // User is authenticated via JWT before deleting
         await deleteUser({username});
+
+        return true;
+    } catch (err) {
+        return {err};
+    }
+}
+
+export async function ormUpdatePassword(username, newPassword) {
+    try {
+        // Encrypts new password and update database
+        const encryptedNewPassword = await bcrypt.hash(newPassword, 10);
+        const user = await findUser({username});
+        user.password = encryptedNewPassword;
+        user.save();
+        return true;
     } catch (err) {
         return {err};
     }

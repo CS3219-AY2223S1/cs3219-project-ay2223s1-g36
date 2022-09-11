@@ -4,6 +4,7 @@ import { ormCheckCredentials as _checkCredentials } from '../model/user-orm.js'
 import { ormSaveToken as _saveToken } from '../model/user-orm.js'
 import { ormCheckToken as _checkToken } from '../model/user-orm.js'
 import { ormDeleteUser as _deleteUser } from '../model/user-orm.js'
+import { ormUpdatePassword as _updatePassword } from '../model/user-orm.js'
 import bcrypt from 'bcrypt';
 import jwt from'jsonwebtoken';
 import { findUser } from '../model/repository.js';
@@ -26,8 +27,7 @@ export async function createUser(req, res) {
     
         console.log(`The username ${username} is available!`);
 
-        const encryptedPassword = await bcrypt.hash(password, 10);
-        const resp = await _createUser(username, encryptedPassword);
+        const resp = await _createUser(username, password);
         console.log(resp);
 
         if (resp.err) {
@@ -97,7 +97,7 @@ export async function authenticateUser(req, res, next) {
         next();
     } catch (error) {
         console.log(error);
-        return res.status(401).json({message: `${error}`});
+        return res.status(401).json({message: `Error authenticating user.\n${error}`});
     }
 }
 
@@ -113,3 +113,14 @@ export async function deleteUser(req, res) {
     }
 }
 
+export async function updatePassword(req, res) {
+    try {
+        const {username, newPassword} = req.body;
+
+        await _updatePassword(username, newPassword);
+
+        return res.status(200).json({message: "Password updated successfully!"})
+    } catch (err) {
+        return res.status(400).json({message: `Error updating password.\n${error}`});
+    }
+}
