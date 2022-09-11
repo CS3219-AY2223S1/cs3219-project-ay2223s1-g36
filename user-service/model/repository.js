@@ -22,3 +22,7 @@ export async function createUser(params) {
 export async function findUser(params) {
   return UserModel.findOne(params).exec();
 }
+
+export async function deleteUser(params) {
+  return UserModel.deleteOne(params);
+}

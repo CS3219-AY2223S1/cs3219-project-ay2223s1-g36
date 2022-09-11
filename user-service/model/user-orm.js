@@ -1,4 +1,4 @@
-import { createUser, findUser } from './repository.js';
+import { createUser, findUser, deleteUser } from './repository.js';
 import bcrypt from 'bcrypt';
 import jwt from'jsonwebtoken';
 import mongoose from 'mongoose';
@@ -107,4 +107,13 @@ export async function ormCheckToken(token) {
     }
 }
 
+
+export async function ormDeleteUser(username) {
+    try {
+        // User is authenticated via JWT before deleting
+        await deleteUser({username});
+    } catch (err) {
+        return {err};
+    }
+}
 

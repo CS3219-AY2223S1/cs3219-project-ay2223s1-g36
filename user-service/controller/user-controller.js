@@ -3,6 +3,7 @@ import { ormCheckUserExistence as _checkUser } from '../model/user-orm.js'
 import { ormCheckCredentials as _checkCredentials } from '../model/user-orm.js'
 import { ormSaveToken as _saveToken } from '../model/user-orm.js'
 import { ormCheckToken as _checkToken } from '../model/user-orm.js'
+import { ormDeleteUser as _deleteUser } from '../model/user-orm.js'
 import bcrypt from 'bcrypt';
 import jwt from'jsonwebtoken';
 import { findUser } from '../model/repository.js';
@@ -90,11 +91,25 @@ export async function authenticateUser(req, res, next) {
         }
 
         // Check that token is correct and matches with database
-        validToken = await _checkToken();
+        await _checkToken();
+
+        console.log("Authentication successful!")
         next();
     } catch (error) {
         console.log(error);
         return res.status(401).json({message: `${error}`});
+    }
+}
+
+export async function deleteUser(req, res) {
+    try {
+        const {username} = req.body;
+
+        await _deleteUser(username);
+
+        return res.status(200).json({message: 'Account deleted successfully!'});
+    } catch (err) {
+        return res.status(400).json({message: 'Error deleting account. Please try again!'})
     }
 }
 

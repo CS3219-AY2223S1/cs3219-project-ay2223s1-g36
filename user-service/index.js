@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { authenticateUser, createUser, loginUser } from './controller/user-controller.js';
+import { authenticateUser, createUser, loginUser, deleteUser } from './controller/user-controller.js';
 import cookieParser from 'cookie-parser';
 
 const app = express();
@@ -16,6 +16,7 @@ const router = express.Router()
 router.get('/', (_, res) => res.send('Hello World from user-service'))
 router.post('/register', createUser)
 router.post('/login', loginUser)
+router.post('/deleteAccount', authenticateUser, deleteUser)
 
 router.post('/auth', authenticateUser, (req, res) => {
     res.status(200).send("Welcome!");
