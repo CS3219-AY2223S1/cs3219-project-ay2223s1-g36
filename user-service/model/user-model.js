@@ -9,7 +9,10 @@ let UserModelSchema = new Schema({
     password: {
         type: String,
         required: true,
-    }
+    },
+    token: {
+        type: String
+    },
 })
 
 export default mongoose.model('UserModel', UserModelSchema)
