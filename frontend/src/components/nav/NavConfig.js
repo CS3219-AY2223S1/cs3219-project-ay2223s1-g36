@@ -8,6 +8,11 @@ const NAV_CONFIG = [
     title: 'dashboard',
     path: '/dashboard',
     icon: getIcon('eva:pie-chart-2-fill')
+  },
+  {
+    title: 'profile',
+    path: '/profile',
+    icon: getIcon('mdi:account-circle')
   }
 ];
 

@@ -3,6 +3,7 @@ import DashboardLayout from './layouts/dashboard';
 
 import Dashboard from './pages/Dashboard';
 import SignupPage from './pages/Signup';
+import LoginPage from './pages/Login';
 import ProfilePage from './pages/Profile';
 
 export default function Router() {
@@ -16,6 +17,12 @@ export default function Router() {
       path: '/signup',
       element: <SignupPage />,
       children: [{ path: '*', element: <SignupPage /> }]
+    },
+    {
+      path: '/login',
+      element: <LoginPage />,
+      children: [{ path: '*', element: <LoginPage /> }]
+    },
     {
       path: '/',
       element: <DashboardLayout />,

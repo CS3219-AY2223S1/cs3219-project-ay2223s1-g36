@@ -1,6 +1,9 @@
-import { ormCreateUser as _createUser } from '../model/user-orm.js'
-import { ormCheckUserExistence as _checkUser } from '../model/user-orm.js'
-import { ormCheckCredentials as _checkCredentials } from '../model/user-orm.js'
+import { 
+    ormCreateUser as _createUser ,
+    ormViewUser as _viewUser,
+    ormCheckUserExistence as _checkUser,
+    ormCheckCredentials as _checkCredentials
+} from '../model/user-orm.js'
 
 import jwt from'jsonwebtoken';
 
@@ -32,6 +35,24 @@ export async function createUser(req, res) {
     }
 }
 
+export async function viewUser(req, res) {
+    const userId = req.params.userid;
+    try {
+        if (userId) {
+            const userDetails = await _viewUser(userId);
+            if (userDetails.len) {
+                return res.status(200).json({username: userDetails.username});
+            } else {
+                return res.status(400).json({message: `Invalid user ID provided.`});
+            }
+        } else {
+            return res.status(400).json({message: 'User ID is missing!'});
+        }
+    } catch (err) {
+        return res.status(500).json({message: 'Database failure!'})
+    }
+}
+
 export async function loginUser(req, res) {
     const SECRET_JWT_KEY = 'g36_secret_cjyk';
     try {
@@ -40,6 +61,8 @@ export async function loginUser(req, res) {
             const [userFound, userDetails] = await _checkCredentials(username, password);
             console.log(userDetails);
             if (userFound) {
+                console.log(userDetails);
+                console.log(userDetails._id.toString());
                 console.log(`Successful login!`);
 
                 // Generate JWT
@@ -50,7 +73,7 @@ export async function loginUser(req, res) {
                 return res.status(200)
                             // .setHeader('Set-Cookie', ['token='+token])
                             .cookie('token', token, { httpOnly: true })
-                            .json({message: `${username} is logged in.`, token: token});
+                            .json({message: `${username} is logged in. yay ok`, userid: userDetails.id , token: token});
             } else {
                 console.log(`Login failed.`);
                 return res.status(401).json({message: `Login failed. Access denied.`});

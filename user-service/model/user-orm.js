@@ -12,6 +12,23 @@ export async function ormCreateUser(username, password) {
     }
 }
 
+export async function ormViewUser(userID) {
+    try {
+        const user = await findUser({userID});
+        if (user && user.length) {
+            console.log("User found.");
+            return user;
+        } else {
+            console.log("User does not exist");
+            return null;
+        }
+    } catch (err) {
+        console.log('ERROR: Could not find user');
+        return { err };
+    }
+}
+
+
 export async function ormCheckUserExistence(username) {
     try {
         const user = await findUser({username});
