@@ -21,7 +21,7 @@ export default function Router() {
       children: [{ path: '', element: <Room /> }]
     },
     {
-      path: '/dashboard',
+      path: '/',
       element: <DashboardLayout />,
       children: [{ path: '', element: <Dashboard /> }]
     },
