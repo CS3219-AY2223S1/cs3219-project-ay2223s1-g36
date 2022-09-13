@@ -30,7 +30,7 @@ export default function MatchLayout() {
     });
   }, []);
 
-  if (timer === 0) {
+  if (timer === -3) {
     navigate('/dashboard', { state: { status: 'Connection timed out. Please try again.' } });
   }
 
