@@ -31,7 +31,7 @@ export default function MatchLayout() {
   }, []);
 
   if (timer === -3) {
-    navigate('/dashboard', { state: { status: 'Connection timed out. Please try again.' } });
+    navigate('/', { state: { status: 'Connection timed out. Please try again.' } });
   }
 
   return (
