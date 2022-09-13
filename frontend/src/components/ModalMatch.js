@@ -9,11 +9,29 @@ import {
   Grid
 } from '@mui/material';
 import WidgetSummary from './widget/WidgetSummary';
+import { useNavigate } from 'react-router-dom';
 
 export default function ModalMatch() {
+  const navigate = useNavigate();
+  const [difficulty, setDifficulty] = useState('Not chosen');
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = (reason) => {
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const handleOnDifficultyClick = (chosenDifficulty) => {
+    setDifficulty(chosenDifficulty);
+    setOpenConfirmation(true);
+  };
+  const handleConfirmation = () => {
+    navigate('/match', { state: { difficulty } });
+  };
+  const handleCloseConfirmation = (event, reason) => {
+    if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
+      setOpenConfirmation(false);
+    }
+  };
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = (event, reason) => {
     if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
       setOpen(false);
     }
@@ -89,6 +107,7 @@ export default function ModalMatch() {
                   sx={{
                     height: '155px'
                   }}
+                  onClick={() => handleOnDifficultyClick('EASY')}
                 />
               </Grid>
 
@@ -120,6 +139,7 @@ export default function ModalMatch() {
                   sx={{
                     height: '155px'
                   }}
+                  onClick={() => handleOnDifficultyClick('MEDIUM')}
                 />
               </Grid>
 
@@ -151,6 +171,7 @@ export default function ModalMatch() {
                   sx={{
                     height: '155px'
                   }}
+                  onClick={() => handleOnDifficultyClick('HARD')}
                 />
               </Grid>
             </Grid>
@@ -164,6 +185,43 @@ export default function ModalMatch() {
         >
           <Button variant="contained" onClick={handleClose} color="error">
             Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        fullWidth={true}
+        maxWidth={'md'}
+        keepMounted
+        open={openConfirmation}
+        onClose={handleCloseConfirmation}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        sx={{
+          margin: 'auto auto',
+          width: '85%',
+          maxWidth: '800px'
+        }}
+      >
+        <DialogTitle
+          sx={{
+            fontSize: '1.6rem',
+            fontWeight: '700',
+            lineHeight: '1.5'
+          }}
+        >
+          Confirm your choice
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure that you wish to choose <b>{difficulty}</b> difficulty?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" color="error" onClick={handleCloseConfirmation}>
+            No
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleConfirmation} autoFocus>
+            Yes
           </Button>
         </DialogActions>
       </Dialog>
