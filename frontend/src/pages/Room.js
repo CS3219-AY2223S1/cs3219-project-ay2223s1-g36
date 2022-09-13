@@ -7,7 +7,7 @@ import Page from '../components/Page';
 export default function Room() {
   const { roomID, difficulty } = useOutletContext();
   return (
-    <Page title="Room">
+    <Page title="Room" navbar={false}>
       <Box>
         <Box sx={{ display: 'flex' }}>
           <Box sx={{ mb: 1, ml: 1.5, cursor: 'pointer' }}>
