@@ -27,7 +27,7 @@ export default function RoomNavBar() {
     }
   };
   const handleConfirmation = () => {
-    navigate('/dashboard', { state: { status: 'Successfully left the room.' } });
+    navigate('/', { state: { status: 'Successfully left the room.' } });
   };
   return (
     <>
