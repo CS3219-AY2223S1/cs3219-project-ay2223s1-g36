@@ -14,3 +14,11 @@ This is a template repository for CS3219 project.
 ## Frontend
 1. Install npm packages using `npm i`.
 2. Run Frontend using `npm start`.
+
+## Matching Service
+Matching service is linked as a submodule. To get the submodule working, run:
+
+```sh
+$ git submodule init
+$ git submodule update
+```

@@ -6,7 +6,7 @@ import Logo from './Logo';
 import NavBar from './nav/NavBar';
 import NAV_CONFIG from './nav/NavConfig';
 
-export default function Sidebar({ isOpen, onClose }) {
+export default function Sidebar({ isOpen, onClose, isHidden = false }) {
   const pathname = useLocation();
   const isDesktop = useMediaQuery('(min-width:1200px)');
 
@@ -80,7 +80,7 @@ export default function Sidebar({ isOpen, onClose }) {
         }
       }}
     >
-      {isDesktop ? (
+      {isDesktop && !isHidden ? (
         <Drawer
           open
           variant="persistent"
