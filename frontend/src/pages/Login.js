@@ -24,15 +24,6 @@ function LoginPage() {
   const [dialogMsg, setDialogMsg] = useState('');
   const [isLoginSuccess, setIsLoginSuccess] = useState(false);
 
-  // JWT related variables and hooks
-  const storedJWT = localStorage.getItem('token');
-  const [jwt, setJWT] = useState(storedJWT || null);
-
-  const getJWT = async (res) => {
-    localStorage.setItem('token', res.data.token);
-    setJWT(res.data.token);
-  };
-
   const handleLogin = async () => {
     setIsLoginSuccess(false);
     const res = await axios.post(URL_USER_SVC_LOGIN, { username, password }).catch((err) => {
@@ -44,11 +35,9 @@ function LoginPage() {
     });
     if (res && res.status === STATUS_CODE_OK) {
       document.cookie = 'token=' + res.data.token;
-      getJWT(res);
+      document.cookie = 'uname=' + res.data.username;
       setSuccessDialog('Successfully logged in!');
       setIsLoginSuccess(true);
-      console.log(res);
-      console.log(jwt);
     }
   };
 

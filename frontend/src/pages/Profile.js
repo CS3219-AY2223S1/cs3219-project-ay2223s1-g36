@@ -14,58 +14,64 @@ import {
 import Page from '../components/Page';
 import { useState } from 'react';
 import axios from 'axios';
-import { URL_USER_SVC } from '../configs';
-import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from '../constants';
+import { URL_USER_SVC_DELETE, URL_USER_SVC_UPDATEPW } from '../configs';
+import { STATUS_CODE_OK, STATUS_CODE_UNAUTH, STATUS_CODE_BADREQ } from '../constants';
+import { Navigate } from 'react-router-dom';
 
 export default function Profile() {
-  const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState('');
+  const [isPWChangeSuccess, setIsPWChangeSuccess] = useState(false);
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
 
-  // const getUser = async () => {
-  //   const res = await axios.post(URL_USER_SVC_LOGIN, { username, password }).catch((err) => {
-  //     if (err.response.status === STATUS_CODE_UNAUTH) {
-  //       setErrorDialog('Incorrect credentials');
-  //     } else {
-  //       setErrorDialog('Please try again later');
-  //     }
-  //   });
-  //   if (res && res.status === STATUS_CODE_OK) {
-  //     getJWT(res);
-  //     setSuccessDialog('Successfully logged in!');
-  //     setIsLoginSuccess(true);
-  //   }
-  // };
+  const parseCookie = (str) =>
+    str
+      .split(';')
+      .map((v) => v.split('='))
+      .reduce((acc, v) => {
+        acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+        return acc;
+      }, {});
+
+  const username = parseCookie(document.cookie).uname;
 
   const handlePWchange = async () => {
-    setIsDeleteSuccess(false);
-    // const res = await axios.post(URL_USER_SVC, { username, password }).catch((err) => {
-    const res = await axios.post(URL_USER_SVC, {}).catch((err) => {
-      if (err.response.status === STATUS_CODE_CONFLICT) {
-        setErrorDialog('This username already exists');
-      } else {
-        setErrorDialog('Please try again later');
-      }
-    });
-    if (res && res.status === STATUS_CODE_CREATED) {
-      setSuccessDialog('Account successfully deleted');
-      setIsDeleteSuccess(true);
+    setIsPWChangeSuccess(false);
+    const res = await axios
+      .post(URL_USER_SVC_UPDATEPW, { username, newPassword }, { withCredentials: true })
+      .catch((err) => {
+        if (
+          err.response.status === STATUS_CODE_BADREQ ||
+          err.response.status === STATUS_CODE_UNAUTH
+        ) {
+          setErrorDialog(res.data.message);
+        } else {
+          setErrorDialog('Please try again later');
+        }
+      });
+    if (res && res.status === STATUS_CODE_OK) {
+      setSuccessDialog(res.data.message);
+      setIsPWChangeSuccess(true);
     }
   };
   const handleAccDelete = async () => {
     setIsDeleteSuccess(false);
-    // const res = await axios.post(URL_USER_SVC, { username, password }).catch((err) => {
-    const res = await axios.post(URL_USER_SVC, {}).catch((err) => {
-      if (err.response.status === STATUS_CODE_CONFLICT) {
-        setErrorDialog('This username already exists');
-      } else {
-        setErrorDialog('Please try again later');
-      }
-    });
-    if (res && res.status === STATUS_CODE_CREATED) {
-      setSuccessDialog('Account successfully deleted');
+    const res = await axios
+      .post(URL_USER_SVC_DELETE, { username }, { withCredentials: true })
+      .catch((err) => {
+        if (
+          err.response.status === STATUS_CODE_BADREQ ||
+          err.response.status === STATUS_CODE_UNAUTH
+        ) {
+          setErrorDialog(res.data.message);
+        } else {
+          setErrorDialog('Please try again later');
+        }
+      });
+    if (res && res.status === STATUS_CODE_OK) {
+      setSuccessDialog(res.data.message);
       setIsDeleteSuccess(true);
     }
   };
@@ -95,6 +101,10 @@ export default function Profile() {
     }
   };
 
+  if (isDeleteSuccess) {
+    return <Navigate replace to="/signup" />;
+  }
+
   return (
     <Page title="Profile">
       <Container maxWidth="xl">
@@ -113,6 +123,9 @@ export default function Profile() {
         >
           Profile
         </Typography>
+        <Typography variant="body1" sx={{ mb: 1 }}>
+          Username: {username}
+        </Typography>
 
         <Grid container spacing={8}>
           <Grid item xs={12} sm={12} md={12}>
@@ -128,8 +141,8 @@ export default function Profile() {
                 variant="outlined"
                 size="small"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
                 sx={{ marginRight: '2rem', width: '30%' }}
               />
               <Button variant={'contained'} color={'info'} onClick={handlePWchange}>
@@ -159,7 +172,7 @@ export default function Profile() {
             <DialogContentText>{dialogMsg}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            {isDeleteSuccess ? (
+            {isDeleteSuccess || isPWChangeSuccess ? (
               <Button onClick={closeDialog}>Done</Button>
             ) : (
               <Button onClick={closeDialog}>Try Again</Button>
