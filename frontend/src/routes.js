@@ -10,23 +10,10 @@ import SignupPage from './pages/Signup';
 import LoginPage from './pages/Login';
 import ProfilePage from './pages/Profile';
 
+import { ProtectedRoute } from './components/ProtectedRoute';
+
 export default function Router() {
   return useRoutes([
-    {
-      path: '/match',
-      element: <MatchLayout />,
-      children: [{ path: '', element: <Match /> }]
-    },
-    {
-      path: '/room',
-      element: <RoomLayout />,
-      children: [{ path: '', element: <Room /> }]
-    },
-    {
-      path: '/',
-      element: <DashboardLayout />,
-      children: [{ path: '', element: <Dashboard /> }]
-    },
     {
       path: '/signup',
       element: <SignupPage />,
@@ -40,7 +27,59 @@ export default function Router() {
     {
       path: '/',
       element: <DashboardLayout />,
-      children: [{ path: 'profile', element: <ProfilePage /> }]
+      children: [
+        {
+          path: '',
+          element: (
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          )
+        }
+      ]
+    },
+
+    {
+      path: '/',
+      element: <DashboardLayout />,
+      children: [
+        {
+          path: 'profile',
+          element: (
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          )
+        }
+      ]
+    },
+    {
+      path: '/match',
+      element: <MatchLayout />,
+      children: [
+        {
+          path: '',
+          element: (
+            <ProtectedRoute>
+              <Match />
+            </ProtectedRoute>
+          )
+        }
+      ]
+    },
+    {
+      path: '/room',
+      element: <RoomLayout />,
+      children: [
+        {
+          path: '',
+          element: (
+            <ProtectedRoute>
+              <Room />
+            </ProtectedRoute>
+          )
+        }
+      ]
     }
   ]);
 }

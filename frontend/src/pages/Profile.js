@@ -17,8 +17,10 @@ import axios from 'axios';
 import { URL_USER_SVC_DELETE, URL_USER_SVC_UPDATEPW } from '../configs';
 import { STATUS_CODE_OK, STATUS_CODE_UNAUTH, STATUS_CODE_BADREQ } from '../constants';
 import { Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 export default function Profile() {
+  const auth = useAuth();
   const [newPassword, setNewPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
@@ -26,16 +28,7 @@ export default function Profile() {
   const [isPWChangeSuccess, setIsPWChangeSuccess] = useState(false);
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
 
-  const parseCookie = (str) =>
-    str
-      .split(';')
-      .map((v) => v.split('='))
-      .reduce((acc, v) => {
-        acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
-        return acc;
-      }, {});
-
-  const username = parseCookie(document.cookie).uname;
+  const username = auth.user.username;
 
   const handlePWchange = async () => {
     setIsPWChangeSuccess(false);

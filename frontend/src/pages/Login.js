@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Link,
   TextField,
   Typography
 } from '@mui/material';
@@ -15,8 +16,10 @@ import axios from 'axios';
 import { URL_USER_SVC_LOGIN } from '../configs';
 import { STATUS_CODE_OK, STATUS_CODE_UNAUTH } from '../constants';
 import { Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 function LoginPage() {
+  const auth = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -34,20 +37,13 @@ function LoginPage() {
       }
     });
     if (res && res.status === STATUS_CODE_OK) {
+      auth.login({ username: username, password: password });
       document.cookie = 'token=' + res.data.token;
-      document.cookie = 'uname=' + res.data.username;
-      setSuccessDialog('Successfully logged in!');
       setIsLoginSuccess(true);
     }
   };
 
   const closeDialog = () => setIsDialogOpen(false);
-
-  const setSuccessDialog = (msg) => {
-    setIsDialogOpen(true);
-    setDialogTitle('Success');
-    setDialogMsg(msg);
-  };
 
   const setErrorDialog = (msg) => {
     setIsDialogOpen(true);
@@ -113,6 +109,9 @@ function LoginPage() {
             Log In
           </Button>
         </Box>
+        <Typography variant="body2" sx={{ mb: 1 }}>
+          Are you a new user? <Link href="/signup">Sign up!</Link>
+        </Typography>
 
         <Dialog open={isDialogOpen} onClose={closeDialog}>
           <DialogTitle>{dialogTitle}</DialogTitle>
