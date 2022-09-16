@@ -37,7 +37,7 @@ function LoginPage() {
       }
     });
     if (res && res.status === STATUS_CODE_OK) {
-      auth.login({ username: username, password: password });
+      auth.login({ username: username, token: res.data.token });
       document.cookie = 'token=' + res.data.token;
       setIsLoginSuccess(true);
     }
