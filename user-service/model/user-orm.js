@@ -98,17 +98,26 @@ export async function ormSaveToken(username) {
 
 export async function ormCheckToken(token) {
     try {
+        // TODO: Implement redisclient blacklisting later on
+
         // Terminate operation if token is undefined
         if (token == null) {
             return false;
         }
+        
         // Check that token is correct and matches with database
         const verify = await jwt.verify(token, process.env.TOKEN_KEY);
-        user = await findUser({user_id: verify.user_id});
+        
+        const user = await findUser({_id: verify.user_id});
 
+        if (user.token == '') {
+            return false;
+        }
+        
         return true;
     } catch (err) {
-        return {err};
+        console.log(err);
+        throw err;
     }
 }
 
@@ -131,6 +140,20 @@ export async function ormUpdatePassword(username, newPassword) {
         const user = await findUser({username});
         user.password = encryptedNewPassword;
         user.save();
+        return true;
+    } catch (err) {
+        return {err};
+    }
+}
+
+export async function ormLogoutUser(username) {
+    try {
+        // User is authenticated via JWT before deleting
+        const user = await findUser({username});
+
+        user.token = '';
+        user.save();
+
         return true;
     } catch (err) {
         return {err};
