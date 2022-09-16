@@ -98,6 +98,10 @@ export async function ormSaveToken(username) {
 
 export async function ormCheckToken(token) {
     try {
+        // Terminate operation if token is undefined
+        if (token == null) {
+            return false;
+        }
         // Check that token is correct and matches with database
         const verify = await jwt.verify(token, process.env.TOKEN_KEY);
         user = await findUser({user_id: verify.user_id});

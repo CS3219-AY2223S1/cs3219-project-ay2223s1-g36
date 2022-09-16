@@ -1,9 +1,12 @@
 import Router from './routes';
+import { AuthProvider } from './hooks/useAuth';
 
 function App() {
   return (
     <>
-      <Router />
+      <AuthProvider>
+        <Router />
+      </AuthProvider>
     </>
   );
 }

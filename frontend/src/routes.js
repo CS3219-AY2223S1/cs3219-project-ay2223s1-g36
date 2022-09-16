@@ -7,28 +7,79 @@ import Dashboard from './pages/Dashboard';
 import Match from './pages/Match';
 import Room from './pages/Room';
 import SignupPage from './pages/Signup';
+import LoginPage from './pages/Login';
+import ProfilePage from './pages/Profile';
+
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 export default function Router() {
   return useRoutes([
     {
-      path: '/match',
-      element: <MatchLayout />,
-      children: [{ path: '', element: <Match /> }]
+      path: '/signup',
+      element: <SignupPage />,
+      children: [{ path: '*', element: <SignupPage /> }]
     },
     {
-      path: '/room',
-      element: <RoomLayout />,
-      children: [{ path: '', element: <Room /> }]
+      path: '/login',
+      element: <LoginPage />,
+      children: [{ path: '*', element: <LoginPage /> }]
     },
     {
       path: '/',
       element: <DashboardLayout />,
-      children: [{ path: '', element: <Dashboard /> }]
+      children: [
+        {
+          path: '',
+          element: (
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          )
+        }
+      ]
+    },
+
+    {
+      path: '/',
+      element: <DashboardLayout />,
+      children: [
+        {
+          path: 'profile',
+          element: (
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          )
+        }
+      ]
     },
     {
-      path: '/signup',
-      element: <SignupPage />,
-      children: [{ path: '*', element: <SignupPage /> }]
+      path: '/match',
+      element: <MatchLayout />,
+      children: [
+        {
+          path: '',
+          element: (
+            <ProtectedRoute>
+              <Match />
+            </ProtectedRoute>
+          )
+        }
+      ]
+    },
+    {
+      path: '/room',
+      element: <RoomLayout />,
+      children: [
+        {
+          path: '',
+          element: (
+            <ProtectedRoute>
+              <Room />
+            </ProtectedRoute>
+          )
+        }
+      ]
     }
   ]);
 }

@@ -2,8 +2,11 @@ import { Container, Grid, Typography } from '@mui/material';
 import Page from '../components/Page';
 import WidgetMatch from '../components/widget/WidgetMatch';
 import WidgetSummary from '../components/widget/WidgetSummary';
+import { useAuth } from '../hooks/useAuth';
 
 export default function Dashboard() {
+  const auth = useAuth();
+  const username = auth.user.username;
   return (
     <Page title="Dashboard">
       <Container maxWidth="xl">
@@ -20,7 +23,7 @@ export default function Dashboard() {
             }
           }}
         >
-          Hi Ke Wen, Welcome back!
+          Hi {username.toUpperCase()}, welcome back!
         </Typography>
 
         <Grid container spacing={3}>

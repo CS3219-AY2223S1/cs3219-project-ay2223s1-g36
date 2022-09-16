@@ -7,7 +7,7 @@ export const MENU_OPTIONS = [
   {
     label: 'Profile',
     icon: 'eva:person-fill',
-    linkTo: '#'
+    linkTo: '/profile'
   },
   {
     label: 'Settings',

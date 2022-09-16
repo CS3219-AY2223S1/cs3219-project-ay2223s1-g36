@@ -42,7 +42,26 @@ export async function createUser(req, res) {
     }
 }
 
+export async function viewUser(req, res) {
+    const userId = req.params.userid;
+    try {
+        if (userId) {
+            const userDetails = await _viewUser(userId);
+            if (userDetails.len) {
+                return res.status(200).json({username: userDetails.username});
+            } else {
+                return res.status(400).json({message: `Invalid user ID provided.`});
+            }
+        } else {
+            return res.status(400).json({message: 'User ID is missing!'});
+        }
+    } catch (err) {
+        return res.status(500).json({message: 'Database failure!'})
+    }
+}
+
 export async function loginUser(req, res) {
+    const SECRET_JWT_KEY = 'g36_secret_cjyk';
     try {
         const { username, password } = req.body;
 
@@ -67,7 +86,7 @@ export async function loginUser(req, res) {
             // Generate JWT and send the cookie to user
             const [tokenSaved, token] = await _saveToken(username);
             if (tokenSaved) {
-                return res.status(200).cookie({"token":token}).json({message: `${username} is logged in.`, username: username, token: token});
+                return res.status(200).cookie('token', token).json({message: `${username} is logged in.`, username: username, token: token});
             } else {
                 return res.status(500).json({message: 'Error creating JWT token'});
             }

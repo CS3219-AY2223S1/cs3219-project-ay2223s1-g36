@@ -10,48 +10,50 @@ import {
   TextField,
   Typography
 } from '@mui/material';
+
 import { useState } from 'react';
 import axios from 'axios';
-import { URL_USER_SVC_REG } from '../configs';
-import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from '../constants';
-import { Link as routeLink } from 'react-router-dom';
+import { URL_USER_SVC_LOGIN } from '../configs';
+import { STATUS_CODE_OK, STATUS_CODE_UNAUTH } from '../constants';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
-function SignupPage() {
+function LoginPage() {
+  const auth = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState('');
-  const [isSignupSuccess, setIsSignupSuccess] = useState(false);
+  const [isLoginSuccess, setIsLoginSuccess] = useState(false);
 
-  const handleSignup = async () => {
-    setIsSignupSuccess(false);
-    const res = await axios.post(URL_USER_SVC_REG, { username, password }).catch((err) => {
-      if (err.response.status === STATUS_CODE_CONFLICT) {
-        setErrorDialog('This username already exists');
+  const handleLogin = async () => {
+    setIsLoginSuccess(false);
+    const res = await axios.post(URL_USER_SVC_LOGIN, { username, password }).catch((err) => {
+      if (err.response.status === STATUS_CODE_UNAUTH) {
+        setErrorDialog('Incorrect credentials');
       } else {
         setErrorDialog('Please try again later');
       }
     });
-    if (res && res.status === STATUS_CODE_CREATED) {
-      setSuccessDialog('Account successfully created');
-      setIsSignupSuccess(true);
+    if (res && res.status === STATUS_CODE_OK) {
+      auth.login({ username: username, password: password });
+      document.cookie = 'token=' + res.data.token;
+      setIsLoginSuccess(true);
     }
   };
 
   const closeDialog = () => setIsDialogOpen(false);
-
-  const setSuccessDialog = (msg) => {
-    setIsDialogOpen(true);
-    setDialogTitle('Success');
-    setDialogMsg(msg);
-  };
 
   const setErrorDialog = (msg) => {
     setIsDialogOpen(true);
     setDialogTitle('Error');
     setDialogMsg(msg);
   };
+
+  if (isLoginSuccess) {
+    return <Navigate replace to="/" />;
+  }
 
   return (
     <Box
@@ -84,7 +86,7 @@ function SignupPage() {
             }
           }}
         >
-          Sign Up
+          Log In
         </Typography>
         <TextField
           label="Username"
@@ -103,12 +105,12 @@ function SignupPage() {
           sx={{ marginBottom: '2rem' }}
         />
         <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}>
-          <Button variant={'contained'} onClick={handleSignup}>
-            Sign up
+          <Button variant={'contained'} onClick={handleLogin}>
+            Log In
           </Button>
         </Box>
         <Typography variant="body2" sx={{ mb: 1 }}>
-          Already have an account? <Link href="/login">Log in!</Link>
+          Are you a new user? <Link href="/signup">Sign up!</Link>
         </Typography>
 
         <Dialog open={isDialogOpen} onClose={closeDialog}>
@@ -117,12 +119,10 @@ function SignupPage() {
             <DialogContentText>{dialogMsg}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            {isSignupSuccess ? (
-              <Button component={routeLink} to="/login">
-                Log in
-              </Button>
+            {isLoginSuccess ? (
+              <Button onClick={closeDialog}>Close</Button>
             ) : (
-              <Button onClick={closeDialog}>Done</Button>
+              <Button onClick={closeDialog}>Try Again</Button>
             )}
           </DialogActions>
         </Dialog>
@@ -131,4 +131,4 @@ function SignupPage() {
   );
 }
 
-export default SignupPage;
+export default LoginPage;
