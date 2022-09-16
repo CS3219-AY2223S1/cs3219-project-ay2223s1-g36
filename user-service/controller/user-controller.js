@@ -5,6 +5,7 @@ import { ormSaveToken as _saveToken } from '../model/user-orm.js'
 import { ormCheckToken as _checkToken } from '../model/user-orm.js'
 import { ormDeleteUser as _deleteUser } from '../model/user-orm.js'
 import { ormUpdatePassword as _updatePassword } from '../model/user-orm.js'
+import { ormLogoutUser as _logoutUser } from '../model/user-orm.js'
 import bcrypt from 'bcrypt';
 import jwt from'jsonwebtoken';
 import { findUser } from '../model/repository.js';
@@ -86,7 +87,7 @@ export async function loginUser(req, res) {
             // Generate JWT and send the cookie to user
             const [tokenSaved, token] = await _saveToken(username);
             if (tokenSaved) {
-                return res.status(200).cookie('token', token).json({message: `${username} is logged in.`, username: username, token: token});
+            return res.status(200).cookie('token', token).json({message: `${username} is logged in.`, username: username, token: token});
             } else {
                 return res.status(500).json({message: 'Error creating JWT token'});
             }
@@ -110,13 +111,17 @@ export async function authenticateUser(req, res, next) {
         }
 
         // Check that token is correct and matches with database
-        await _checkToken();
+        const validToken  = await _checkToken(token);
+        
+        if (validToken == false) {
+            throw 'Error authenticating user.'
+        }
 
-        console.log("Authentication successful!")
+        console.log("Authentication successful!");
         next();
-    } catch (error) {
-        console.log(error);
-        return res.status(401).json({message: `Error authenticating user.\n${error}`});
+    } catch (err) {
+        console.log(err);
+        return res.status(401).json({message: `Authentication failed: ${err}`});
     }
 }
 
@@ -141,5 +146,19 @@ export async function updatePassword(req, res) {
         return res.status(200).json({message: "Password updated successfully!"})
     } catch (err) {
         return res.status(400).json({message: `Error updating password.\n${error}`});
+    }
+}
+
+export async function logoutUser(req, res) {
+    try {
+        const {username} = req.body;
+
+        await _logoutUser(username);
+
+        return res.status(200).json({message: 'User logged out successfully'});
+
+    } catch (err) {
+        console.log(err);
+        return res.status(400).json({message: err});
     }
 }
