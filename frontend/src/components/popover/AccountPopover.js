@@ -46,7 +46,7 @@ export default function AccountPopover() {
       });
     if (res && res.status === STATUS_CODE_OK) {
       auth.logout();
-      document.cookie = 'token=';
+      localStorage.clear();
       setIsLogoutSuccess(true);
       console.log(isLogoutSuccess);
     }
