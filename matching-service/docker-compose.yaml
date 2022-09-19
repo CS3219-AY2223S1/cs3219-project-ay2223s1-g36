@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  matching-service:
+    #TODO: create persisting volume for database
+    #TODO: set the production env variable
+    build: .
+    ports:
+      - "8001:8001"
