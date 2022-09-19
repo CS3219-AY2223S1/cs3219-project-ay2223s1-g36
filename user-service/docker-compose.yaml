@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  user-service:
+    build: .
+    depends_on:
+      - mongo-service
+    ports:
+      - "8000:8000"
+    environment:
+      DB_LOCAL_URI: "mongodb://mongo-service:27017/mydb"
+  mongo-service:
+    image: mongo
+    # TODO: Add username and password for enabling authentication
