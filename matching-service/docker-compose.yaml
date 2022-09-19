@@ -1,8 +1,13 @@
 version: "3.9"
 services:
   matching-service:
-    #TODO: create persisting volume for database
-    #TODO: set the production env variable
     build: .
     ports:
       - "8001:8001"
+    volumes:
+      - sqlitevolume:/app/db/db
+    environment:
+      - NODE_ENV=development
+
+volumes:
+  sqlitevolume:
