@@ -7,7 +7,7 @@ services:
     volumes:
       - sqlitevolume:/app/db/db
     environment:
-      - NODE_ENV=development
+      - NODE_ENV: development
 
 volumes:
   sqlitevolume:
