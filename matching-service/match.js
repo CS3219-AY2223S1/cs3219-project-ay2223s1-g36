@@ -31,6 +31,15 @@ async function hasPendingMatch(userId) {
     return { matchFound: false };
 }
 
+// clear timeout and delete the entry from the hashmap
+function clearPendingTimeout(id) {
+    if (timeouts[id]) {
+        logger.debug(`Clearing timeout for id ${id}`);
+        clearTimeout(timeouts[id]);
+        delete timeouts[id];
+    }
+}
+
 function cancelPendingMatch(pendingMatch) {
     logger.debug(`Pending match is expired. Deleting.`);
     pendingMatch.destroy()
@@ -51,19 +60,12 @@ async function findMatch(data) {
         this.emit('match:exists', roomId);
         return;
     } 
+
+    // cancel the previous pending match and start matching again
     const { matchFound, match } = await hasPendingMatch(userId);
     if (matchFound) {
-        // in case of the server crash, delete the dangling pending match
-        const now = new Date();
-        const difference = (now - match.createdAt) / 1000;
-        if (difference > 30) {
-            logger.debug("Found a dangling pending match, deleting.");
-            await match.destroy();
-        } else {
-            logger.debug(`Id ${userId} has an unresolved pending match`);
-            this.emit('match:pending');
-            return;
-        }
+        clearPendingTimeout(match.id);
+        await match.destroy();
     }
 
     // find any pending match with same difficulty
@@ -79,12 +81,7 @@ async function findMatch(data) {
     if (pendingMatch) {
         logger.debug(`Found a match between user ${userId} and user ${pendingMatch.userId}`);
         // stop the timeout for the previously waiting user
-        if (timeouts[pendingMatch.id]) {
-            logger.debug('Clearing timeout');
-            clearTimeout(timeouts[pendingMatch.id]);
-            delete timeouts[pendingMatch.id];
-        }
-        
+        clearPendingTimeout(pendingMatch.id);
         await pendingMatch.destroy();
         const matchRoomId = uuidv4();
         this.io.to(pendingMatch.socketId).emit('match:success', matchRoomId);

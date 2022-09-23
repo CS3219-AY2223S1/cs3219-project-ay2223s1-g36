@@ -22,9 +22,6 @@ Configure the socket to listen to events:
 - `match:fail`
     - Message: `difficulty`
     - This event is emitted to the caller of `match:join` if the match is not found after 30 seconds.
-- `match:pending`
-    - Message: None
-    - This event is emitted to the caller of `match:join` if this current user has a pending request that has not expired (i.e., still within 30 seconds time frame).
 - `match:exists`
     - Message: `roomId`
     - This event is emitted to the caller of `match:join` if this current user has an ongoing match with another peer (perhaps the user was disconnected). The room ID of the ongoing match is returned. 
