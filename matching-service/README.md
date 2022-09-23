@@ -7,7 +7,20 @@ A PeerPrep matching microservice that works on Socket.io
 
 # Running the service
 ```sh
-$ docker-compose up --build
+$ DOCKER_BUILDKIT=1 docker-compose build
+$ docker-compose up
+```
+
+# Tearing down
+```sh
+$ docker-compose down
+```
+
+# Troubleshooting
+If there's some new updates to the code that changes the database layout, errors related to the database migth be thrown when using the service. In that case, try removing the docker volume and restart again by doing:
+```sh
+$ docker-compose down -v
+$ docker-compose up
 ```
 
 # Using the service
