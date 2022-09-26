@@ -83,10 +83,10 @@ async function findMatch(data) {
         // stop the timeout for the previously waiting user
         clearPendingTimeout(pendingMatch.id);
         await pendingMatch.destroy();
-        const matchRoomId = uuidv4();
+        const matchRoomId = uuidv4();  // chance of collision is super low, so I'll just don't handle it for now...
+        await db.Match.create({ roomId: matchRoomId, user1Id: pendingMatch.userId, user2Id: userId, ongoing: true });
         this.io.to(pendingMatch.socketId).emit('match:success', matchRoomId);
         this.emit('match:success', matchRoomId);
-        await db.Match.create({ roomId: matchRoomId, user1Id: pendingMatch.userId, user2Id: userId, ongoing: true});
     } else { // create timeout and join the waiting room
         const initiator = await db.PendingMatch.create({ userId: userId, socketId: this.id, diffInt: diffInt });
         timeouts[initiator.id] = setTimeout(cancelPendingMatch.bind(this), 30000, initiator);

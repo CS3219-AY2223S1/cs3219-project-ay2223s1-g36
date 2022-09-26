@@ -9,6 +9,8 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       roomId: {
+        allowNull: false,
+        unique: true,
         type: Sequelize.STRING
       },
       user1Id: {
