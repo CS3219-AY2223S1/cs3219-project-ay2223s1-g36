@@ -30,7 +30,10 @@ async function joinRoom(data) {
 }
 
 async function leaveRoom(data) {
-    const { userId, roomId } = JSON.parse(data);
+    const { userId, roomId } = data;
+    if (userId == null || roomId == null) {
+        return;
+    }
     const match = await getOngoingMatch(roomId, userId);
     if (!match) {
         logger.debug(`Room ${roomId} doesn't exists or user ${userId} does not belong to this room!`);

@@ -49,8 +49,11 @@ function cancelPendingMatch(pendingMatch) {
 }
 
 async function findMatch(data) {
-    const { userId, difficulty } = JSON.parse(data);
-    const diffInt = diffToIntMap[difficulty];
+    const { userId, difficulty } = data;
+    if (userId == null || difficulty == null) {
+        return;
+    }
+    const diffInt = diffToIntMap[difficulty.toLowerCase()];
     logger.debug(`User ${userId} looking for match with difficulty: ${difficulty}`);
 
     // check whether there's any ongoing match for this user

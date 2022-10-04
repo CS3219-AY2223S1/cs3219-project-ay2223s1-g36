@@ -5,7 +5,7 @@ import CodeEditor from '../components/editor/CodeEditor';
 import Page from '../components/Page';
 
 export default function Room() {
-  const { roomID, difficulty } = useOutletContext();
+  const { roomId, difficulty } = useOutletContext();
   return (
     <Page title="Room" navbar={false}>
       <Box>
@@ -26,7 +26,7 @@ export default function Room() {
                   variant="subtitle2"
                   sx={{ color: 'rgb(33, 43, 54)', fontWeight: '600' }}
                 >
-                  Room ID: {roomID}
+                  Room ID: {roomId}
                 </Typography>
               </Box>
             </Box>
