@@ -39,9 +39,9 @@ Configure the socket to listen to events:
     - Message: `roomId`
     - This event is emitted to the caller of `match:join` if this current user has an ongoing match with another peer (perhaps the user was disconnected). The room ID of the ongoing match is returned. 
 - `room:join:success`
-    - Message: JSON message with fields `peer` and `isConnected`. E.g.,  
+    - Message: JSON message with fields as shown:  
         ```json
-        {"peer": "anotherUserId", "isConnected": bool}
+        {"peer": "anotherUserId", "isConnected": bool, "roomId": "roomId", "difficulty": "difficulty"}
         ```
     - This event is emitted to the caller of `room:join` if the user has successfully joined the room. The user ID of the peer along with whether that peer is already in the room yet is returned in the message.
 - `room:join:fail`

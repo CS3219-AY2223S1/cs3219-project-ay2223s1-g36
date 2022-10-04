@@ -1,9 +1,8 @@
 import logger from './logger.js';
 import db from './db/models/index.js';
+import { diffToIntMap, intToDiffMap } from './util.js';
 import { v4 as uuidv4 } from 'uuid';
 
-const diffToIntMap = { 'easy': 1, 'medium': 2, 'hard': 3 };
-const intToDiffMap = { 1: 'easy', 2: 'medium', 3: 'hard' };
 var timeouts = {}; // data store for storing timeoutIds since can't store into database
 
 async function hasOngoingMatch(userId) {
