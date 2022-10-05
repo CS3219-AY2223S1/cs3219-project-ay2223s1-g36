@@ -3,24 +3,21 @@ import { Outlet, useLocation } from 'react-router-dom';
 import RoomNavBar from '../../components/RoomNavBar';
 import { io } from 'socket.io-client';
 import { URL_MATCH_SVC } from '../../configs';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 export default function RoomLayout() {
-  const [roomID, setRoomID] = useState('Not found');
   const { state } = useLocation();
+  const roomId = state ? state.roomID : 'Not found';
   const difficulty = state ? state.difficulty : 'Not chosen';
+  const socket = io(URL_MATCH_SVC);
+  const userId = JSON.parse(localStorage.getItem('user')).username;
 
-  useEffect(() => {
-    const socket = io(URL_MATCH_SVC);
-    socket.on('connect', () => {
-      console.log(`Connected to the server with ID: ${socket.id}`);
-      socket.emit('match:find', difficulty);
-    });
+  useEffect(() => {}, []);
 
-    socket.on('match:success', (roomID) => {
-      setRoomID(roomID);
-    });
-  }, []);
+  const handleOnLeaveRoom = () => {
+    socket.emit('room:leave', { userId, roomId });
+  };
+
   return (
     <Box
       sx={{
@@ -29,7 +26,7 @@ export default function RoomLayout() {
         overflow: 'hidden'
       }}
     >
-      <RoomNavBar />
+      <RoomNavBar handleOnLeaveRoom={handleOnLeaveRoom} />
       <Box
         sx={{
           flexGrow: 1,
@@ -39,7 +36,7 @@ export default function RoomLayout() {
           paddingBottom: '80px'
         }}
       >
-        <Outlet context={{ roomID, difficulty }} />
+        <Outlet context={{ roomId, difficulty }} />
       </Box>
     </Box>
   );

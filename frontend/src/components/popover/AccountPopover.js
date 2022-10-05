@@ -12,7 +12,12 @@ import { useAuth } from '../../hooks/useAuth';
 export default function AccountPopover() {
   const anchorRef = useRef(null);
   const auth = useAuth();
-  const username = auth.user.username;
+  let username = null;
+  try {
+    username = auth.user.username;
+  } catch {
+    username = '';
+  }
 
   const [open, setOpen] = useState(null);
   const [isLogoutSuccess, setIsLogoutSuccess] = useState(false);
@@ -41,7 +46,7 @@ export default function AccountPopover() {
       });
     if (res && res.status === STATUS_CODE_OK) {
       auth.logout();
-      document.cookie = 'token=';
+      localStorage.clear();
       setIsLogoutSuccess(true);
       console.log(isLogoutSuccess);
     }

@@ -5,11 +5,18 @@ import { DRAWER_WIDTH } from '../const/Size';
 import Logo from './Logo';
 import NavBar from './nav/NavBar';
 import NAV_CONFIG from './nav/NavConfig';
+import { useAuth } from '../hooks/useAuth';
 
 export default function Sidebar({ isOpen, onClose, isHidden = false }) {
   const pathname = useLocation();
   const isDesktop = useMediaQuery('(min-width:1200px)');
-
+  const auth = useAuth();
+  let username = null;
+  try {
+    username = auth.user.username;
+  } catch {
+    username = '';
+  }
   useEffect(() => {
     if (isOpen) {
       onClose();
@@ -35,7 +42,7 @@ export default function Sidebar({ isOpen, onClose, isHidden = false }) {
           <Avatar src={'/static/avatar_default.jpeg'} alt="User Avatar" />
           <Box sx={{ ml: 2 }}>
             <Typography variant="subtitle2" sx={{ color: 'rgb(33, 43, 54)', fontWeight: '600' }}>
-              Ke Wen
+              {username}
             </Typography>
             <Typography
               variant="body2"

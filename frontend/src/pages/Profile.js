@@ -138,7 +138,12 @@ export default function Profile() {
                 onChange={(e) => setNewPassword(e.target.value)}
                 sx={{ marginRight: '2rem', width: '30%' }}
               />
-              <Button variant={'contained'} color={'info'} onClick={handlePWchange}>
+              <Button
+                variant={'contained'}
+                color={'info'}
+                onClick={handlePWchange}
+                disabled={newPassword.length == 0}
+              >
                 Change password
               </Button>
             </Box>

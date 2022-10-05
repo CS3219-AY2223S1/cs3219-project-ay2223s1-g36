@@ -9,6 +9,7 @@ import Room from './pages/Room';
 import SignupPage from './pages/Signup';
 import LoginPage from './pages/Login';
 import ProfilePage from './pages/Profile';
+import PageNotFound from './pages/PageNotFound';
 
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -35,14 +36,7 @@ export default function Router() {
               <Dashboard />
             </ProtectedRoute>
           )
-        }
-      ]
-    },
-
-    {
-      path: '/',
-      element: <DashboardLayout />,
-      children: [
+        },
         {
           path: 'profile',
           element: (
@@ -80,6 +74,11 @@ export default function Router() {
           )
         }
       ]
+    },
+    {
+      path: '*',
+      element: <PageNotFound />,
+      children: [{ path: '*', element: <PageNotFound /> }]
     }
   ]);
 }

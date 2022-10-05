@@ -1,12 +1,35 @@
-import { Typography } from '@mui/material';
+import { Snackbar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useOutletContext } from 'react-router-dom';
 import Page from '../components/Page';
+import Alert from '@mui/material/Alert';
+import { useState } from 'react';
 
 export default function Match() {
-  const { timer = 30 } = useOutletContext();
+  const { timer = 30, showExistingMatchToast = false } = useOutletContext();
+  const [openMatchExistToast, setOpenMatchExistToast] = useState(showExistingMatchToast);
+
+  const handleOnMatchExistToastClose = () => {
+    setOpenMatchExistToast(false);
+  };
+
   return (
     <Page title="Match" navbar={false}>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={openMatchExistToast}
+        autoHideDuration={6000}
+        sx={{ height: '35px' }}
+      >
+        <Alert
+          variant="outlined"
+          severity="success"
+          sx={{ width: '100%', color: '#4caf50', fontWeight: '700' }}
+          onClose={handleOnMatchExistToastClose}
+        >
+          Found an existing match...joining now!
+        </Alert>
+      </Snackbar>
       <Box>
         <Box
           sx={{
