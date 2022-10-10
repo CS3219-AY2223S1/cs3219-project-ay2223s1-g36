@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor';
 import { MonacoServices } from 'monaco-languageclient';
@@ -6,26 +6,30 @@ import { Box, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { CODE_EDITOR_OPTIONS, CODE_EDITOR_LANGUAGE } from './EditorConfig';
 import Select from '@mui/material/Select';
 
-export default function CodeEditor({ defaultLanguage = 'JavaScript' }) {
+export default function CodeEditor({ defaultLanguage = 'JavaScript', collabSocket }) {
   const [language, setLanguage] = useState(defaultLanguage);
+  const [value, setValue] = useState('const hello = () => null;\nconst ans = [];');
+  const editorRef = useRef();
 
-  const editorDidMount = (editor) => {
+  useEffect(() => {
+    collabSocket.on('editor:update', (codeChange) => {
+      console.log(codeChange);
+      setValue(codeChange);
+    });
+  }, []);
+
+  const handleEditorDidMount = (editor) => {
     MonacoServices.install(monaco);
-    if (editor && editor.getModel()) {
-      const editorModel = editor.getModel();
-      if (editorModel) {
-        editorModel.setValue('const hello = () => null;\nconst ans = [];');
-      }
-    }
     editor.focus();
+    editorRef.current = editor;
   };
 
   const handleLanguageChange = (event) => {
     setLanguage(event.target.value);
   };
 
-  const handleOnChange = (event, newCode) => {
-    console.log('onChange', newCode);
+  const handleOnChange = (value) => {
+    collabSocket.emit('editor:key', { change: value });
   };
 
   return (
@@ -68,9 +72,10 @@ export default function CodeEditor({ defaultLanguage = 'JavaScript' }) {
           height="70vh"
           language={language.toLocaleLowerCase()}
           theme="vs"
+          value={value}
           options={CODE_EDITOR_OPTIONS}
           onChange={handleOnChange}
-          editorDidMount={editorDidMount}
+          editorDidMount={handleEditorDidMount}
         />
       </Box>
     </Box>

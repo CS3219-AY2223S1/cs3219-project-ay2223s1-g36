@@ -1,21 +1,18 @@
 import { Box } from '@mui/material';
 import { Outlet, useLocation } from 'react-router-dom';
-import RoomNavBar from '../../components/RoomNavBar';
 import { io } from 'socket.io-client';
+import RoomNavBar from '../../components/RoomNavBar';
 import { URL_MATCH_SVC } from '../../configs';
-import { useEffect } from 'react';
 
 export default function RoomLayout() {
   const { state } = useLocation();
   const roomId = state ? state.roomID : 'Not found';
   const difficulty = state ? state.difficulty : 'Not chosen';
-  const socket = io(URL_MATCH_SVC);
   const userId = JSON.parse(localStorage.getItem('user')).username;
 
-  useEffect(() => {}, []);
-
   const handleOnLeaveRoom = () => {
-    socket.emit('room:leave', { userId, roomId });
+    const matchSocket = io(URL_MATCH_SVC);
+    matchSocket.emit('room:leave', { userId, roomId });
   };
 
   return (

@@ -3,9 +3,25 @@ import { Box } from '@mui/system';
 import { useOutletContext } from 'react-router-dom';
 import CodeEditor from '../components/editor/CodeEditor';
 import Page from '../components/Page';
+import { URL_COLLAB_SVC } from '../configs';
+import { io } from 'socket.io-client';
+import { useMemo, useEffect } from 'react';
 
 export default function Room() {
   const { roomId, difficulty } = useOutletContext();
+  const collabSocket = useMemo(() => io(URL_COLLAB_SVC), [roomId]);
+
+  useEffect(() => {
+    collabSocket.on('connect', () => {
+      collabSocket.emit('room:join', { roomId });
+      console.log(`Joined room: ${roomId}`);
+    });
+
+    return () => {
+      collabSocket.off();
+    };
+  }, []);
+
   return (
     <Page title="Room" navbar={false}>
       <Box>
@@ -53,7 +69,7 @@ export default function Room() {
             </Box>
           </Box>
         </Box>
-        <CodeEditor />
+        <CodeEditor roomId={roomId} collabSocket={collabSocket} />
       </Box>
     </Page>
   );
