@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import {createServer} from 'http';
 import {Server} from 'socket.io';
-import { sendKey, sendSelect, saveEditor } from './editor.js';
+import { joinRoom, sendKey, sendSelect, saveEditor } from './editor.js';
 import { sendMessage } from './chat.js';
 import logger from './logger.js';
 
@@ -22,9 +22,10 @@ const io = new Server(httpServer, {
   },
 });
 io.on('connection', (socket) => {
-  logger.info(`Connected! Socket ID: ${socket.id}, room: ${socket.rooms}`);
+  logger.info(`Connected! Socket ID: ${socket.id}`);
   // attach current io instance to this socket for match.js to use
   socket.io = io;
+  socket.on('room:join', joinRoom.bind(socket));
   socket.on('editor:key', sendKey.bind(socket));
   socket.on('editor:selection', sendSelect.bind(socket));
   socket.on('editor:save', saveEditor.bind(socket));

@@ -12,24 +12,33 @@ try {
     logger.error(`Failed to open database: ${err}`);
 } 
 
+function joinRoom(data) {
+    const { roomId } = data;
+    if (this.room !== roomId) {
+        logger.debug(`Joining room ${roomId}...`);
+        this.room = roomId;
+        this.join(roomId);
+    }
+}
+
 function sendKey(data) {
-    const { roomId, key } = JSON.parse(data);
-    logger.debug(`Receiving key ${key} and sending out...`);
-    this.to(roomId).emit("editor:key", key);
+    const { change } = data;
+    logger.debug(`Receiving data ${change} and sending out to ${this.room}...`);
+    this.to(this.room).emit("editor:update", change);
 }
 
 function sendSelect(data) {
-    const { roomId, selection } = JSON.parse(data);
+    const { selection } = data;
     logger.debug(`Receiving selection ${selection} and sending out...`);
-    this.to(roomId).emit("editor:selection", selection);
+    this.to(this.room).emit("editor:selection", selection);
 }
 
 function saveEditor(data) {
-    const { roomId, code } = JSON.parse(data);
-    if (roomId === null || code === null) {
-        logger.error(`roomId or code received is null: (${roomId}, ${code})`);
+    const { code } = data;
+    if (this.room === null || code === null) {
+        logger.error(`roomId or code received is null: (${this.room}, ${code})`);
     } else {
-        upsertCode(client, roomId, code);
+        upsertCode(client, this.room, code);
     }
 }
 
@@ -44,5 +53,5 @@ async function upsertCode(client, roomId, code) {
     }
 }
 
-export { sendKey, sendSelect, saveEditor };
+export { joinRoom, sendKey, sendSelect, saveEditor };
 
