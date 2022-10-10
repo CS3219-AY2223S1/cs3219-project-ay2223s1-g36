@@ -1,6 +1,11 @@
 # Socket.IO events
 
 Server listens:
+- `room:join`
+    - Message: JSON message
+        ```json
+        {"roomId": "roomId"}
+        ```
 - `editor:key`
     - Message: JSON message 
         ```json
@@ -24,7 +29,7 @@ Server listens:
     - The `userId` is the sender's user ID.
 
 Client listens:
-- `editor:key`
+- `editor:update`
     - Message: IModelContentChangedEvent
 - `editor:selection`
     - Message: ICursorSelectionChangedEvent
