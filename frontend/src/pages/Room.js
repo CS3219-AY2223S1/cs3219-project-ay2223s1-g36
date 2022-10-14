@@ -3,6 +3,7 @@ import { Box } from '@mui/system';
 import { useOutletContext } from 'react-router-dom';
 import CodeEditor from '../components/editor/CodeEditor';
 import Page from '../components/Page';
+import Question from '../components/Question';
 
 export default function Room() {
   const { roomID, difficulty } = useOutletContext();
@@ -53,6 +54,7 @@ export default function Room() {
             </Box>
           </Box>
         </Box>
+        <Question />
         <CodeEditor />
       </Box>
     </Page>
