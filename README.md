@@ -11,6 +11,9 @@ This is a template repository for CS3219 project.
 
 **Please add a string to user-service/.env for the program to run correctly**
 
+## Question Service
+1. Run npm install in the directory to install dependencies if doesn't exist
+
 ## Frontend
 1. Install npm packages using `npm i`.
 2. Run Frontend using `npm start`.
