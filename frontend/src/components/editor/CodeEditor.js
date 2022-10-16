@@ -8,13 +8,13 @@ import Select from '@mui/material/Select';
 
 export default function CodeEditor({ defaultLanguage = 'JavaScript', collabSocket }) {
   const [language, setLanguage] = useState(defaultLanguage);
-  const [value, setValue] = useState('const hello = () => null;\nconst ans = [];');
+  let isFromSocket = false;
   const editorRef = useRef();
 
   useEffect(() => {
-    collabSocket.on('editor:update', (codeChange) => {
-      console.log(codeChange);
-      setValue(codeChange);
+    collabSocket.on('editor:update', (data) => {
+      isFromSocket = true;
+      editorRef.current.getModel().applyEdits(data.changes);
     });
   }, []);
 
@@ -28,8 +28,12 @@ export default function CodeEditor({ defaultLanguage = 'JavaScript', collabSocke
     setLanguage(event.target.value);
   };
 
-  const handleOnChange = (value) => {
-    collabSocket.emit('editor:key', { change: value });
+  const handleOnChange = (event, change) => {
+    if (isFromSocket === false) {
+      collabSocket.emit('editor:key', { key: change });
+    } else {
+      isFromSocket = false;
+    }
   };
 
   return (
@@ -72,7 +76,6 @@ export default function CodeEditor({ defaultLanguage = 'JavaScript', collabSocke
           height="70vh"
           language={language.toLocaleLowerCase()}
           theme="vs"
-          value={value}
           options={CODE_EDITOR_OPTIONS}
           onChange={handleOnChange}
           editorDidMount={handleEditorDidMount}
