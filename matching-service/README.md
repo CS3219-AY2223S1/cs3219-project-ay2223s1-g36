@@ -90,7 +90,7 @@ The following requests could be sent to this service:
                     "roomId":"7290b605-a967-4feb-8eaa-bfae89a48e63",
                     "user1Id":"someuuid2",
                     "user2Id":"someuuid",
-                    "difficulty":null,
+                    "difficulty":"easy",
                     "ongoing":false,
                     "createdAt":"2022-09-22T10:56:30.722Z",
                     "updatedAt":"2022-09-22T12:14:23.470Z"
@@ -111,7 +111,7 @@ The following requests could be sent to this service:
                     "roomId":"7290b605-a967-4feb-8eaa-bfae89a48e63",
                     "user1Id":"someuuid2",
                     "user2Id":"someuuid",
-                    "difficulty":null,
+                    "difficulty":"easy",
                     "ongoing":false,
                     "createdAt":"2022-09-22T10:56:30.722Z",
                     "updatedAt":"2022-09-22T12:14:23.470Z"
@@ -132,7 +132,7 @@ The following requests could be sent to this service:
                     "roomId":"7290b605-a967-4feb-8eaa-bfae89a48e63",
                     "user1Id":"someuuid2",
                     "user2Id":"someuuid",
-                    "difficulty":null,
+                    "difficulty":"easy",
                     "ongoing":false,
                     "createdAt":"2022-09-22T10:56:30.722Z",
                     "updatedAt":"2022-09-22T12:14:23.470Z"

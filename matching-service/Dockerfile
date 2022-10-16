@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm i
 COPY index.js logger.js match.js room.js .sequelizerc util.js ./
-COPY db db
+COPY db/ db/
 RUN npx sequelize db:migrate  
 EXPOSE 8001/tcp
 CMD ["npm", "start"]
