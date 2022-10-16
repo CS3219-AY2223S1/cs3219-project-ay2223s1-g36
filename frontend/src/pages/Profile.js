@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Button,
   Container,
@@ -116,9 +117,34 @@ export default function Profile() {
         >
           Profile
         </Typography>
-        <Typography variant="body1" sx={{ mb: 1 }}>
-          Username: {username}
-        </Typography>
+
+        <Box
+          sx={{
+            my: 2,
+            display: 'flex',
+            alignItems: 'center',
+            padding: '16px 20px',
+            borderRadius: '12px',
+            backgroundColor: 'rgba(145, 158, 171, 0.12)'
+          }}
+        >
+          <Avatar src={'/static/avatar_default.jpeg'} alt="User Avatar" />
+          <Box sx={{ ml: 2 }}>
+            <Typography variant="subtitle2" sx={{ color: 'rgb(33, 43, 54)', fontWeight: '600' }}>
+              Username: {username}
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'rgb(99, 115, 129)',
+                fontWeight: '600',
+                fontSize: '0.75rem'
+              }}
+            >
+              Amateur
+            </Typography>
+          </Box>
+        </Box>
 
         <Grid container spacing={8}>
           <Grid item xs={12} sm={12} md={12}>

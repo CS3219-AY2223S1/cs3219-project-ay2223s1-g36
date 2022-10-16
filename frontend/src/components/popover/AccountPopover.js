@@ -20,7 +20,6 @@ export default function AccountPopover() {
   }
 
   const [open, setOpen] = useState(null);
-  const [isLogoutSuccess, setIsLogoutSuccess] = useState(false);
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -31,7 +30,6 @@ export default function AccountPopover() {
   };
 
   const handleLogout = async () => {
-    setIsLogoutSuccess(false);
     const res = await axios
       .post(URL_USER_SVC_LOGOUT, { username }, { withCredentials: true })
       .catch((err) => {
@@ -39,16 +37,16 @@ export default function AccountPopover() {
           err.response.status === STATUS_CODE_BADREQ ||
           err.response.status === STATUS_CODE_UNAUTH
         ) {
+          console.log('Request could not be processed.');
           handleClose();
         } else {
+          console.log('Server Error.');
           handleClose();
         }
       });
     if (res && res.status === STATUS_CODE_OK) {
       auth.logout();
       localStorage.clear();
-      setIsLogoutSuccess(true);
-      console.log(isLogoutSuccess);
     }
     handleClose();
   };
