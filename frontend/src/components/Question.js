@@ -6,7 +6,7 @@ import { STATUS_CODE_OK, STATUS_CODE_BADREQ, STATUS_SERVER_ERROR } from '../cons
 
 export default function Question({ type, qid = 0, difficulty = '' }) {
   // FOR TESTING
-  difficulty = 'medium';
+  // difficulty = 'medium';
 
   const [title, setTitle] = useState('');
   const [qnText, setQnText] = useState('');
@@ -73,22 +73,33 @@ export default function Question({ type, qid = 0, difficulty = '' }) {
         padding: 3
       }}
     >
-      <Typography
-        variant="h6"
-        sx={{
-          my: 1,
-          fontFamily: 'Public Sans,sans-serif',
-          fontWeight: '700'
-        }}
-      >
-        {title}
-      </Typography>
-      <Typography sx={{ color: getDiffColour(difficultyLevel) }}>
-        {difficulty?.charAt(0).toUpperCase() + difficulty?.slice(1)}
-      </Typography>
-      <Typography variant="body1">
-        <div dangerouslySetInnerHTML={{ __html: qnText }} />
-      </Typography>
+      {difficultyLevel > 0 ? (
+        <>
+          <Typography
+            variant="h6"
+            sx={{
+              my: 1,
+              fontFamily: 'Public Sans,sans-serif',
+              fontWeight: '700'
+            }}
+          >
+            {title}
+          </Typography>
+          <Typography sx={{ color: getDiffColour(difficultyLevel) }}>
+            {difficulty?.charAt(0).toUpperCase() + difficulty?.slice(1)}
+          </Typography>
+          <Typography variant="body1">
+            <div dangerouslySetInnerHTML={{ __html: qnText }} />
+          </Typography>
+        </>
+      ) : (
+        <>
+          <Typography variant="body1">Oops!</Typography>
+          <Typography variant="body2">
+            The question could not be loaded. Please try again!
+          </Typography>
+        </>
+      )}
     </Box>
   );
 }
