@@ -15,14 +15,15 @@ app.use(cors({
 const router = express.Router()
 
 // Controller will contain all the User-defined Routes
-router.get('/', (_, res) => res.send('Hello World from user-service'))
+router.get('/', (_, res) => res.send('Hello World from question-service'))
 
 app.use('/api/question', router).all((_, res) => {
     res.setHeader('content-type', 'application/json')
     res.setHeader('Access-Control-Allow-Origin', '*')
 })
 
-router.get('/getQues', getQues)
-router.get('/getQuesForDifficulty', getQuesForDifficulty)
+router.get('/getQues/:qid', getQues)
+router.get('/getQuesForDifficulty/:difficulty', getQuesForDifficulty)
 
-app.listen(8001, () => console.log('question-service listening on port 8001'));
+const QNSVC_PORT = 8002;
+app.listen(QNSVC_PORT, () => console.log('question-service listening on port', QNSVC_PORT));
