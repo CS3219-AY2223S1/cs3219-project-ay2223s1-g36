@@ -1,5 +1,6 @@
 import {MongoClient} from 'mongodb';
 import logger from './logger.js';
+import express from 'express';
 
 const mongoURI = process.env.DB_LOCAL_URI;
 const client = new MongoClient(mongoURI);
@@ -22,9 +23,9 @@ function joinRoom(data) {
 }
 
 function sendKey(data) {
-    const { change } = data;
-    logger.debug(`Receiving data ${change} and sending out to ${this.room}...`);
-    this.to(this.room).emit("editor:update", change);
+    const { key } = data;
+    logger.debug(`Receiving key ${key} and sending out to ${this.room}...`);
+    this.to(this.room).emit("editor:update", key);
 }
 
 function sendSelect(data) {
@@ -35,6 +36,7 @@ function sendSelect(data) {
 
 function saveEditor(data) {
     const { code } = data;
+    logger.debug(`this.room: ${this.room}, code: ${code}`);
     if (this.room === null || code === null) {
         logger.error(`roomId or code received is null: (${this.room}, ${code})`);
     } else {
@@ -44,14 +46,16 @@ function saveEditor(data) {
 
 async function upsertCode(client, roomId, code) {
     const result = await client.db("collabdb").collection("code").updateOne({ _id: roomId }, { $set: {roomId: roomId, code: code} }, { upsert: true });
-    logger.debug(`${result.matchedCount} document(s) matched the query criteria.`);
-
-    if (result.upsertedCount > 0) {
-        logger.debug(`One document was inserted with the id ${result.upsertedId._id}`);
-    } else {
-        logger.debug(`${result.modifiedCount} document(s) was/were updated.`);
-    }
+    logger.debug(`Save result: ${JSON.stringify(result)}`);
 }
 
-export { joinRoom, sendKey, sendSelect, saveEditor };
+const router = express.Router()
+// TODO: authenticate with JWT first?
+router.get('/code', async (req, res) => {
+    const { roomId } = req.body;
+    const code = await client.db("collabdb").collection("code").findOne({ _id: roomId });
+    res.status(200).send({code: code.code});
+})
+
+export { joinRoom, sendKey, sendSelect, saveEditor, router as MatchRouter };
 

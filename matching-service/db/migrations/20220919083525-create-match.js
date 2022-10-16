@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       difficulty: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       ongoing: {
         type: Sequelize.BOOLEAN
