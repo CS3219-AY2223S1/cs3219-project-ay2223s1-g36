@@ -77,3 +77,66 @@ The following requests could be sent to this service:
         {"userId": "someuuid", "roomId": "roomuuid"}
         ```
     - Leave the user from the room with ID `roomId`. This should only be called if the user is currently in a ongoing match in that room.
+
+# REST API
+## Getting all matches
+- `GET /api/match/get/all`
+    - Response: JSON message with list of matches, e.g.
+        ```json
+        {
+            "matches": [
+                {
+                    "id":1,
+                    "roomId":"7290b605-a967-4feb-8eaa-bfae89a48e63",
+                    "user1Id":"someuuid2",
+                    "user2Id":"someuuid",
+                    "difficulty":null,
+                    "ongoing":false,
+                    "createdAt":"2022-09-22T10:56:30.722Z",
+                    "updatedAt":"2022-09-22T12:14:23.470Z"
+                },
+            ]
+        }
+        ```
+
+## Getting matches for a specific user
+- `GET /api/match/get/user`
+    - Message: `{"userId": "id"}`
+    - Response: JSON message with list of matches for the user, e.g.
+        ```json
+        {
+            "matches": [
+                {
+                    "id":1,
+                    "roomId":"7290b605-a967-4feb-8eaa-bfae89a48e63",
+                    "user1Id":"someuuid2",
+                    "user2Id":"someuuid",
+                    "difficulty":null,
+                    "ongoing":false,
+                    "createdAt":"2022-09-22T10:56:30.722Z",
+                    "updatedAt":"2022-09-22T12:14:23.470Z"
+                },
+            ]
+        }
+        ```
+
+## Getting matches for a specific room
+- `GET /api/match/get/room`
+    - Message: `{"roomId": "id"}`
+    - Response: JSON message with list of matches (with 1 element since roomId is unique) for the room, e.g.
+        ```json
+        {
+            "matches": [
+                {
+                    "id":1,
+                    "roomId":"7290b605-a967-4feb-8eaa-bfae89a48e63",
+                    "user1Id":"someuuid2",
+                    "user2Id":"someuuid",
+                    "difficulty":null,
+                    "ongoing":false,
+                    "createdAt":"2022-09-22T10:56:30.722Z",
+                    "updatedAt":"2022-09-22T12:14:23.470Z"
+                },
+            ]
+        }
+        ```

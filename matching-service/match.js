@@ -1,4 +1,5 @@
 import logger from './logger.js';
+import express from 'express';
 import db from './db/models/index.js';
 import { diffToIntMap, intToDiffMap } from './util.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -96,17 +97,35 @@ async function findMatch(data) {
     
 }
 
-export { findMatch };
-// const router = express.Router()
+// TODO: authenticate with JWT later?
+const router = express.Router()
+router.get('/match/get/all', async (req, res) => {
+    const matches = await db.Match.findAll();
+    res.status(200).send({matches});
+})
 
-// router.post('/match/easy', (req, res, next) => {
-//     res.send('Matching easy')
-// })
-// router.post('/match/medium', (req, res, next) => {
-//     res.send('Matching medium')
-// })
-// router.post('/match/hard', (req, res, next) => {
-//     res.send('Matching hard')
-// })
+router.get('/match/get/user', async (req, res) => {
+    const { userId } = req.body;
+    const matches = await db.Match.findAll({
+        where: {
+            [db.Sequelize.Op.or]: [
+                {user1Id: userId},
+                {user2Id: userId}
+            ]
+        }
+    })
+    res.status(200).send({matches});
+})
 
-// export { router as MatchRouter }
+router.get('/match/get/room', async (req, res) => {
+    const { roomId } = req.body;
+    const matches = await db.Match.findAll({
+        where: {
+            roomId: roomId
+        }
+    })
+    res.status(200).send({matches});
+})
+
+export { findMatch, router as MatchRouter };
+
