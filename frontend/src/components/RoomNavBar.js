@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { APPBAR_MOBILE } from '../const/Size';
 import Logo from './Logo';
 
-export default function RoomNavBar() {
+export default function RoomNavBar({ handleOnLeaveRoom }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -27,6 +27,7 @@ export default function RoomNavBar() {
     }
   };
   const handleConfirmation = () => {
+    handleOnLeaveRoom();
     navigate('/', { state: { status: 'Successfully left the room.' } });
   };
   return (

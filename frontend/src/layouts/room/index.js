@@ -1,15 +1,15 @@
 import { Box } from '@mui/material';
 import { Outlet, useLocation } from 'react-router-dom';
-import RoomNavBar from '../../components/RoomNavBar';
 import { io } from 'socket.io-client';
 import axios from 'axios';
 import { STATUS_CODE_OK, STATUS_CODE_BADREQ, STATUS_SERVER_ERROR } from '../../constants';
 import { URL_MATCH_SVC, URL_QN_SVC_GETDIFF } from '../../configs';
 import { useEffect, useState } from 'react';
+import RoomNavBar from '../../components/RoomNavBar';
 
 export default function RoomLayout() {
-  const [roomID, setRoomID] = useState('Not found');
   const { state } = useLocation();
+  const roomId = state ? state.roomID : 'Not found';
   const difficulty = state ? state.difficulty : 'Not chosen';
   const [questionID, setQuestionID] = useState(0);
 
@@ -41,17 +41,16 @@ export default function RoomLayout() {
   };
 
   useEffect(() => {
-    const socket = io(URL_MATCH_SVC);
-    socket.on('connect', () => {
-      console.log(`Connected to the server with ID: ${socket.id}`);
-      socket.emit('match:find', difficulty);
-    });
+    handleQnGeneration(getDiffLevel(difficulty));
+  }, [difficulty]);
+  
+  const userId = JSON.parse(localStorage.getItem('user')).username;
 
-    socket.on('match:success', (roomID) => {
-      setRoomID(roomID);
-      handleQnGeneration(getDiffLevel(difficulty));
-    });
-  }, []);
+  const handleOnLeaveRoom = () => {
+    const matchSocket = io(URL_MATCH_SVC);
+    matchSocket.emit('room:leave', { userId, roomId });
+  };
+
   return (
     <Box
       sx={{
@@ -60,7 +59,7 @@ export default function RoomLayout() {
         overflow: 'hidden'
       }}
     >
-      <RoomNavBar />
+      <RoomNavBar handleOnLeaveRoom={handleOnLeaveRoom} />
       <Box
         sx={{
           flexGrow: 1,
@@ -70,7 +69,7 @@ export default function RoomLayout() {
           paddingBottom: '80px'
         }}
       >
-        <Outlet context={{ roomID, difficulty, questionID }} />
+        <Outlet context={{ roomId, difficulty, questionID }} />
       </Box>
     </Box>
   );

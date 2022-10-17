@@ -1,9 +1,9 @@
 import logger from './logger.js';
+import express from 'express';
 import db from './db/models/index.js';
+import { diffToIntMap, intToDiffMap } from './util.js';
 import { v4 as uuidv4 } from 'uuid';
 
-const diffToIntMap = { 'easy': 1, 'medium': 2, 'hard': 3 };
-const intToDiffMap = { 1: 'easy', 2: 'medium', 3: 'hard' };
 var timeouts = {}; // data store for storing timeoutIds since can't store into database
 
 async function hasOngoingMatch(userId) {
@@ -49,8 +49,11 @@ function cancelPendingMatch(pendingMatch) {
 }
 
 async function findMatch(data) {
-    const { userId, difficulty } = JSON.parse(data);
-    const diffInt = diffToIntMap[difficulty];
+    const { userId, difficulty } = data;
+    if (userId == null || difficulty == null) {
+        return;
+    }
+    const diffInt = diffToIntMap[difficulty.toLowerCase()];
     logger.debug(`User ${userId} looking for match with difficulty: ${difficulty}`);
 
     // check whether there's any ongoing match for this user
@@ -84,7 +87,7 @@ async function findMatch(data) {
         clearPendingTimeout(pendingMatch.id);
         await pendingMatch.destroy();
         const matchRoomId = uuidv4();  // chance of collision is super low, so I'll just don't handle it for now...
-        await db.Match.create({ roomId: matchRoomId, user1Id: pendingMatch.userId, user2Id: userId, ongoing: true });
+        await db.Match.create({ roomId: matchRoomId, user1Id: pendingMatch.userId, user2Id: userId, difficulty: difficulty.toLowerCase(), ongoing: true });
         this.io.to(pendingMatch.socketId).emit('match:success', matchRoomId);
         this.emit('match:success', matchRoomId);
     } else { // create timeout and join the waiting room
@@ -94,17 +97,35 @@ async function findMatch(data) {
     
 }
 
-export { findMatch };
-// const router = express.Router()
+// TODO: authenticate with JWT later?
+const router = express.Router()
+router.get('/match/get/all', async (req, res) => {
+    const matches = await db.Match.findAll();
+    res.status(200).send({matches});
+})
 
-// router.post('/match/easy', (req, res, next) => {
-//     res.send('Matching easy')
-// })
-// router.post('/match/medium', (req, res, next) => {
-//     res.send('Matching medium')
-// })
-// router.post('/match/hard', (req, res, next) => {
-//     res.send('Matching hard')
-// })
+router.get('/match/get/user', async (req, res) => {
+    const { userId } = req.body;
+    const matches = await db.Match.findAll({
+        where: {
+            [db.Sequelize.Op.or]: [
+                {user1Id: userId},
+                {user2Id: userId}
+            ]
+        }
+    })
+    res.status(200).send({matches});
+})
 
-// export { router as MatchRouter }
+router.get('/match/get/room', async (req, res) => {
+    const { roomId } = req.body;
+    const matches = await db.Match.findAll({
+        where: {
+            roomId: roomId
+        }
+    })
+    res.status(200).send({matches});
+})
+
+export { findMatch, router as MatchRouter };
+

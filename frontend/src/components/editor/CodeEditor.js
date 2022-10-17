@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor';
 import { MonacoServices } from 'monaco-languageclient';
@@ -6,26 +6,34 @@ import { Box, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { CODE_EDITOR_OPTIONS, CODE_EDITOR_LANGUAGE } from './EditorConfig';
 import Select from '@mui/material/Select';
 
-export default function CodeEditor({ defaultLanguage = 'JavaScript' }) {
+export default function CodeEditor({ defaultLanguage = 'JavaScript', collabSocket }) {
   const [language, setLanguage] = useState(defaultLanguage);
+  let isFromSocket = false;
+  const editorRef = useRef();
 
-  const editorDidMount = (editor) => {
+  useEffect(() => {
+    collabSocket.on('editor:update', (data) => {
+      isFromSocket = true;
+      editorRef.current.getModel().applyEdits(data.changes);
+    });
+  }, []);
+
+  const handleEditorDidMount = (editor) => {
     MonacoServices.install(monaco);
-    if (editor && editor.getModel()) {
-      const editorModel = editor.getModel();
-      if (editorModel) {
-        editorModel.setValue('const hello = () => null;\nconst ans = [];');
-      }
-    }
     editor.focus();
+    editorRef.current = editor;
   };
 
   const handleLanguageChange = (event) => {
     setLanguage(event.target.value);
   };
 
-  const handleOnChange = (event, newCode) => {
-    console.log('onChange', newCode);
+  const handleOnChange = (event, change) => {
+    if (isFromSocket === false) {
+      collabSocket.emit('editor:key', { key: change });
+    } else {
+      isFromSocket = false;
+    }
   };
 
   return (
@@ -65,12 +73,12 @@ export default function CodeEditor({ defaultLanguage = 'JavaScript' }) {
       <Box sx={{ border: '1px #d9d9d9 solid' }}>
         <MonacoEditor
           width="100%"
-          height="70vh"
+          height="60vh"
           language={language.toLocaleLowerCase()}
           theme="vs"
           options={CODE_EDITOR_OPTIONS}
           onChange={handleOnChange}
-          editorDidMount={editorDidMount}
+          editorDidMount={handleEditorDidMount}
         />
       </Box>
     </Box>

@@ -1,13 +1,32 @@
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { useOutletContext } from 'react-router-dom';
 import Split from 'react-split';
-import CodeEditor from '../components/editor/CodeEditor';
+
+import { useEffect, useMemo } from 'react';
+import { useOutletContext } from 'react-router-dom';
+import { io } from 'socket.io-client';
+import { URL_COLLAB_SVC } from '../configs';
+
 import Page from '../components/Page';
 import Question from '../components/Question';
+import CodeEditor from '../components/editor/CodeEditor';
+import ChatBox from '../components/chat';
 
 export default function Room() {
-  const { roomID, difficulty, qid } = useOutletContext();
+  const { roomId, difficulty, qid } = useOutletContext();
+  const collabSocket = useMemo(() => io(URL_COLLAB_SVC), [roomId]);
+
+  useEffect(() => {
+    collabSocket.on('connect', () => {
+      collabSocket.emit('room:join', { roomId });
+      console.log(`Joined room: ${roomId}`);
+    });
+
+    return () => {
+      collabSocket.off();
+    };
+  }, []);
+
   return (
     <Page title="Room" navbar={false}>
       <Box>
@@ -28,7 +47,7 @@ export default function Room() {
                   variant="subtitle2"
                   sx={{ color: 'rgb(33, 43, 54)', fontWeight: '600' }}
                 >
-                  Room ID: {roomID}
+                  Room ID: {roomId}
                 </Typography>
               </Box>
             </Box>
@@ -71,8 +90,9 @@ export default function Room() {
           cursor="col-resize"
         >
           <Question qid={qid} difficulty={difficulty} />
-          <CodeEditor />
+          <CodeEditor roomId={roomId} collabSocket={collabSocket} />
         </Split>
+        <ChatBox collabSocket={collabSocket} />
       </Box>
     </Page>
   );

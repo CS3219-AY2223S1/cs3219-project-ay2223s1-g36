@@ -1,22 +1,22 @@
 import { Box } from '@mui/material';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { io } from 'socket.io-client';
-import { URL_MATCH_SVC } from '../../configs';
 import { useEffect, useState } from 'react';
+import { URL_MATCH_SVC } from '../../configs';
+import { io } from 'socket.io-client';
 
 export default function MatchLayout() {
   const navigate = useNavigate();
-  const [socketID, setSocketID] = useState(undefined);
   const [timer, setTimer] = useState(30);
+  const [showExistingMatchToast, setShowExistingMatchToast] = useState(false);
   const { state } = useLocation();
   const difficulty = state ? state.difficulty : 'Not chosen';
+  const userId = JSON.parse(localStorage.getItem('user')).username;
 
   useEffect(() => {
-    const socket = io(URL_MATCH_SVC);
-    socket.on('connect', () => {
-      console.log(`Connected to the server with ID: ${socket.id}`);
-      setSocketID(socket.id);
-      socket.emit('match:find', difficulty);
+    const matchSocket = io(URL_MATCH_SVC);
+
+    matchSocket.on('connect', () => {
+      matchSocket.emit('match:find', { userId, difficulty });
     });
 
     setInterval(() => {
@@ -25,13 +25,20 @@ export default function MatchLayout() {
       }
     }, 1000);
 
-    socket.on('match:success', (roomID) => {
-      navigate('/room', { state: { roomID, socketID, difficulty } });
+    matchSocket.on('match:exists', (roomID) => {
+      setShowExistingMatchToast(true);
+      setTimeout(() => {
+        navigate('/room', { state: { roomID, difficulty } });
+      }, 3000);
+    });
+
+    matchSocket.on('match:success', (roomID) => {
+      navigate('/room', { state: { roomID, difficulty } });
     });
   }, []);
 
   if (timer === -3) {
-    navigate('/', { state: { status: 'Connection timed out. Please try again.' } });
+    navigate('/');
   }
 
   return (
@@ -43,7 +50,7 @@ export default function MatchLayout() {
         background: 'black'
       }}
     >
-      <Outlet context={{ timer }} />
+      <Outlet context={{ timer, showExistingMatchToast }} />
     </Box>
   );
 }

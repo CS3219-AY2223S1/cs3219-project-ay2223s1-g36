@@ -1,4 +1,5 @@
 import logger from './logger.js';
+import { intToDiffMap } from './util.js';
 import db from './db/models/index.js';
 
 async function getOngoingMatch(roomId, userId) {
@@ -26,11 +27,14 @@ async function joinRoom(data) {
     const anotherUser = match.user1Id === userId ? match.user2Id : match.user1Id;
     const clients = this.io.sockets.adapter.rooms.get(roomId);
     const isConnected = clients ? clients.size === 2 : false;
-    this.emit('room:join:success', {peer: anotherUser, isConnected: isConnected});
+    this.emit('room:join:success', { peer: anotherUser, isConnected: isConnected, roomId: roomId, difficulty: intToDiffMap[match.difficulty] });
 }
 
 async function leaveRoom(data) {
-    const { userId, roomId } = JSON.parse(data);
+    const { userId, roomId } = data;
+    if (userId == null || roomId == null) {
+        return;
+    }
     const match = await getOngoingMatch(roomId, userId);
     if (!match) {
         logger.debug(`Room ${roomId} doesn't exists or user ${userId} does not belong to this room!`);

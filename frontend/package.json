@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
+    "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.9.1",
     "@mui/x-data-grid": "^5.17.5",
     "@testing-library/jest-dom": "^5.16.4",
@@ -28,6 +29,7 @@
     "react-split": "^2.0.14",
     "simplebar-react": "^2.4.1",
     "socket.io-client": "^4.5.2",
+    "uuid": "^9.0.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
