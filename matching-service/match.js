@@ -91,7 +91,7 @@ async function findMatch(data) {
         // TODO: change this url
         let questionId;
         try {
-            const res = await axios.get(`http://localhost:8003/api/question/getQuesForDifficulty/${diffInt}`)
+            const res = await axios.get(`http://question-service:8003/api/question/getQuesForDifficulty/${diffInt}`)
             if (res && res.status === 200) {
                 questionId = res.data[0].qid;
             }

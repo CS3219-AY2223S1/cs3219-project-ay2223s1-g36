@@ -30,14 +30,14 @@ Initiate a socket.io client and connect to the service via port `8001`.
 ## Listening to events
 Configure the socket to listen to events: 
 - `match:success` 
-    - Message: `roomId`
-    - This event is emitted to the caller of `match:join` if there is a successful match. The room ID is the room that the client should join.
+    - Message: `{"roomId": "id", "questionId": "id"}`
+    - This event is emitted to the caller of `match:join` if there is a successful match. The room ID is the room that the client should join, and the questionId is the id that should be used to query question service.
 - `match:fail`
     - Message: `difficulty`
     - This event is emitted to the caller of `match:join` if the match is not found after 30 seconds.
 - `match:exists`
-    - Message: `roomId`
-    - This event is emitted to the caller of `match:join` if this current user has an ongoing match with another peer (perhaps the user was disconnected). The room ID of the ongoing match is returned. 
+    - Message: `{"roomId": "id", "questionId": "id"}`
+    - This event is emitted to the caller of `match:join` if this current user has an ongoing match with another peer (perhaps the user was disconnected). The room ID and question ID of the ongoing match is returned. 
 - `room:join:success`
     - Message: JSON message with fields as shown:  
         ```json
