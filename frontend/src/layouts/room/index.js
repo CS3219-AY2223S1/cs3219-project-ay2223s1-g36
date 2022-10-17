@@ -12,7 +12,6 @@ export default function RoomLayout() {
   const { state } = useLocation();
   const difficulty = state ? state.difficulty : 'Not chosen';
   const [questionID, setQuestionID] = useState(0);
-  const DIFFLEVEL = { easy: 1, medium: 2, hard: 3, 'Not chosen': 0 };
 
   const handleQnGeneration = async (param) => {
     const res = await axios.get(URL_QN_SVC_GETDIFF + param).catch((err) => {
@@ -28,6 +27,19 @@ export default function RoomLayout() {
     }
   };
 
+  const getDiffLevel = (difficulty) => {
+    switch (difficulty.toLowerCase()) {
+      case 'easy':
+        return 1;
+      case 'medium':
+        return 2;
+      case 'hard':
+        return 3;
+      default:
+        return 0;
+    }
+  };
+
   useEffect(() => {
     const socket = io(URL_MATCH_SVC);
     socket.on('connect', () => {
@@ -37,7 +49,7 @@ export default function RoomLayout() {
 
     socket.on('match:success', (roomID) => {
       setRoomID(roomID);
-      handleQnGeneration(DIFFLEVEL[difficulty]);
+      handleQnGeneration(getDiffLevel(difficulty));
     });
   }, []);
   return (

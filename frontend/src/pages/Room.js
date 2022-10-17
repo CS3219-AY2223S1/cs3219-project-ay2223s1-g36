@@ -7,7 +7,7 @@ import Page from '../components/Page';
 import Question from '../components/Question';
 
 export default function Room() {
-  const { roomID, difficulty } = useOutletContext();
+  const { roomID, difficulty, qid } = useOutletContext();
   return (
     <Page title="Room" navbar={false}>
       <Box>
@@ -70,7 +70,7 @@ export default function Room() {
           direction="horizontal"
           cursor="col-resize"
         >
-          <Question type="attempt" difficulty={difficulty} />
+          <Question qid={qid} difficulty={difficulty} />
           <CodeEditor />
         </Split>
       </Box>
