@@ -2,8 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import {createServer} from 'http';
 import {Server} from 'socket.io';
-import {findMatch} from './match.js';
-import {joinRoom, leaveRoom} from './room.js';
+import { sendKey, sendSelect, saveEditor } from './editor.js';
+import { sendMessage } from './chat.js';
 import logger from './logger.js';
 
 const app = express();
@@ -17,7 +17,7 @@ app.options('*', cors());
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: 'http://localhost:3000',  // TODO: change this
     methods: ['GET', 'POST'],
   },
 });
@@ -25,13 +25,15 @@ io.on('connection', (socket) => {
   logger.info(`Connected! Socket ID: ${socket.id}, room: ${socket.rooms}`);
   // attach current io instance to this socket for match.js to use
   socket.io = io;
-  socket.on('disconnect', () => { logger.info(`Connection ${socket.id} is closed.`); });
-  socket.on('match:find', findMatch.bind(socket));
-  socket.on('room:join', joinRoom.bind(socket));
-  socket.on('room:leave', leaveRoom.bind(socket));
+  socket.on('editor:key', sendKey.bind(socket));
+  socket.on('editor:selection', sendSelect.bind(socket));
+  socket.on('editor:save', saveEditor.bind(socket));
+  socket.on('message:send', sendMessage.bind(socket));
 });
 
-// app.set('io', io)
-httpServer.listen(8001);
-logger.info('Server starts listening on port 8001');
+httpServer.listen(8002);
+logger.info('Collab-service starts listening on port 8002');
 
+// TODO: the document ID should be roomID, then the document itself is the code
+// TODO: use a middleware to handle authentication
+// TODO: expose an API to allow retrieval of code

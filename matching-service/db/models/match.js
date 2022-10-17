@@ -1,9 +1,9 @@
 'use strict';
 const {
-  Model,
+  Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class PendingMatch extends Model {
+  class Match extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,13 +13,15 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  PendingMatch.init({
-    userId: DataTypes.STRING,
-    socketId: DataTypes.STRING,
-    diffInt: DataTypes.INTEGER,
+  Match.init({
+    roomId: DataTypes.STRING,
+    user1Id: DataTypes.STRING,
+    user2Id: DataTypes.STRING,
+    difficulty: DataTypes.INTEGER,
+    ongoing: DataTypes.BOOLEAN  // if ongoing, True, if ended, false
   }, {
     sequelize,
-    modelName: 'PendingMatch',
+    modelName: 'Match',
   });
-  return PendingMatch;
+  return Match;
 };
