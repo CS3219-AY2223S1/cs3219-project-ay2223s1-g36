@@ -13,7 +13,7 @@ import CodeEditor from '../components/editor/CodeEditor';
 import ChatBox from '../components/chat';
 
 export default function Room() {
-  const { roomId, difficulty, qid } = useOutletContext();
+  const { roomId, difficulty, questionId } = useOutletContext();
   const collabSocket = useMemo(() => io(URL_COLLAB_SVC), [roomId]);
 
   useEffect(() => {
@@ -89,7 +89,7 @@ export default function Room() {
           direction="horizontal"
           cursor="col-resize"
         >
-          <Question qid={qid} difficulty={difficulty} />
+          <Question qid={questionId} difficulty={difficulty} />
           <CodeEditor roomId={roomId} collabSocket={collabSocket} />
         </Split>
         <ChatBox collabSocket={collabSocket} />

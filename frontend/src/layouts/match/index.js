@@ -25,15 +25,15 @@ export default function MatchLayout() {
       }
     }, 1000);
 
-    matchSocket.on('match:exists', (roomID) => {
+    matchSocket.on('match:exists', ({ roomId, questionId }) => {
       setShowExistingMatchToast(true);
       setTimeout(() => {
-        navigate('/room', { state: { roomID, difficulty } });
+        navigate('/room', { state: { roomId, questionId, difficulty } });
       }, 3000);
     });
 
-    matchSocket.on('match:success', (roomID) => {
-      navigate('/room', { state: { roomID, difficulty } });
+    matchSocket.on('match:success', ({ roomId, questionId }) => {
+      navigate('/room', { state: { roomId, questionId, difficulty } });
     });
   }, []);
 
