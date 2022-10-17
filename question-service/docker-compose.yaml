@@ -8,10 +8,14 @@ services:
       - "8003:8003"
     environment:
       DB_LOCAL_URI: "mongodb://mongo-service:27017/mydb"
+    networks:
+      - my-network
   mongo-service:
     image: mongo
+    networks:
+      - my-network
 
 networks:
-  default:
+  my-network:
     name: my-network
     external: true

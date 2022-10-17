@@ -12,6 +12,7 @@ export default function Question({ qid = 0, difficulty = '' }) {
   const [qnText, setQnText] = useState('');
 
   const handleQnFetch = async (param) => {
+    console.log(param);
     const res = await axios.get(URL_QN_SVC_GETID + param).catch((err) => {
       if (
         err.response.status === STATUS_CODE_BADREQ ||

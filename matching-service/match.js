@@ -96,9 +96,9 @@ async function findMatch(data) {
                 questionId = res.data[0].qid;
             }
         } catch (err) {
-            logger.error("Can't contact question service");
-            return;
+            logger.error("Can't contact question service" + err);
         }
+        console.log(questionId);
 
         await db.Match.create({ roomId: matchRoomId, questionId: questionId, user1Id: pendingMatch.userId, user2Id: userId, difficulty: difficulty.toLowerCase(), ongoing: true });
         const payload = {roomId: matchRoomId, questionId};

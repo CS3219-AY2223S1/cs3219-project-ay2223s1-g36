@@ -8,10 +8,12 @@ services:
       - sqlitevolume:/app/db/db
     environment:
       - NODE_ENV=development
+    networks:
+      - my-network
 
 volumes:
   sqlitevolume:
 
 networks:
-  default:
+  my-network:
     name: my-network
