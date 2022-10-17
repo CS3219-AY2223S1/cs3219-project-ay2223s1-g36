@@ -73,7 +73,7 @@ export default function CodeEditor({ defaultLanguage = 'JavaScript', collabSocke
       <Box sx={{ border: '1px #d9d9d9 solid' }}>
         <MonacoEditor
           width="100%"
-          height="70vh"
+          height="60vh"
           language={language.toLocaleLowerCase()}
           theme="vs"
           options={CODE_EDITOR_OPTIONS}

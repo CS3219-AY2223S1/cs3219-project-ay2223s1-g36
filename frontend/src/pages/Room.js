@@ -1,11 +1,12 @@
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
+import { useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import { io } from 'socket.io-client';
+import ChatBox from '../components/chat';
 import CodeEditor from '../components/editor/CodeEditor';
 import Page from '../components/Page';
 import { URL_COLLAB_SVC } from '../configs';
-import { io } from 'socket.io-client';
-import { useMemo, useEffect } from 'react';
 
 export default function Room() {
   const { roomId, difficulty } = useOutletContext();
@@ -70,6 +71,7 @@ export default function Room() {
           </Box>
         </Box>
         <CodeEditor roomId={roomId} collabSocket={collabSocket} />
+        <ChatBox collabSocket={collabSocket} />
       </Box>
     </Page>
   );
