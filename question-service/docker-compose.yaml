@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  question-service:
+    build: .
+    depends_on:
+      - mongo-service
+    ports:
+      - "8003:8003"
+    environment:
+      DB_LOCAL_URI: "mongodb://mongo-service:27017/mydb"
+  mongo-service:
+    image: mongo
