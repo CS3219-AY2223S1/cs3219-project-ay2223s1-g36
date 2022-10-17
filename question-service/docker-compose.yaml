@@ -10,3 +10,8 @@ services:
       DB_LOCAL_URI: "mongodb://mongo-service:27017/mydb"
   mongo-service:
     image: mongo
+
+networks:
+  default:
+    name: my-network
+    external: true
