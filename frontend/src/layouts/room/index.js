@@ -11,7 +11,8 @@ export default function RoomLayout() {
   const { state } = useLocation();
   const roomId = state ? state.roomID : 'Not found';
   const difficulty = state ? state.difficulty : 'Not chosen';
-  const [questionID, setQuestionID] = useState(0);
+  // const [qid, setQid] = useState(0);
+  const qid = 14;
 
   const handleQnGeneration = async (param) => {
     const res = await axios.get(URL_QN_SVC_GETDIFF + param).catch((err) => {
@@ -23,7 +24,8 @@ export default function RoomLayout() {
       }
     });
     if (res && res.status === STATUS_CODE_OK) {
-      setQuestionID(res.data[0].qid);
+      // setQid(res.data[0].qid);
+      console.log(res);
     }
   };
 
@@ -42,8 +44,8 @@ export default function RoomLayout() {
 
   useEffect(() => {
     handleQnGeneration(getDiffLevel(difficulty));
-  }, [difficulty]);
-  
+  }, [roomId, difficulty]);
+
   const userId = JSON.parse(localStorage.getItem('user')).username;
 
   const handleOnLeaveRoom = () => {
@@ -69,7 +71,7 @@ export default function RoomLayout() {
           paddingBottom: '80px'
         }}
       >
-        <Outlet context={{ roomId, difficulty, questionID }} />
+        <Outlet context={{ roomId, difficulty, qid }} />
       </Box>
     </Box>
   );

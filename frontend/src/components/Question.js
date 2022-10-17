@@ -23,8 +23,9 @@ export default function Question({ qid = 0, difficulty = '' }) {
       }
     });
     if (res && res.status === STATUS_CODE_OK) {
-      setTitle(res.data[0].question_title);
-      setQnText(res.data[0].question_text);
+      console.log(res);
+      setTitle(res.data.question_title);
+      setQnText(res.data.question_text);
     }
   };
 
