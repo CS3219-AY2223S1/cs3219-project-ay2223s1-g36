@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Match.init({
     roomId: DataTypes.STRING,
+    questionId: DataTypes.INTEGER,
     user1Id: DataTypes.STRING,
     user2Id: DataTypes.STRING,
     difficulty: DataTypes.INTEGER,

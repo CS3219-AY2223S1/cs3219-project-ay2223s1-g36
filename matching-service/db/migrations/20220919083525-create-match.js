@@ -13,6 +13,10 @@ module.exports = {
         unique: true,
         type: Sequelize.STRING
       },
+      questionId: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
       user1Id: {
         type: Sequelize.STRING
       },

@@ -1,6 +1,7 @@
 import logger from './logger.js';
 import express from 'express';
 import db from './db/models/index.js';
+import axios from 'axios';
 import { diffToIntMap, intToDiffMap } from './util.js';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -14,7 +15,7 @@ async function hasOngoingMatch(userId) {
         },
     });
     if (ongoingMatch) {
-        return { ongoing: true, roomId: ongoingMatch.roomId };
+        return { ongoing: true, roomId: ongoingMatch.roomId, questionId: ongoingMatch.questionId };
     }
     return { ongoing: false };
 }
@@ -57,10 +58,10 @@ async function findMatch(data) {
     logger.debug(`User ${userId} looking for match with difficulty: ${difficulty}`);
 
     // check whether there's any ongoing match for this user
-    const { ongoing, roomId } = await hasOngoingMatch(userId);
+    const { ongoing, roomId, questionId } = await hasOngoingMatch(userId);
     if (ongoing) {
         logger.debug(`User ${userId} has an ongoing match, returning the roomId.`);
-        this.emit('match:exists', roomId);
+        this.emit('match:exists', {roomId, questionId});
         return;
     } 
 
@@ -87,9 +88,22 @@ async function findMatch(data) {
         clearPendingTimeout(pendingMatch.id);
         await pendingMatch.destroy();
         const matchRoomId = uuidv4();  // chance of collision is super low, so I'll just don't handle it for now...
-        await db.Match.create({ roomId: matchRoomId, user1Id: pendingMatch.userId, user2Id: userId, difficulty: difficulty.toLowerCase(), ongoing: true });
-        this.io.to(pendingMatch.socketId).emit('match:success', matchRoomId);
-        this.emit('match:success', matchRoomId);
+        // TODO: change this url
+        let questionId;
+        try {
+            const res = await axios.get(`http://localhost:8003/api/question/getQuesForDifficulty/${diffInt}`)
+            if (res && res.status === 200) {
+                questionId = res.data[0].qid;
+            }
+        } catch (err) {
+            logger.error("Can't contact question service");
+            return;
+        }
+
+        await db.Match.create({ roomId: matchRoomId, questionId: questionId, user1Id: pendingMatch.userId, user2Id: userId, difficulty: difficulty.toLowerCase(), ongoing: true });
+        const payload = {roomId: matchRoomId, questionId};
+        this.io.to(pendingMatch.socketId).emit('match:success', payload);
+        this.emit('match:success', payload);
     } else { // create timeout and join the waiting room
         const initiator = await db.PendingMatch.create({ userId: userId, socketId: this.id, diffInt: diffInt });
         timeouts[initiator.id] = setTimeout(cancelPendingMatch.bind(this), 30000, initiator);
