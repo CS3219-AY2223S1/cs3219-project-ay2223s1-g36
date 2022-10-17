@@ -38,12 +38,12 @@ QuestionModel.count(function (err, count) {
 });
 
 export async function findQues(params) {
-  return QuestionModel.findOne(params);
+  return QuestionModel.findOne({qid: parseInt(params.qid)});
 }
 
 export async function getQuesForDifficulty(params) {
   return QuestionModel.aggregate([
-    {$match: {difficulty: params.difficulty}},
+    {$match: {difficulty: parseInt(params.difficulty)}},
     {$sample: {size:1}}
   ])
 }

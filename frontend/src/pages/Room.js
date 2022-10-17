@@ -1,8 +1,10 @@
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useOutletContext } from 'react-router-dom';
+import Split from 'react-split';
 import CodeEditor from '../components/editor/CodeEditor';
 import Page from '../components/Page';
+import Question from '../components/Question';
 
 export default function Room() {
   const { roomID, difficulty } = useOutletContext();
@@ -53,7 +55,24 @@ export default function Room() {
             </Box>
           </Box>
         </Box>
-        <CodeEditor />
+        <Split
+          style={{
+            display: 'flex',
+            flexDirection: 'row'
+          }}
+          sizes={[25, 75]}
+          minSize={400}
+          expandToMin={false}
+          gutterSize={10}
+          gutterAlign="center"
+          snapOffset={30}
+          dragInterval={1}
+          direction="horizontal"
+          cursor="col-resize"
+        >
+          <Question type="attempt" difficulty={difficulty} />
+          <CodeEditor />
+        </Split>
       </Box>
     </Page>
   );

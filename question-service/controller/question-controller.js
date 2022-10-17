@@ -2,7 +2,7 @@ import {ormGetQues as _getQues } from '../model/question-orm.js'
 import {ormGetQuesForDifficulty as _getQuesForDifficulty } from '../model/question-orm.js'
 
 export async function getQues(req, res) {
-    const qid = req.body.qid;
+    const qid = req.params.qid;
     try {
         if (qid) {
             const ques = await _getQues(qid);
@@ -21,7 +21,7 @@ export async function getQues(req, res) {
 }
 
 export async function getQuesForDifficulty(req, res) {
-    const difficulty = req.body.difficulty;
+    const difficulty = req.params.difficulty;
     try {
         if (difficulty > 3 || difficulty < 1 || !difficulty) {
             return res.status(400).json({message: `Invalid difficulty provided.`})

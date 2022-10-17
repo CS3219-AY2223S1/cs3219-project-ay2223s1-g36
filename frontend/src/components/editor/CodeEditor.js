@@ -31,7 +31,7 @@ export default function CodeEditor({ defaultLanguage = 'JavaScript' }) {
   return (
     <Box
       sx={{
-        maxWidth: '75%',
+        width: '100%',
         marginLeft: '1%',
         marginRight: '1%',
         backgroundColor: 'white',
