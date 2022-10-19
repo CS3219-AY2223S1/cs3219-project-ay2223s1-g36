@@ -89,7 +89,7 @@ export default function Room() {
           direction="horizontal"
           cursor="col-resize"
         >
-          <Question qid={questionId} difficulty={difficulty} />
+          <Question qid={questionId} />
           <CodeEditor roomId={roomId} collabSocket={collabSocket} />
         </Split>
         <ChatBox collabSocket={collabSocket} />

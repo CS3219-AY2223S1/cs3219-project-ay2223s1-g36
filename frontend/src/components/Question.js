@@ -3,12 +3,11 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { URL_QN_SVC_GETID } from '../configs';
 import { STATUS_CODE_OK, STATUS_CODE_BADREQ, STATUS_SERVER_ERROR } from '../constants';
+import { intToDiffMap } from '../utils/question';
 
-export default function Question({ qid = 0, difficulty = '' }) {
-  // FOR TESTING
-  // difficulty = 'medium';
-
+export default function Question({ qid = 0 }) {
   const [title, setTitle] = useState('');
+  const [difficulty, setDifficulty] = useState('');
   const [qnText, setQnText] = useState('');
 
   const handleQnFetch = async (param) => {
@@ -26,20 +25,8 @@ export default function Question({ qid = 0, difficulty = '' }) {
     if (res && res.status === STATUS_CODE_OK) {
       console.log(res);
       setTitle(res.data.question_title);
+      setDifficulty(res.data.difficulty);
       setQnText(res.data.question_text);
-    }
-  };
-
-  const getDiffLevel = (difficulty) => {
-    switch (difficulty.toLowerCase()) {
-      case 'easy':
-        return 1;
-      case 'medium':
-        return 2;
-      case 'hard':
-        return 3;
-      default:
-        return 0;
     }
   };
 
@@ -56,7 +43,6 @@ export default function Question({ qid = 0, difficulty = '' }) {
     }
   };
 
-  const difficultyLevel = getDiffLevel(difficulty);
   useEffect(() => {
     handleQnFetch(qid);
   }, [qid, difficulty]);
@@ -69,7 +55,7 @@ export default function Question({ qid = 0, difficulty = '' }) {
         padding: 3
       }}
     >
-      {difficultyLevel > 0 ? (
+      {difficulty > 0 ? (
         <>
           <Typography
             variant="h6"
@@ -81,8 +67,8 @@ export default function Question({ qid = 0, difficulty = '' }) {
           >
             {title}
           </Typography>
-          <Typography sx={{ color: getDiffColour(difficultyLevel) }}>
-            {difficulty?.charAt(0).toUpperCase() + difficulty?.slice(1)}
+          <Typography sx={{ color: getDiffColour(difficulty) }}>
+            {intToDiffMap[difficulty]?.charAt(0).toUpperCase() + intToDiffMap[difficulty]?.slice(1)}
           </Typography>
           <Typography variant="body1">
             <div dangerouslySetInnerHTML={{ __html: qnText }} />
