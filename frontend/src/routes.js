@@ -11,6 +11,8 @@ import Room from './pages/Room';
 import SignupPage from './pages/Signup';
 import LoginPage from './pages/Login';
 import ProfilePage from './pages/Profile';
+import History from './pages/History';
+import PastAttempt from './pages/PastAttempt';
 import PageNotFound from './pages/PageNotFound';
 
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -40,6 +42,14 @@ export default function Router() {
           element: (
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          )
+        },
+        {
+          path: 'history',
+          element: (
+            <ProtectedRoute>
+              <History />
             </ProtectedRoute>
           )
         },
@@ -76,6 +86,20 @@ export default function Router() {
           element: (
             <ProtectedRoute>
               <Room />
+            </ProtectedRoute>
+          )
+        }
+      ]
+    },
+    {
+      path: '/attempt',
+      element: <AttemptLayout />,
+      children: [
+        {
+          path: '',
+          element: (
+            <ProtectedRoute>
+              <PastAttempt />
             </ProtectedRoute>
           )
         }

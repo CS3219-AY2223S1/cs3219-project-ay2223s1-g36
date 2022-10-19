@@ -6,8 +6,13 @@ const getIcon = (name) => <Iconify icon={name} width={ICON_SIZE} height={ICON_SI
 const NAV_CONFIG = [
   {
     title: 'dashboard',
-    path: '/',
+    path: '/dashboard',
     icon: getIcon('eva:pie-chart-2-fill')
+  },
+  {
+    title: 'history',
+    path: '/history',
+    icon: getIcon('fluent:history-24-filled')
   },
   {
     title: 'profile',

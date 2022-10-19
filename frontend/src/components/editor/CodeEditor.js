@@ -6,16 +6,29 @@ import { Box, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { CODE_EDITOR_OPTIONS, CODE_EDITOR_LANGUAGE } from './EditorConfig';
 import Select from '@mui/material/Select';
 
-export default function CodeEditor({ defaultLanguage = 'JavaScript', collabSocket }) {
+export default function CodeEditor({
+  defaultLanguage = 'JavaScript',
+  readOnly = false,
+  code = '',
+  collabSocket
+}) {
   const [language, setLanguage] = useState(defaultLanguage);
+  const editorOptions = CODE_EDITOR_OPTIONS;
   let isFromSocket = false;
   const editorRef = useRef();
 
+  if (readOnly) {
+    editorOptions['readOnly'] = true;
+    editorOptions['domReadOnly'] = true;
+  }
+
   useEffect(() => {
-    collabSocket.on('editor:update', (data) => {
-      isFromSocket = true;
-      editorRef.current.getModel().applyEdits(data.changes);
-    });
+    if (collabSocket) {
+      collabSocket.on('editor:update', (data) => {
+        isFromSocket = true;
+        editorRef.current.getModel().applyEdits(data.changes);
+      });
+    }
   }, []);
 
   const handleEditorDidMount = (editor) => {
@@ -29,10 +42,12 @@ export default function CodeEditor({ defaultLanguage = 'JavaScript', collabSocke
   };
 
   const handleOnChange = (event, change) => {
-    if (isFromSocket === false) {
-      collabSocket.emit('editor:key', { key: change });
-    } else {
-      isFromSocket = false;
+    if (collabSocket && !readOnly) {
+      if (isFromSocket === false) {
+        collabSocket.emit('editor:key', { key: change });
+      } else {
+        isFromSocket = false;
+      }
     }
   };
 
@@ -48,35 +63,38 @@ export default function CodeEditor({ defaultLanguage = 'JavaScript', collabSocke
         }
       }}
     >
-      <FormControl sx={{ margin: '10px 0', paddingLeft: '1%' }}>
-        <InputLabel id="demo-simple-select-label" sx={{ marginLeft: '5%' }}>
-          Language
-        </InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          label="Language"
-          value={language}
-          placeholder="Select Language"
-          onChange={handleLanguageChange}
-          sx={{ minWidth: '150px', maxHeight: '40px' }}
-        >
-          {CODE_EDITOR_LANGUAGE.map((element) => {
-            return (
-              <MenuItem key={element} value={element}>
-                {element}
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </FormControl>
+      {!readOnly && (
+        <FormControl sx={{ margin: '10px 0', paddingLeft: '1%' }}>
+          <InputLabel id="demo-simple-select-label" sx={{ marginLeft: '5%' }}>
+            Language
+          </InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Language"
+            value={language}
+            placeholder="Select Language"
+            onChange={handleLanguageChange}
+            sx={{ minWidth: '150px', maxHeight: '40px' }}
+          >
+            {CODE_EDITOR_LANGUAGE.map((element) => {
+              return (
+                <MenuItem key={element} value={element}>
+                  {element}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+      )}
       <Box sx={{ border: '1px #d9d9d9 solid' }}>
         <MonacoEditor
           width="100%"
-          height="60vh"
+          height={!readOnly ? '60vh' : '85vh'}
           language={language.toLocaleLowerCase()}
           theme="vs"
-          options={CODE_EDITOR_OPTIONS}
+          value={code}
+          options={editorOptions}
           onChange={handleOnChange}
           editorDidMount={handleEditorDidMount}
         />
