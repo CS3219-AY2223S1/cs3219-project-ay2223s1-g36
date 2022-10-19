@@ -16,12 +16,14 @@ export const AuthProvider = ({ children }) => {
   // call this function when you want to authenticate the user
   const login = async (data) => {
     setUser(data);
-    navigate('/');
+    document.cookie = 'token=' + data.token;
+    navigate('/dashboard');
   };
 
   // call this function to sign out logged in user
   const logout = () => {
     setUser(null);
+    localStorage.clear();
     navigate('/login', { replace: true });
   };
 

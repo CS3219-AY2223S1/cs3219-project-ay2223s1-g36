@@ -190,7 +190,7 @@ export default function Profile() {
           </Grid>
         </Grid>
 
-        <Dialog open={isDialogOpen} onClose={closeDialog}>
+        <Dialog maxWidth={'xs'} open={isDialogOpen} onClose={closeDialog}>
           <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogContent>
             <DialogContentText>{dialogMsg}</DialogContentText>

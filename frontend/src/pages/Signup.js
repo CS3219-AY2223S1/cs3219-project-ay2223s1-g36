@@ -10,10 +10,11 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { URL_USER_SVC_REG } from '../configs';
-import { STATUS_CODE_CONFLICT, STATUS_CODE_CREATED } from '../constants';
+import { STATUS_CODE_CONFLICT, STATUS_CODE_BADREQ, STATUS_CODE_CREATED } from '../constants';
 import { Link as routeLink } from 'react-router-dom';
 
 function SignupPage() {
@@ -24,17 +25,42 @@ function SignupPage() {
   const [dialogMsg, setDialogMsg] = useState('');
   const [isSignupSuccess, setIsSignupSuccess] = useState(false);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter') {
+        handleSignup();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [username, password]);
+
+  const validatePasswordStrength = (pw) => {
+    // min length 6, at least 1 numeric value, 1 uppercase, 1 lowercase
+    let re = /(?=^.{6,}$)(?=.*\d)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
+    return re.test(pw);
+  };
+
   const handleSignup = async () => {
+    if (!validatePasswordStrength(password)) {
+      setErrorDialog(
+        'Password must be minimum 6 characters long, and contain at least 1 digit, 1 uppercase AND 1 lowercase character.'
+      );
+      return;
+    }
+
     setIsSignupSuccess(false);
     const res = await axios.post(URL_USER_SVC_REG, { username, password }).catch((err) => {
-      if (err.response.status === STATUS_CODE_CONFLICT) {
-        setErrorDialog('This username already exists');
+      if (err.response.status === STATUS_CODE_BADREQ || STATUS_CODE_CONFLICT) {
+        setErrorDialog(err.response.data.message);
       } else {
         setErrorDialog('Please try again later');
       }
     });
     if (res && res.status === STATUS_CODE_CREATED) {
-      setSuccessDialog('Account successfully created');
+      setSuccessDialog('Account successfully created!');
       setIsSignupSuccess(true);
     }
   };
@@ -107,11 +133,11 @@ function SignupPage() {
             Sign up
           </Button>
         </Box>
-        <Typography variant="body2" sx={{ mb: 1 }}>
+        <Typography variant="body2" sx={{ mt: 2 }}>
           Already have an account? <Link href="/login">Log in!</Link>
         </Typography>
 
-        <Dialog open={isDialogOpen} onClose={closeDialog}>
+        <Dialog maxWidth={'xs'} open={isDialogOpen} onClose={closeDialog}>
           <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogContent>
             <DialogContentText>{dialogMsg}</DialogContentText>

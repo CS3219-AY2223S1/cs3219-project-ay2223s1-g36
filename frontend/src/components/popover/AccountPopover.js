@@ -46,7 +46,6 @@ export default function AccountPopover() {
       });
     if (res && res.status === STATUS_CODE_OK) {
       auth.logout();
-      localStorage.clear();
     }
     handleClose();
   };

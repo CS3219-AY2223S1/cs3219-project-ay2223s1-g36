@@ -11,14 +11,13 @@ import {
   Typography
 } from '@mui/material';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { URL_USER_SVC_LOGIN } from '../configs';
-import { STATUS_CODE_OK, STATUS_CODE_UNAUTH } from '../constants';
-import { Navigate } from 'react-router-dom';
+import { STATUS_CODE_OK, STATUS_CODE_BADREQ, STATUS_CODE_UNAUTH } from '../constants';
 import { useAuth } from '../hooks/useAuth';
 
-function LoginPage() {
+export default function LoginPage() {
   const auth = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -27,18 +26,30 @@ function LoginPage() {
   const [dialogMsg, setDialogMsg] = useState('');
   const [isLoginSuccess, setIsLoginSuccess] = useState(false);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter') {
+        handleLogin();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [username, password]);
+
   const handleLogin = async () => {
     setIsLoginSuccess(false);
     const res = await axios.post(URL_USER_SVC_LOGIN, { username, password }).catch((err) => {
-      if (err.response.status === STATUS_CODE_UNAUTH) {
-        setErrorDialog('Incorrect credentials');
+      if (err.response.status === STATUS_CODE_BADREQ || STATUS_CODE_UNAUTH) {
+        setErrorDialog(err.response.data.message);
       } else {
         setErrorDialog('Please try again later');
       }
     });
     if (res && res.status === STATUS_CODE_OK) {
+      console.log(res);
       auth.login({ username: username, token: res.data.token });
-      document.cookie = 'token=' + res.data.token;
       setIsLoginSuccess(true);
     }
   };
@@ -50,10 +61,6 @@ function LoginPage() {
     setDialogTitle('Error');
     setDialogMsg(msg);
   };
-
-  if (isLoginSuccess) {
-    return <Navigate replace to="/" />;
-  }
 
   return (
     <Box
@@ -105,30 +112,26 @@ function LoginPage() {
           sx={{ marginBottom: '2rem' }}
         />
         <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}>
-          <Button variant={'contained'} onClick={handleLogin}>
+          <Button variant={'contained'} type={'submit'} onClick={handleLogin}>
             Log In
           </Button>
         </Box>
-        <Typography variant="body2" sx={{ mb: 1 }}>
-          Are you a new user? <Link href="/signup">Sign up!</Link>
-        </Typography>
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="body2">
+            Are you a new user? <Link href="/signup">Sign up!</Link>
+          </Typography>
+        </Box>
 
-        <Dialog open={isDialogOpen} onClose={closeDialog}>
+        <Dialog maxWidth={'xs'} open={isDialogOpen} onClose={closeDialog}>
           <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogContent>
             <DialogContentText>{dialogMsg}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            {isLoginSuccess ? (
-              <Button onClick={closeDialog}>Close</Button>
-            ) : (
-              <Button onClick={closeDialog}>Try Again</Button>
-            )}
+            {!isLoginSuccess && <Button onClick={closeDialog}>Try Again</Button>}
           </DialogActions>
         </Dialog>
       </Box>
     </Box>
   );
 }
-
-export default LoginPage;
