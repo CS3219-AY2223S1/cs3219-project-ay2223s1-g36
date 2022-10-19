@@ -96,7 +96,7 @@ export default function Profile() {
   };
 
   if (isDeleteSuccess) {
-    return <Navigate replace to="/signup" />;
+    return <Navigate replace to="/welcome/signup" />;
   }
 
   return (

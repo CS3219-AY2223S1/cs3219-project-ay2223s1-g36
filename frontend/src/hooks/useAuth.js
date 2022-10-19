@@ -7,12 +7,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useLocalStorage('user', null);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (!user) {
-  //     navigate('/login', { replace: true });
-  //   }
-  // }, [user]);
-
   // call this function when you want to authenticate the user
   const login = async (data) => {
     setUser(data);
@@ -24,7 +18,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.clear();
-    navigate('/login', { replace: true });
+    navigate('/welcome/login', { replace: true });
   };
 
   const value = useMemo(

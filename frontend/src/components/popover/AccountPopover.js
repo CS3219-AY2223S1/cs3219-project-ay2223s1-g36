@@ -33,11 +33,11 @@ export default function AccountPopover() {
     const res = await axios
       .post(URL_USER_SVC_LOGOUT, { username }, { withCredentials: true })
       .catch((err) => {
-        if (
-          err.response.status === STATUS_CODE_BADREQ ||
-          err.response.status === STATUS_CODE_UNAUTH
-        ) {
+        if (err.response.status === STATUS_CODE_BADREQ) {
           console.log('Request could not be processed.');
+          handleClose();
+        } else if (err.response.status === STATUS_CODE_UNAUTH) {
+          auth.logout();
           handleClose();
         } else {
           console.log('Server Error.');

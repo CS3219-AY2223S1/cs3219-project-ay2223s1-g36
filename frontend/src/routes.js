@@ -1,7 +1,9 @@
 import { useRoutes } from 'react-router-dom';
+import WelcomeLayout from './layouts/welcome';
 import DashboardLayout from './layouts/dashboard';
 import MatchLayout from './layouts/match';
 import RoomLayout from './layouts/room';
+import AttemptLayout from './layouts/history';
 
 import Dashboard from './pages/Dashboard';
 import Match from './pages/Match';
@@ -16,21 +18,25 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 export default function Router() {
   return useRoutes([
     {
-      path: '/signup',
-      element: <SignupPage />,
-      children: [{ path: '*', element: <SignupPage /> }]
-    },
-    {
-      path: '/login',
-      element: <LoginPage />,
-      children: [{ path: '*', element: <LoginPage /> }]
+      path: '/welcome',
+      element: <WelcomeLayout />,
+      children: [
+        {
+          path: '/welcome/signup',
+          element: <SignupPage />
+        },
+        {
+          path: '/welcome/login',
+          element: <LoginPage />
+        }
+      ]
     },
     {
       path: '/',
       element: <DashboardLayout />,
       children: [
         {
-          path: '',
+          path: 'dashboard',
           element: (
             <ProtectedRoute>
               <Dashboard />

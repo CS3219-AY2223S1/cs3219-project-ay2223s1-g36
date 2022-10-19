@@ -11,7 +11,6 @@ export default function Question({ qid = 0 }) {
   const [qnText, setQnText] = useState('');
 
   const handleQnFetch = async (param) => {
-    console.log(param);
     const res = await axios.get(URL_QN_SVC_GETID + param).catch((err) => {
       if (
         err.response.status === STATUS_CODE_BADREQ ||
@@ -23,7 +22,6 @@ export default function Question({ qid = 0 }) {
       }
     });
     if (res && res.status === STATUS_CODE_OK) {
-      console.log(res);
       setTitle(res.data.question_title);
       setDifficulty(res.data.difficulty);
       setQnText(res.data.question_text);
@@ -50,7 +48,7 @@ export default function Question({ qid = 0 }) {
   return (
     <Box
       sx={{
-        maxHeight: '70vh',
+        maxHeight: '80vh',
         overflowY: 'auto',
         padding: 3
       }}
