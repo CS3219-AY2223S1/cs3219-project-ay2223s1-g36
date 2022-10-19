@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
+    "@iconify/react": "^3.2.2",
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.9.1",
     "@mui/x-data-grid": "^5.17.5",
@@ -62,7 +63,6 @@
     ]
   },
   "devDependencies": {
-    "@iconify/react": "^3.2.2",
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
