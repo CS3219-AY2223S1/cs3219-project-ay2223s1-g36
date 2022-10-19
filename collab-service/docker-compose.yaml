@@ -3,16 +3,20 @@ services:
   collab-service:
     build: .
     depends_on:
-      - mongo
+      - collab-mongo
     ports:
       - "8002:8002"
     environment:
       NODE_ENV: "development"
-      DB_LOCAL_URI: "mongodb://mongo:27017"
-  mongo:
+      DB_LOCAL_URI: "mongodb://collab-mongo:27017"
+  collab-mongo:
     image: mongo:4.2.23-rc1
     volumes:
-      - mongovolume:/data/db
+      - collab_mongo_volume:/data/db
   
+networks:
+  default:
+    name: peerprep-net
+    
 volumes:
-  mongovolume:
+  collab_mongo_volume:

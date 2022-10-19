@@ -6,9 +6,6 @@ import { ormCheckToken as _checkToken } from '../model/user-orm.js'
 import { ormDeleteUser as _deleteUser } from '../model/user-orm.js'
 import { ormUpdatePassword as _updatePassword } from '../model/user-orm.js'
 import { ormLogoutUser as _logoutUser } from '../model/user-orm.js'
-import bcrypt from 'bcrypt';
-import jwt from'jsonwebtoken';
-import { findUser } from '../model/repository.js';
 
 export async function createUser(req, res) {
     try {

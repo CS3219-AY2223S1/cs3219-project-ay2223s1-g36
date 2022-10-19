@@ -3,19 +3,20 @@ services:
   question-service:
     build: .
     depends_on:
-      - mongo-service
+      - question-mongo
     ports:
       - "8003:8003"
     environment:
-      DB_LOCAL_URI: "mongodb://mongo-service:27017/mydb"
-    networks:
-      - my-network
-  mongo-service:
-    image: mongo
-    networks:
-      - my-network
-
+      DB_LOCAL_URI: "mongodb://question-mongo:27017/mydb"
+      
+  question-mongo:
+    image: mongo:4.2.23-rc1
+    volumes:
+      - question_mongo_volume:/data/db
+  
 networks:
-  my-network:
-    name: my-network
-    external: true
+  default:
+    name: peerprep-net
+
+volumes:
+  question_mongo_volume:

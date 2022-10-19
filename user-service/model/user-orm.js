@@ -1,7 +1,9 @@
 import { createUser, findUser, deleteUser } from './repository.js';
 import bcrypt from 'bcrypt';
 import jwt from'jsonwebtoken';
-import mongoose from 'mongoose';
+import fs from 'fs';
+
+const TOKEN_KEY = fs.readFileSync(process.env.TOKEN_KEY_FILE, 'utf8').trim();
 
 //need to separate orm functions from repository to decouple business logic from persistence
 
@@ -81,7 +83,7 @@ export async function ormSaveToken(username) {
 
         const token = jwt.sign(
             {user_id: user._id},
-            process.env.TOKEN_KEY,
+            TOKEN_KEY,
             {
                 expiresIn:"2h",
             });
@@ -106,7 +108,7 @@ export async function ormCheckToken(token) {
         }
         
         // Check that token is correct and matches with database
-        const verify = await jwt.verify(token, process.env.TOKEN_KEY);
+        const verify = await jwt.verify(token, TOKEN_KEY);
         
         const user = await findUser({_id: verify.user_id});
 

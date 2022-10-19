@@ -3,11 +3,26 @@ services:
   user-service:
     build: .
     depends_on:
-      - mongo-service
+      - user-mongo
+    secrets:
+      - jwt_token
     ports:
       - "8000:8000"
     environment:
-      DB_LOCAL_URI: "mongodb://mongo-service:27017/mydb"
-  mongo-service:
-    image: mongo
-    # TODO: Add username and password for enabling authentication
+      DB_LOCAL_URI: "mongodb://user-mongo:27017/mydb"
+      TOKEN_KEY_FILE: /run/secrets/jwt_token
+  user-mongo:
+    image: mongo:4.2.23-rc1
+    volumes:
+      - user_mongo_volume:/data/db
+  
+networks:
+  default:
+    name: peerprep-net
+
+volumes:
+  user_mongo_volume:
+
+secrets:
+  jwt_token:
+    file: ./jwt_token
