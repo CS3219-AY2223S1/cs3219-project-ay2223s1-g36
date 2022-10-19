@@ -6,9 +6,6 @@ import { ormCheckToken as _checkToken } from '../model/user-orm.js'
 import { ormDeleteUser as _deleteUser } from '../model/user-orm.js'
 import { ormUpdatePassword as _updatePassword } from '../model/user-orm.js'
 import { ormLogoutUser as _logoutUser } from '../model/user-orm.js'
-import bcrypt from 'bcrypt';
-import jwt from'jsonwebtoken';
-import { findUser } from '../model/repository.js';
 
 export async function createUser(req, res) {
     try {
@@ -23,7 +20,7 @@ export async function createUser(req, res) {
 
         if (usernameExist) {
             console.log(`The username ${username} already exists.`);
-            return res.status(400).json({message: `The username ${username} already exists.`});
+            return res.status(409).json({message: `Sorry, this username is already taken.`});
         } 
     
         console.log(`The username ${username} is available!`);
@@ -62,7 +59,6 @@ export async function viewUser(req, res) {
 }
 
 export async function loginUser(req, res) {
-    const SECRET_JWT_KEY = 'g36_secret_cjyk';
     try {
         const { username, password } = req.body;
 
@@ -72,28 +68,27 @@ export async function loginUser(req, res) {
         }
 
         // Checks if the login details is correct
-        const [userLogin, userDetails] = await _checkCredentials(username, password);
-
-        // Prevents user from logging in via the same token
-        const {token} = req.cookies;
-        if (userDetails.token == token && await _checkToken(token)) {
-            return res.status(400).json({message: 'User is already logged in!'})
-        } 
+        const [credMatch, userDetails] = await _checkCredentials(username, password);
 
         // Locate user and authenticate the login
-        if (userLogin) {
-            console.log(`Successful login!`);
+        if (credMatch) {
+            // Prevents user from logging in via the same token
+            const {cookieToken} = req.cookies;
+            if (userDetails.token == cookieToken && await _checkToken(cookieToken)) {
+                return res.status(400).json({message: 'User is already logged in!'})
+            } 
 
             // Generate JWT and send the cookie to user
             const [tokenSaved, token] = await _saveToken(username);
             if (tokenSaved) {
-            return res.status(200).cookie('token', token).json({message: `${username} is logged in.`, username: username, token: token});
+                console.log(`Successful login!`);
+                return res.status(200).cookie('token', token).json({message: `${username} is logged in.`, username: username, token: token});
             } else {
                 return res.status(500).json({message: 'Error creating JWT token'});
             }
         } else {
             console.log(`Login failed.`);
-            return res.status(401).json({message: `Login failed. Access denied. Wrong username or password.`});
+            return res.status(401).json({message: `Login failed. Username or password is incorrect.`});
         }
 
     } catch (err) {
@@ -109,6 +104,7 @@ export async function authenticateUser(req, res, next) {
         if (!token) {
             return next('Please login to access the data');
         }
+        console.log(req.cookies);
 
         // Check that token is correct and matches with database
         const validToken  = await _checkToken(token);

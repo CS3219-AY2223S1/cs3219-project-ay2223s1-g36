@@ -1,7 +1,6 @@
-import { createUser, findUser, deleteUser } from './repository.js';
 import bcrypt from 'bcrypt';
-import jwt from'jsonwebtoken';
-import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import { createUser, deleteUser, findUser } from './repository.js';
 
 //need to separate orm functions from repository to decouple business logic from persistence
 
