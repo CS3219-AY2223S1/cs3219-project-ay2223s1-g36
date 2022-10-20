@@ -9,6 +9,7 @@ services:
     ports:
       - "8000:8000"
     environment:
+      PORT: 8000
       DB_LOCAL_URI: "mongodb://user-mongo:27017/mydb"
       TOKEN_KEY_FILE: /run/secrets/jwt_token
   user-mongo:

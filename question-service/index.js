@@ -25,5 +25,5 @@ app.use('/api/question', router).all((_, res) => {
 router.get('/getQues/:qid', getQues)
 router.get('/getQuesForDifficulty/:difficulty', getQuesForDifficulty)
 
-const QNSVC_PORT = 8003;
+const QNSVC_PORT = process.env.PORT;
 app.listen(QNSVC_PORT, () => console.log('question-service listening on port', QNSVC_PORT));
