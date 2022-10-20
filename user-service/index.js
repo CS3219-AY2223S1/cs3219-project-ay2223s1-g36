@@ -7,10 +7,8 @@ const PORT = process.env.PORT;
 const app = express();
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(cors()) // config cors so that front-end can use
-// app.options('*', cors())
 app.use(cors({
-    origin : "*",
+    origin: process.env.CORS_ORIGIN.split(","),
     credentials: true,
 }))
 app.use(cookieParser())
