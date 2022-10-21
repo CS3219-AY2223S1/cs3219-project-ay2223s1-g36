@@ -23,11 +23,13 @@ import {
 
 export default function WelcomeLayout() {
   const { pathname } = useLocation();
+  const LOGIN_PATH = '/welcome/login';
+  const SIGNUP_PATH = '/welcome/signup';
   const navigate = useNavigate();
 
   useEffect(() => {
     if (pathname == '/welcome') {
-      navigate('/welcome/login');
+      navigate(LOGIN_PATH);
     }
   }, [pathname]);
 
@@ -42,8 +44,11 @@ export default function WelcomeLayout() {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
+      console.log(isLoginSuccess);
+      console.log(isSignupSuccess);
       if (e.key === 'Enter') {
-        handleLogin();
+        if (pathname === LOGIN_PATH) handleLogin();
+        if (pathname === SIGNUP_PATH) handleSignup();
       }
     };
     document.addEventListener('keydown', handleKeyDown);
@@ -53,19 +58,20 @@ export default function WelcomeLayout() {
   }, [username, password]);
 
   const validatePasswordStrength = (pw) => {
+    console.log('HERE');
     // min length 6, at least 1 numeric value, 1 uppercase, 1 lowercase
     let re = /(?=^.{6,}$)(?=.*\d)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
     return re.test(pw);
   };
 
   const handleSignup = async () => {
-    if (!validatePasswordStrength(password)) {
+    if (password != '' && !validatePasswordStrength(password)) {
       setErrorDialog(
         'Password must be minimum 6 characters long, and contain at least 1 digit, 1 uppercase AND 1 lowercase character.'
       );
       return;
     }
-
+    console.log('continue');
     setIsSignupSuccess(false);
     const res = await axios.post(URL_USER_SVC_REG, { username, password }).catch((err) => {
       if (err.response.status === STATUS_CODE_BADREQ || STATUS_CODE_CONFLICT) {
@@ -106,7 +112,8 @@ export default function WelcomeLayout() {
 
   const setErrorDialog = (msg) => {
     setIsDialogOpen(true);
-    setDialogTitle('Error');
+    let prefix = pathname === LOGIN_PATH ? 'Log In ' : 'Sign Up ';
+    setDialogTitle(prefix + 'Error');
     setDialogMsg(msg);
   };
 
@@ -128,10 +135,10 @@ export default function WelcomeLayout() {
           width: '30%'
         }}
       >
-        {pathname === '/welcome/signup' && (
+        {pathname === SIGNUP_PATH && (
           <Outlet context={{ username, setUsername, password, setPassword, handleSignup }} />
         )}
-        {pathname === '/welcome/login' && (
+        {pathname === LOGIN_PATH && (
           <Outlet context={{ username, setUsername, password, setPassword, handleLogin }} />
         )}
 
@@ -141,12 +148,12 @@ export default function WelcomeLayout() {
             <DialogContentText>{dialogMsg}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            {!isLoginSuccess || !isSignupSuccess ? (
-              <Button onClick={closeDialog}>Try Again</Button>
-            ) : (
+            {isSignupSuccess || isLoginSuccess ? (
               <Button component={Link} to="/login">
                 Log in
               </Button>
+            ) : (
+              <Button onClick={closeDialog}>Try Again</Button>
             )}
           </DialogActions>
         </Dialog>
