@@ -58,11 +58,16 @@ export async function ormCheckUserExistence(username) {
 export async function ormCheckCredentials(username, password) {
     try {
         const user = await findUser({username});
-        if (user && (await bcrypt.compare(password, user.password))) {
+        if (user) {
+            if (await bcrypt.compare(password, user.password)) {
             console.log("user-orm: User credentials match");
             return [true, user];
+            } else {
+                console.log("user-orm: User credentials do not match");
+                return [false, user];
+            }
         } else {
-            console.log("user-orm: User credentials do not match");
+            console.log("user-orm: User credentials match");
             return [false, null];
         }
     } catch (err) {

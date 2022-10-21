@@ -13,7 +13,6 @@ app.use(cors({
   }))
 
 // app.options('*', cors())
-app.use(cookieParser())
 
 const router = express.Router()
 

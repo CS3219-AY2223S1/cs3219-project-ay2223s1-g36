@@ -87,8 +87,13 @@ export async function loginUser(req, res) {
                 return res.status(500).json({message: 'Error creating JWT token'});
             }
         } else {
-            console.log(`Login failed.`);
-            return res.status(401).json({message: `Login failed. Username or password is incorrect.`});
+            if (userDetails) {
+                console.log(`Login failed. Incorrect credentials.`);
+                return res.status(401).json({message: `Login failed. Username or password is incorrect.`});
+            } else {
+                console.log(`Login failed. User does not exist.`);
+                return res.status(401).json({message: `User not found. Please create an account first.`});
+            }
         }
 
     } catch (err) {
