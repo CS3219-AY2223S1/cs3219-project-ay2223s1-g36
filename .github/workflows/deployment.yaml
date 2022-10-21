@@ -2,11 +2,12 @@ name: Deployment to Google App Engine
 on:
   push:
     branches: 
-     - 'deployment'
+     - 'production'
 jobs:
-  job_id:
+  matching-service-deployment:
     runs-on: 'ubuntu-latest'
     steps:
+    - uses: 'actions/checkout@v3'
     - id: 'auth'
       uses: 'google-github-actions/auth@v0'
       with:
@@ -14,3 +15,5 @@ jobs:
 
     - id: 'deploy'
       uses: 'google-github-actions/deploy-appengine@v0'
+      with:
+        deliverables: 'matching-service/app.yaml'
