@@ -107,7 +107,7 @@ export async function authenticateUser(req, res, next) {
     try {
         const {token} = req.cookies;
         if (!token) {
-            return next('Please login to access the data');
+            return res.status(401).json({message: 'Please login to access the data'});
         }
         console.log(req.cookies);
 

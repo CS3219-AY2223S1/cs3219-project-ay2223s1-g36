@@ -20,6 +20,7 @@ import {
   STATUS_CODE_UNAUTH,
   STATUS_CODE_CONFLICT
 } from '../../constants';
+import { validatePasswordStrength } from '../../utils/user';
 
 export default function WelcomeLayout() {
   const { pathname } = useLocation();
@@ -44,8 +45,6 @@ export default function WelcomeLayout() {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      console.log(isLoginSuccess);
-      console.log(isSignupSuccess);
       if (e.key === 'Enter') {
         if (pathname === LOGIN_PATH) handleLogin();
         if (pathname === SIGNUP_PATH) handleSignup();
@@ -57,13 +56,6 @@ export default function WelcomeLayout() {
     };
   }, [username, password]);
 
-  const validatePasswordStrength = (pw) => {
-    console.log('HERE');
-    // min length 6, at least 1 numeric value, 1 uppercase, 1 lowercase
-    let re = /(?=^.{6,}$)(?=.*\d)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
-    return re.test(pw);
-  };
-
   const handleSignup = async () => {
     if (password != '' && !validatePasswordStrength(password)) {
       setErrorDialog(
@@ -71,7 +63,6 @@ export default function WelcomeLayout() {
       );
       return;
     }
-    console.log('continue');
     setIsSignupSuccess(false);
     const res = await axios.post(URL_USER_SVC_REG, { username, password }).catch((err) => {
       if (err.response.status === STATUS_CODE_BADREQ || STATUS_CODE_CONFLICT) {

@@ -91,9 +91,6 @@ export default function AccountPopover() {
           <Typography variant="subtitle2" noWrap>
             {username.toUpperCase()}
           </Typography>
-          <Typography variant="body2" sx={{ color: 'rgb(99, 115, 129)' }} noWrap>
-            kewen@peerprep.org
-          </Typography>
         </Box>
 
         <Divider sx={{ borderStyle: 'dashed' }} />

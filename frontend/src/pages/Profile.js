@@ -19,6 +19,7 @@ import { URL_USER_SVC_DELETE, URL_USER_SVC_UPDATEPW } from '../configs';
 import { STATUS_CODE_OK, STATUS_CODE_UNAUTH, STATUS_CODE_BADREQ } from '../constants';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { validatePasswordStrength } from '../utils/user';
 
 export default function Profile() {
   const auth = useAuth();
@@ -32,15 +33,20 @@ export default function Profile() {
   const username = auth.user.username;
 
   const handlePWchange = async () => {
+    if (newPassword != '' && !validatePasswordStrength(newPassword)) {
+      setErrorDialog(
+        'Password must be minimum 6 characters long, and contain at least 1 digit, 1 uppercase AND 1 lowercase character.'
+      );
+      return;
+    }
     setIsPWChangeSuccess(false);
     const res = await axios
       .post(URL_USER_SVC_UPDATEPW, { username, newPassword }, { withCredentials: true })
       .catch((err) => {
-        if (
-          err.response.status === STATUS_CODE_BADREQ ||
-          err.response.status === STATUS_CODE_UNAUTH
-        ) {
+        if (err.response.status === STATUS_CODE_BADREQ) {
           setErrorDialog(res.data.message);
+        } else if (err.response.status === STATUS_CODE_UNAUTH) {
+          auth.logout();
         } else {
           setErrorDialog('Please try again later');
         }
@@ -55,11 +61,10 @@ export default function Profile() {
     const res = await axios
       .post(URL_USER_SVC_DELETE, { username }, { withCredentials: true })
       .catch((err) => {
-        if (
-          err.response.status === STATUS_CODE_BADREQ ||
-          err.response.status === STATUS_CODE_UNAUTH
-        ) {
+        if (err.response.status === STATUS_CODE_BADREQ) {
           setErrorDialog(res.data.message);
+        } else if (err.response.status === STATUS_CODE_UNAUTH) {
+          auth.logout();
         } else {
           setErrorDialog('Please try again later');
         }
@@ -105,7 +110,6 @@ export default function Profile() {
         <Typography
           variant="h4"
           sx={{
-            mb: 5,
             fontSize: '1.25rem',
             fontFamily: 'Public Sans,sans-serif',
             fontWeight: '700',
@@ -120,7 +124,6 @@ export default function Profile() {
 
         <Box
           sx={{
-            my: 2,
             display: 'flex',
             alignItems: 'center',
             padding: '16px 20px',
@@ -146,7 +149,7 @@ export default function Profile() {
           </Box>
         </Box>
 
-        <Grid container spacing={8}>
+        <Grid container spacing={1} marginTop={5}>
           <Grid item xs={12} sm={12} md={12}>
             <Typography variant="h5" sx={subheading_style}>
               Change Password
@@ -154,26 +157,31 @@ export default function Profile() {
             <Typography variant="body1" sx={{ mb: 1 }}>
               Enter a new password below and click on Change Password to update your password.
             </Typography>
-            <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-start'}>
-              <TextField
-                label="Password"
-                variant="outlined"
-                size="small"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                sx={{ marginRight: '2rem', width: '30%' }}
-              />
-              <Button
-                variant={'contained'}
-                color={'info'}
-                onClick={handlePWchange}
-                disabled={newPassword.length == 0}
-              >
-                Change password
-              </Button>
-            </Box>
           </Grid>
+          <Grid item xs={12} sm={4} md={4}>
+            <TextField
+              label="Password"
+              variant="outlined"
+              size="small"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              sx={{ width: '100%' }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={6}>
+            <Button
+              variant={'contained'}
+              color={'info'}
+              onClick={handlePWchange}
+              disabled={newPassword.length == 0}
+            >
+              Change password
+            </Button>
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={1} marginTop={5}>
           <Grid item xs={12} sm={12} md={12}>
             <Typography variant="h5" sx={subheading_style}>
               Account Removal
