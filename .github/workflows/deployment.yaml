@@ -12,7 +12,32 @@ env:
   REGION: asia-southeast1 
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      matching-service: ${{ steps.filter.outputs.matching-service }}
+      collab-service: ${{ steps.filter.outputs.collab-service }}
+      user-service: ${{ steps.filter.outputs.user-service }}
+      question-service: ${{ steps.filter.outputs.question-service }}
+      # frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          matching-service:
+            - 'matching-service/**'
+          collab-service:
+            - 'collab-service/**'
+          user-service:
+            - 'user-service/**'
+          question-service:
+            - 'question-service/**'
+
   deploy-matching-service:
+    needs: changes
+    if: ${{ needs.changes.outputs.matching-service == 'true' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: matching-service 
@@ -49,6 +74,7 @@ jobs:
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
           image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:${{ github.sha }}
+          # https://stackoverflow.com/questions/51214792/defining-sequelize-on-google-cloud-sql-nodejs
           env_vars: |
             NODE_ENV=production
             QUESTION_SERVICE_URL=https://question-service-lpaj6pcqsa-as.a.run.app
@@ -60,6 +86,8 @@ jobs:
             DB_PASSWORD=peerprep_matching_sql_pw:latest
 
   deploy-question-service:
+    needs: changes
+    if: ${{ needs.changes.outputs.question-service == 'true' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: question-service 
@@ -100,6 +128,8 @@ jobs:
             DB_CLOUD_URI=QNS_SERVICE_MONGO_URL:latest
 
   deploy-user-service:
+    needs: changes
+    if: ${{ needs.changes.outputs.user-service == 'true' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: user-service 
@@ -141,6 +171,8 @@ jobs:
             TOKEN_KEY=USER_SERVICE_JWT_TOKEN:latest
 
   deploy-collab-service:
+    needs: changes
+    if: ${{ needs.changes.outputs.collab-service == 'true' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: collab-service 
@@ -180,6 +212,8 @@ jobs:
             DB_CLOUD_URI=COLLAB_SERVICE_MONGO_URL:latest
 
   # deploy-frontend:
+    # needs: changes
+    # if: ${{ needs.changes.outputs.frontend == 'true' }}
   #   runs-on: ubuntu-latest
   #   env:
   #     SERVICE: frontend
