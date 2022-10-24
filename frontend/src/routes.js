@@ -1,4 +1,4 @@
-import { useRoutes } from 'react-router-dom';
+import { Navigate, useRoutes } from 'react-router-dom';
 import WelcomeLayout from './layouts/welcome';
 import DashboardLayout from './layouts/dashboard';
 import MatchLayout from './layouts/match';
@@ -24,6 +24,10 @@ export default function Router() {
       element: <WelcomeLayout />,
       children: [
         {
+          path: '/welcome',
+          element: <Navigate replace to={'/welcome/login'} />
+        },
+        {
           path: '/welcome/signup',
           element: <SignupPage />
         },
@@ -35,73 +39,65 @@ export default function Router() {
     },
     {
       path: '/',
-      element: <DashboardLayout />,
+      element: (
+        <ProtectedRoute>
+          <DashboardLayout />
+        </ProtectedRoute>
+      ),
       children: [
         {
           path: 'dashboard',
-          element: (
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          )
+          element: <Dashboard />
         },
         {
           path: 'history',
-          element: (
-            <ProtectedRoute>
-              <History />
-            </ProtectedRoute>
-          )
+          element: <History />
         },
         {
           path: 'profile',
-          element: (
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          )
+          element: <ProfilePage />
         }
       ]
     },
     {
       path: '/match',
-      element: <MatchLayout />,
+      element: (
+        <ProtectedRoute>
+          <MatchLayout />
+        </ProtectedRoute>
+      ),
       children: [
         {
           path: '',
-          element: (
-            <ProtectedRoute>
-              <Match />
-            </ProtectedRoute>
-          )
+          element: <Match />
         }
       ]
     },
     {
       path: '/room',
-      element: <RoomLayout />,
+      element: (
+        <ProtectedRoute>
+          <RoomLayout />
+        </ProtectedRoute>
+      ),
       children: [
         {
           path: '',
-          element: (
-            <ProtectedRoute>
-              <Room />
-            </ProtectedRoute>
-          )
+          element: <Room />
         }
       ]
     },
     {
       path: '/attempt',
-      element: <AttemptLayout />,
+      element: (
+        <ProtectedRoute>
+          <AttemptLayout />
+        </ProtectedRoute>
+      ),
       children: [
         {
           path: '',
-          element: (
-            <ProtectedRoute>
-              <PastAttempt />
-            </ProtectedRoute>
-          )
+          element: <PastAttempt />
         }
       ]
     },

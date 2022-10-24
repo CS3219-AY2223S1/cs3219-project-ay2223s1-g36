@@ -1,5 +1,11 @@
 import { Box, Typography } from '@mui/material';
+import { Navigate, useLocation } from 'react-router-dom';
+
 function PageNotFound() {
+  const { pathname } = useLocation();
+  if (pathname.indexOf('/login') > -1) {
+    return <Navigate replace to={'/welcome/login'} />;
+  }
   return (
     <Box
       sx={{
