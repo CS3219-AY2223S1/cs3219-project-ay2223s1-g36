@@ -2,7 +2,7 @@ import {MongoClient} from 'mongodb';
 import logger from './logger.js';
 import express from 'express';
 
-const mongoURI = process.env.DB_LOCAL_URI;
+const mongoURI = process.env.NODE_ENV === "production" ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
 const client = new MongoClient(mongoURI);
 
 try {

@@ -7,7 +7,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cors({
-  origin : process.env.CORS_ORIGIN.split(","),
+  origin : process.env.CORS_ORIGIN.split("|"),
   credentials: true,
 }))
 
