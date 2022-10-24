@@ -6,6 +6,7 @@ import {findMatch, MatchRouter} from './match.js';
 import {joinRoom, leaveRoom} from './room.js';
 import logger from './logger.js';
 
+const PORT = process.env.PORT;
 const app = express();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -32,6 +33,6 @@ io.on('connection', (socket) => {
 });
 
 // app.set('io', io)
-httpServer.listen(8001);
-logger.info('Server starts listening on port 8001');
+httpServer.listen(PORT);
+logger.info(`Server starts listening on port ${PORT}`);
 

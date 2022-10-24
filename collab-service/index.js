@@ -6,6 +6,7 @@ import { joinRoom, sendKey, sendSelect, saveEditor, MatchRouter } from './editor
 import { sendMessage } from './chat.js';
 import logger from './logger.js';
 
+const PORT = process.env.PORT;
 const app = express();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -17,7 +18,7 @@ app.use('/api', MatchRouter);
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:3000',  // TODO: change this
+    origin: '*', 
     methods: ['GET', 'POST'],
   },
 });
@@ -32,8 +33,8 @@ io.on('connection', (socket) => {
   socket.on('message:send', sendMessage.bind(socket));
 });
 
-httpServer.listen(8002);
-logger.info('Collab-service starts listening on port 8002');
+httpServer.listen(PORT);
+logger.info(`Collab-service starts listening on port ${PORT}`);
 
 // TODO: the document ID should be roomID, then the document itself is the code
 // TODO: use a middleware to handle authentication

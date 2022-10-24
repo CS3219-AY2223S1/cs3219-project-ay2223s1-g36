@@ -6,11 +6,10 @@ import { getQuesForDifficulty } from './controller/question-controller.js';
 const app = express();
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-// app.use(cors()) // config cors so that front-end can use
 app.use(cors({
-    origin : "http://localhost:3000",
-    credentials: true,
-  }))
+  origin : process.env.CORS_ORIGIN.split("|"),
+  credentials: true,
+}))
 
 const router = express.Router()
 
@@ -25,5 +24,5 @@ app.use('/api/question', router).all((_, res) => {
 router.get('/getQues/:qid', getQues)
 router.get('/getQuesForDifficulty/:difficulty', getQuesForDifficulty)
 
-const QNSVC_PORT = 8003;
+const QNSVC_PORT = process.env.PORT;
 app.listen(QNSVC_PORT, () => console.log('question-service listening on port', QNSVC_PORT));

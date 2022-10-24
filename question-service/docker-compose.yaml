@@ -7,7 +7,9 @@ services:
     ports:
       - "8003:8003"
     environment:
+      PORT: 8003
       DB_LOCAL_URI: "mongodb://question-mongo:27017/mydb"
+      CORS_ORIGIN: "http://localhost:3000"
       
   question-mongo:
     image: mongo:4.2.23-rc1

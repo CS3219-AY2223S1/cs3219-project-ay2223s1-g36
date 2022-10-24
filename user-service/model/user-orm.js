@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { createUser, deleteUser, findUser } from './repository.js';
 import fs from 'fs';
 
-const TOKEN_KEY = fs.readFileSync(process.env.TOKEN_KEY_FILE, 'utf8').trim();
+const TOKEN_KEY = process.env.TOKEN_KEY ? process.env.TOKEN_KEY : fs.readFileSync(process.env.TOKEN_KEY_FILE, 'utf8').trim();
 
 //need to separate orm functions from repository to decouple business logic from persistence
 

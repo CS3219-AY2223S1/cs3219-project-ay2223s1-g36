@@ -52,6 +52,7 @@ function cancelPendingMatch(pendingMatch) {
 async function findMatch(data) {
     const { userId, difficulty } = data;
     if (userId == null || difficulty == null) {
+        logger.warn(`Bad request. userId: ${userId}, difficulty: ${difficulty}`);
         return;
     }
     const diffInt = diffToIntMap[difficulty.toLowerCase()];
