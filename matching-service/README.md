@@ -140,3 +140,11 @@ The following requests could be sent to this service:
             ]
         }
         ```
+
+# Deployment
+In production need to supply the following environment variables/secrets:
+- DB_USER,
+- DB_PASSWORD,
+- DB_NAME,
+- PROD_SQL_DIALECT,
+- PROD_SQL_HOST
