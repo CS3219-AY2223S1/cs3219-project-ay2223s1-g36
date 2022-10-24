@@ -25,6 +25,7 @@ jobs:
     - uses: dorny/paths-filter@v2
       id: filter
       with:
+        base: production
         filters: |
           matching-service:
             - 'matching-service/**'
