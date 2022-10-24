@@ -8,9 +8,14 @@ First, build all the services. This needs to be run every time there's code chan
 $ bash build.sh
 ```
 
-Then, spin up the containers. It may take a while for frontend to be started.
+Then, spin up the containers.
 ```sh
 $ bash start.sh
+```
+
+Open another terminal and go into `frontend` directory and run
+```sh
+$ npm start
 ```
 
 To stop all the containers, run
