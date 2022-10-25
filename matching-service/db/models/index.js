@@ -7,6 +7,7 @@ const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.js')[env];
 const db = {};
+const { Umzug, SequelizeStorage } = require('umzug');
 
 let sequelize;
 if (config.use_env_variable) {
@@ -14,6 +15,42 @@ if (config.use_env_variable) {
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
+
+const migrationPath = __dirname + '/../migrations';
+const umzug = new Umzug({
+  migrations: { 
+    glob: `${migrationPath}/*.js`,
+    resolve: ({ name, path, context }) => {
+      // adjust the migration parameters Umzug will
+      // pass to migration methods, this is done because 
+      // Sequilize-CLI generates migrations that require 
+      // two parameters be passed to the up and down methods
+      // but by default Umzug will only pass the first
+      const migration = require(path || '')
+      return {
+          name,
+          up: async () => migration.up(context, Sequelize),
+          down: async () => migration.down(context, Sequelize),
+      }
+    }
+  },
+  context: sequelize.getQueryInterface(),
+  storage: new SequelizeStorage({ sequelize }),
+  logger: console,
+});
+
+(async () => {
+  // Checks migrations and run them if they are not already applied. To keep
+  // track of the executed migrations, a table (and sequelize model) called SequelizeMeta
+  // will be automatically created (if it doesn't exist already) and parsed.
+  try {
+    await sequelize.authenticate();
+    await umzug.up();
+    console.log("Finish migration");
+  } catch (err) {
+    console.log(err);
+  }
+})();
 
 fs
   .readdirSync(__dirname)

@@ -6,7 +6,7 @@ module.exports = {
     },
     "test": {
         "dialect": "sqlite",
-        "storage": ":memory"
+        "storage": ":memory:"
     },
     "production": {
         "username": process.env.DB_USER,
