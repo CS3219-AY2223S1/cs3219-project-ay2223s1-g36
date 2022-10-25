@@ -48,7 +48,17 @@ export default function ChatBox({ collabSocket }) {
   };
 
   return (
-    <Box>
+    <Box
+      sx={{
+        float: 'right',
+        width: '70px',
+        paddingTop: '20px',
+        bottom: '10px',
+        right: '0px',
+        position: 'fixed',
+        zIndex: '9999'
+      }}
+    >
       <Fab color="primary" aria-label="add" onClick={handleDrawerOpen}>
         <QuestionAnswerIcon />
       </Fab>
