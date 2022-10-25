@@ -74,7 +74,7 @@ async function findMatch(data) {
     }
 
     // find any pending match with same difficulty
-    const pendingMatch = await db.PendingMatch.findOne({
+    const [pendingMatch, created] = await db.PendingMatch.findOrCreate({
         where: {
             userId: {
                 [db.Sequelize.Op.ne]: userId,
@@ -82,8 +82,13 @@ async function findMatch(data) {
             diffInt: diffInt
         },
         order: [['createdAt', 'ASC']], // find the oldest pending match for fairness
+        defaults: { userId: userId, socketId: this.id, diffInt: diffInt }
     });
-    if (pendingMatch) {
+
+    if (created) {
+        logger.debug(`User ${userId} waiting to find a match...`);
+        timeouts[pendingMatch.id] = setTimeout(cancelPendingMatch.bind(this), 30000, pendingMatch);
+    } else {
         logger.debug(`Found a match between user ${userId} and user ${pendingMatch.userId}`);
         // stop the timeout for the previously waiting user
         clearPendingTimeout(pendingMatch.id);
@@ -113,10 +118,43 @@ async function findMatch(data) {
         const payload = {roomId: matchRoomId, questionId: questionId};
         this.io.to(pendingMatch.socketId).emit('match:success', payload);
         this.emit('match:success', payload);
-    } else { // create timeout and join the waiting room
-        const initiator = await db.PendingMatch.create({ userId: userId, socketId: this.id, diffInt: diffInt });
-        timeouts[initiator.id] = setTimeout(cancelPendingMatch.bind(this), 30000, initiator);
     }
+
+    // if (pendingMatch) {
+    //     logger.debug(`Found a match between user ${userId} and user ${pendingMatch.userId}`);
+    //     // stop the timeout for the previously waiting user
+    //     clearPendingTimeout(pendingMatch.id);
+    //     await pendingMatch.destroy();
+    //     const matchRoomId = uuidv4();  // chance of collision is super low, so I'll just don't handle it for now...
+        
+    //     // get question ID from question service
+    //     let questionId;
+    //     try {
+    //         logger.debug(`Fetching question from ${process.env.QUESTION_SERVICE_URL}/api/question/getQuesForDifficulty/${diffInt}`);
+    //         const res = await axios.get(`${process.env.QUESTION_SERVICE_URL}/api/question/getQuesForDifficulty/${diffInt}`)
+    //         if (res && res.status === 200) {
+    //             questionId = res.data[0].qid;
+    //         } else {
+    //             logger.error(`Question service returns bad response: ${res}`);
+    //             this.emit('match:fail', difficulty);
+    //             return;
+    //         }
+    //     } catch (err) {
+    //         logger.error("Can't contact question service" + err);
+    //         this.emit('match:fail', difficulty);
+    //         return;
+    //     }
+    //     logger.debug(`questionId: ${questionId}`);
+
+    //     await db.Match.create({ roomId: matchRoomId, questionId: questionId, user1Id: pendingMatch.userId, user2Id: userId, difficulty: difficulty.toLowerCase(), ongoing: true });
+    //     const payload = {roomId: matchRoomId, questionId: questionId};
+    //     this.io.to(pendingMatch.socketId).emit('match:success', payload);
+    //     this.emit('match:success', payload);
+    // } else { // create timeout and join the waiting room
+    //     logger.debug(`User ${userId} waiting to find a match...`);
+    //     const initiator = await db.PendingMatch.create({ userId: userId, socketId: this.id, diffInt: diffInt });
+    //     timeouts[initiator.id] = setTimeout(cancelPendingMatch.bind(this), 30000, initiator);
+    // }
 }
 
 // TODO: authenticate with JWT later?
