@@ -29,8 +29,8 @@ export default function Dashboard() {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={6}>
             <WidgetMatch
-              subTitle="Users Online"
-              title={714000}
+              subTitle="Practice coding with a partner"
+              title={'Start cracking!'}
               color={'rgb(122, 12, 46)'}
               bgColor={'rgb(255, 231, 217)'}
             />
