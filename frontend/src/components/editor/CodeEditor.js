@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
-import MonacoEditor from 'react-monaco-editor';
+import { Box, FormControl, InputLabel, MenuItem } from '@mui/material';
+import Select from '@mui/material/Select';
 import * as monaco from 'monaco-editor';
 import { MonacoServices } from 'monaco-languageclient';
-import { Box, MenuItem, FormControl, InputLabel } from '@mui/material';
-import { CODE_EDITOR_OPTIONS, CODE_EDITOR_LANGUAGE } from './EditorConfig';
-import Select from '@mui/material/Select';
+import { useEffect, useRef, useState } from 'react';
+import MonacoEditor from 'react-monaco-editor';
+import { CODE_EDITOR_LANGUAGE, CODE_EDITOR_OPTIONS } from './EditorConfig';
 
 export default function CodeEditor({
   defaultLanguage = 'JavaScript',
@@ -45,6 +45,10 @@ export default function CodeEditor({
     if (collabSocket && !readOnly) {
       if (isFromSocket === false) {
         collabSocket.emit('editor:key', { key: change });
+        collabSocket.emit('editor:save', {
+          code: editorRef.current.getValue(),
+          language: language
+        });
       } else {
         isFromSocket = false;
       }
@@ -68,23 +72,25 @@ export default function CodeEditor({
           <InputLabel id="demo-simple-select-label" sx={{ marginLeft: '5%' }}>
             Language
           </InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            label="Language"
-            value={language}
-            placeholder="Select Language"
-            onChange={handleLanguageChange}
-            sx={{ minWidth: '150px', maxHeight: '40px' }}
-          >
-            {CODE_EDITOR_LANGUAGE.map((element) => {
-              return (
-                <MenuItem key={element} value={element}>
-                  {element}
-                </MenuItem>
-              );
-            })}
-          </Select>
+          <Box display={'flex'}>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              label="Language"
+              value={language}
+              placeholder="Select Language"
+              onChange={handleLanguageChange}
+              sx={{ minWidth: '150px', maxHeight: '40px' }}
+            >
+              {CODE_EDITOR_LANGUAGE.map((element) => {
+                return (
+                  <MenuItem key={element} value={element}>
+                    {element}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </Box>
         </FormControl>
       )}
       <Box sx={{ border: '1px #d9d9d9 solid' }}>

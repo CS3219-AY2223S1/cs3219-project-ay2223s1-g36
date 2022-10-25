@@ -6,7 +6,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Grid
+  Grid,
+  Typography
 } from '@mui/material';
 import WidgetSummary from './widget/WidgetSummary';
 import { useNavigate } from 'react-router-dom';
@@ -176,6 +177,10 @@ export default function ModalMatch() {
               </Grid>
             </Grid>
           </DialogContentText>
+          <Typography sx={{ marginTop: '20px', textAlign: 'center', fontWeight: '700' }}>
+            Disclaimer: By joining a match, you agree that all information typed in the code editor
+            will be saved.
+          </Typography>
         </DialogContent>
         <DialogActions
           sx={{

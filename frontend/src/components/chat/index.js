@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Box } from '@mui/system';
 import useForceUpdate from '../../hooks/useForceUpdate';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import { CHAT_DRAWER_WIDTH } from '../../const/Size';
 
 export default function ChatBox({ collabSocket }) {
   const messageRef = useRef([]);
@@ -12,7 +13,6 @@ export default function ChatBox({ collabSocket }) {
   const inputRef = useRef();
   const currentUserId = JSON.parse(localStorage.getItem('user')).username;
   const forceUpdate = useForceUpdate();
-  const drawerWidth = 240;
 
   useEffect(() => {
     collabSocket.on('message:receive', (data) => {
@@ -64,10 +64,10 @@ export default function ChatBox({ collabSocket }) {
       </Fab>
       <Drawer
         sx={{
-          width: drawerWidth,
+          width: CHAT_DRAWER_WIDTH,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
-            width: drawerWidth
+            width: CHAT_DRAWER_WIDTH
           }
         }}
         variant="persistent"

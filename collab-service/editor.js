@@ -35,17 +35,18 @@ function sendSelect(data) {
 }
 
 function saveEditor(data) {
-    const { code } = data;
+    const { code, language = 'JavaScript' } = data;
     logger.debug(`this.room: ${this.room}, code: ${code}`);
-    if (this.room === null || code === null) {
+    if (this.room == null || code == null) {
         logger.error(`roomId or code received is null: (${this.room}, ${code})`);
     } else {
-        upsertCode(client, this.room, code);
+        upsertCode(client, this.room, code, language);
+        this.emit("editor:save:success");
     }
 }
 
-async function upsertCode(client, roomId, code) {
-    const result = await client.db("collabdb").collection("code").updateOne({ _id: roomId }, { $set: {roomId: roomId, code: code} }, { upsert: true });
+async function upsertCode(client, roomId, code, language) {
+    const result = await client.db("collabdb").collection("code").updateOne({ _id: roomId }, { $set: {roomId: roomId, code: code, language} }, { upsert: true });
     logger.debug(`Save result: ${JSON.stringify(result)}`);
 }
 
