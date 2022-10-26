@@ -1,10 +1,14 @@
 import { Box, Container, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Page from '../components/Page';
-import { qnHistoryCols, rows } from '../const/HistoryGrid';
+import { qnHistoryCols } from '../const/HistoryGrid';
 import { useAttempt } from '../hooks/useAttempt';
 import { useAuth } from '../hooks/useAuth';
+import { formatDate } from '../utils/history';
+import axios from 'axios';
+import { URL_HIST_SVC_USER_HIST } from '../configs';
+import { STATUS_CODE_OK, STATUS_SERVER_ERROR, STATUS_CODE_BADREQ } from '../constants';
 
 export default function History() {
   const attempt = useAttempt();
@@ -13,11 +17,25 @@ export default function History() {
   const [pageSize, setPageSize] = useState(10);
   const [rows, setRows] = useState([]);
 
+  // To fetch list of past attempts from history service
+  const handleHistoryFetch = async () => {
+    const res = await axios.get(URL_HIST_SVC_USER_HIST + username).catch((err) => {
+      if (
+        err.response.status === STATUS_CODE_BADREQ ||
+        err.response.status === STATUS_SERVER_ERROR
+      ) {
+        console.log(err);
+      } else {
+        console.log('Please try again later');
+      }
+    });
+    if (res && res.status === STATUS_CODE_OK) {
+      setRows(res.data);
+    }
+  };
+
+  // set attempt context for attempt page to refer to
   const handleRowClick = (params) => {
-    console.log(params.row.qid);
-    // TODO: open to page containing submission details and code
-    // sample page
-    window.open('./attempt', '_blank');
     attempt.add(params.row.id, {
       questionId: params.row.questionId,
       code: 'hi this is ' + params.row.questionId, // replace with code param
@@ -27,6 +45,10 @@ export default function History() {
     });
     window.open('./attempt/' + params.row.id);
   };
+
+  useEffect(() => {
+    handleHistoryFetch();
+  }, [username]);
 
   return (
     <Page title="History">

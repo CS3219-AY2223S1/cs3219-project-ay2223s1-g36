@@ -1,4 +1,5 @@
-// TODO: move this to const once table structure is confirmed with YB
+import { formatDate } from '../utils/history';
+
 export const qnHistoryCols = [
   { field: 'id', headerName: 'ID', flex: 1 },
   {
@@ -6,19 +7,27 @@ export const qnHistoryCols = [
     headerName: 'Question Title',
     flex: 3
   },
-  { field: 'diffLevel', headerName: 'Difficulty Level', flex: 1 },
-  { field: 'language', headerName: 'Language', flex: 1 },
+  { field: 'difficulty', headerName: 'Difficulty Level', flex: 2 },
+  { field: 'language', headerName: 'Language', flex: 2 },
   {
-    field: 'userMatch',
+    field: 'partner',
     headerName: 'Match',
-    flex: 1,
+    flex: 2,
     valueFormatter: (params) => {
       return params.value != null ? `@${params.value}` : '';
     }
   },
-  { field: 'dateAttempt', headerName: 'Date of Attempt', flex: 1 }
+  {
+    field: 'createdAt',
+    headerName: 'Date of Attempt',
+    flex: 3,
+    valueFormatter: (params) => {
+      return params.value != null ? `${formatDate(params.value)}` : '';
+    }
+  }
 ];
 
+// TODO: remove this once table structure is confirmed with YB
 export const rows = [
   {
     id: 1,
