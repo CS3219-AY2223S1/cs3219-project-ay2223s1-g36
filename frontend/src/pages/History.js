@@ -3,15 +3,29 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useState } from 'react';
 import Page from '../components/Page';
 import { qnHistoryCols, rows } from '../const/HistoryGrid';
+import { useAttempt } from '../hooks/useAttempt';
+import { useAuth } from '../hooks/useAuth';
 
 export default function History() {
+  const attempt = useAttempt();
+  const auth = useAuth();
+  const username = auth.user.username;
   const [pageSize, setPageSize] = useState(10);
+  const [rows, setRows] = useState([]);
 
   const handleRowClick = (params) => {
     console.log(params.row.qid);
     // TODO: open to page containing submission details and code
     // sample page
     window.open('./attempt', '_blank');
+    attempt.add(params.row.id, {
+      questionId: params.row.questionId,
+      code: 'hi this is ' + params.row.questionId, // replace with code param
+      date: formatDate(params.row.createdAt),
+      language: params.row.language,
+      match: params.row.partner
+    });
+    window.open('./attempt/' + params.row.id);
   };
 
   return (

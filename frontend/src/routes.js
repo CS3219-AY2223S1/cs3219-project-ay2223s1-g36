@@ -16,6 +16,7 @@ import PastAttempt from './pages/PastAttempt';
 import PageNotFound from './pages/PageNotFound';
 
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { AttemptProvider } from './hooks/useAttempt';
 
 export default function Router() {
   return useRoutes([
@@ -51,7 +52,11 @@ export default function Router() {
         },
         {
           path: 'history',
-          element: <History />
+          element: (
+            <AttemptProvider>
+              <History />
+            </AttemptProvider>
+          )
         },
         {
           path: 'profile',
@@ -88,10 +93,12 @@ export default function Router() {
       ]
     },
     {
-      path: '/attempt',
+      path: '/attempt/:id',
       element: (
         <ProtectedRoute>
-          <AttemptLayout />
+          <AttemptProvider>
+            <AttemptLayout />
+          </AttemptProvider>
         </ProtectedRoute>
       ),
       children: [
