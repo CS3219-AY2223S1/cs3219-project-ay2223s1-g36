@@ -9,6 +9,7 @@ services:
       CORS_ORIGIN: "http://localhost:3000"
       MATCHING_SERVICE_URL: "http://matching-service:8001"
       COLLAB_SERVICE_URL: "http://collab-service:8002"
+      QUESTION_SERVICE_URL: "http://question-service:8003"
   
 networks:
   default:
