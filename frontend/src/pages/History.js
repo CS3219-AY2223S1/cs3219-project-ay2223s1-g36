@@ -38,7 +38,7 @@ export default function History() {
   const handleRowClick = (params) => {
     attempt.add(params.row.id, {
       questionId: params.row.questionId,
-      code: 'hi this is ' + params.row.questionId, // replace with code param
+      code: params.row.code,
       date: formatDate(params.row.createdAt),
       language: params.row.language,
       match: params.row.partner
