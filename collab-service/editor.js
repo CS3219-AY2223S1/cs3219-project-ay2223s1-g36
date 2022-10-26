@@ -55,7 +55,7 @@ const router = express.Router()
 router.get('/code', async (req, res) => {
     const { roomId } = req.body;
     const code = await client.db("collabdb").collection("code").findOne({ _id: roomId });
-    res.status(200).send({code: code.code});
+    res.status(200).send({code: code.code, language: code.language});
 })
 
 export { joinRoom, sendKey, sendSelect, saveEditor, router as MatchRouter };

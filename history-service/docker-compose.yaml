@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  history-service:
+    build: .
+    ports:
+      - "8004:8004"
+    environment:
+      PORT: 8004
+      CORS_ORIGIN: "http://localhost:3000"
+      MATCHING_SERVICE_URL: "http://matching-service:8001"
+      COLLAB_SERVICE_URL: "http://collab-service:8002"
+  
+networks:
+  default:
+    name: peerprep-net
