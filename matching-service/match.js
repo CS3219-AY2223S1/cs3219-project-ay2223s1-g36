@@ -126,7 +126,7 @@ router.get('/match/get/all', async (req, res) => {
     res.status(200).send({matches});
 })
 
-router.get('/match/get/user', async (req, res) => {
+router.post('/match/get/user', async (req, res) => {
     const { userId } = req.body;
     const matches = await db.Match.findAll({
         where: {
@@ -139,7 +139,7 @@ router.get('/match/get/user', async (req, res) => {
     res.status(200).send({matches});
 })
 
-router.get('/match/get/room', async (req, res) => {
+router.post('/match/get/room', async (req, res) => {
     const { roomId } = req.body;
     const matches = await db.Match.findAll({
         where: {

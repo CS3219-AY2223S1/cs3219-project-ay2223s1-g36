@@ -42,7 +42,7 @@
 
 # Rest API
 ## Get code from room
-- `GET /api/code`
+- `POST /api/code`
     - Message: JSON message `{"roomId": "id"}`
     - Response: JSON message with code in this room, e.g.
         ```json
