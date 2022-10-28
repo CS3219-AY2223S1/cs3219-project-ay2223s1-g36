@@ -1,7 +1,7 @@
 import { formatDate } from '../utils/history';
 
 export const qnHistoryCols = [
-  { field: 'id', headerName: 'ID', flex: 1 },
+  { field: 'list_id', headerName: 'ID', flex: 1 },
   {
     field: 'ques_title',
     headerName: 'Question Title',

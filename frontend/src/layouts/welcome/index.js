@@ -87,7 +87,7 @@ export default function WelcomeLayout() {
       }
     });
     if (res && res.status === STATUS_CODE_OK) {
-      console.log(res);
+      // console.log(res);
       auth.login({ username: username, token: res.data.token });
       setIsLoginSuccess(true);
     }

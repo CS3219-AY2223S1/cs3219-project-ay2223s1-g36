@@ -30,6 +30,10 @@ export default function History() {
       }
     });
     if (res && res.status === STATUS_CODE_OK) {
+      var hist_arr = res.data;
+      hist_arr.map((item, index) => {
+        item['list_id'] = index + 1;
+      });
       setRows(res.data);
     }
   };
