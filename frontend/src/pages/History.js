@@ -1,8 +1,7 @@
-import { Box, Container, Typography } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import { Container, Typography } from '@mui/material';
+import HistoryGrid from '../components/history/HistoryGrid';
 import { useEffect, useState } from 'react';
 import Page from '../components/Page';
-import { qnHistoryCols } from '../const/HistoryGrid';
 import { useAttempt } from '../hooks/useAttempt';
 import { useAuth } from '../hooks/useAuth';
 import { formatDate } from '../utils/history';
@@ -14,7 +13,6 @@ export default function History() {
   const attempt = useAttempt();
   const auth = useAuth();
   const username = auth.user.username;
-  const [pageSize, setPageSize] = useState(10);
   const [rows, setRows] = useState([]);
 
   // To fetch list of past attempts from history service
@@ -73,17 +71,7 @@ export default function History() {
           Submission History
         </Typography>
 
-        <Box sx={{ height: '80vh', width: '100%' }}>
-          <DataGrid
-            rows={rows}
-            columns={qnHistoryCols}
-            onCellClick={handleRowClick}
-            pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[5, 10, 20]}
-            pagination
-          />
-        </Box>
+        <HistoryGrid rows={rows} handleRowClick={handleRowClick} />
       </Container>
     </Page>
   );
