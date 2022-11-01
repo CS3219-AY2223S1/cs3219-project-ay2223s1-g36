@@ -24,7 +24,6 @@ export default function CodeEditor({ readOnly = false, code, collabSocket, roomI
     if (roomId) {
       const response = await fetch(`${URL_COLLAB_SVC}/api/code?roomId=${roomId}`);
       const result = await response.json();
-      console.log(result);
       setLanguage(result.language);
       setCodeValue(result.code);
     }

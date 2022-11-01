@@ -22,6 +22,13 @@ function joinRoom(data) {
     }
 }
 
+function leaveRoom() {
+    logger.debug(`Leaving room ${this.roomId}...`);
+    this.to(this.room).emit("user:leave");
+    this.leave(this.room);
+    this.room = undefined;
+}
+
 function sendKey(data) {
     const { key } = data;
     logger.debug(`Receiving key ${key} and sending out to ${this.room}...`);
@@ -70,5 +77,5 @@ router.get('/code', async (req, res) => {
     }
 })
 
-export { joinRoom, sendKey, sendSelect, saveEditor, sendLanguage, router as MatchRouter };
+export { joinRoom, sendKey, sendSelect, saveEditor, sendLanguage, leaveRoom, router as MatchRouter };
 
