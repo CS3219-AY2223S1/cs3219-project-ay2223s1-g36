@@ -4,17 +4,15 @@ import * as monaco from 'monaco-editor';
 import { MonacoServices } from 'monaco-languageclient';
 import { useEffect, useRef, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
+import { URL_COLLAB_SVC } from '../../configs';
 import { CODE_EDITOR_LANGUAGE, CODE_EDITOR_OPTIONS } from './EditorConfig';
 
-export default function CodeEditor({
-  defaultLanguage = 'JavaScript',
-  readOnly = false,
-  code = '',
-  collabSocket
-}) {
-  const [language, setLanguage] = useState(defaultLanguage);
+export default function CodeEditor({ readOnly = false, code, collabSocket, roomId = '' }) {
+  const [language, setLanguage] = useState('JavaScript');
+  const [codeValue, setCodeValue] = useState(code);
   const editorOptions = CODE_EDITOR_OPTIONS;
-  let isFromSocket = false;
+  const isFromSocket = useRef(false);
+  const isLanguageFromSocket = useRef(false);
   const editorRef = useRef();
 
   if (readOnly) {
@@ -22,14 +20,37 @@ export default function CodeEditor({
     editorOptions['domReadOnly'] = true;
   }
 
+  async function retrieveCodeInfo() {
+    if (roomId) {
+      const response = await fetch(`${URL_COLLAB_SVC}/api/code?roomId=${roomId}`);
+      const result = await response.json();
+      console.log(result);
+      setLanguage(result.language);
+      setCodeValue(result.code);
+    }
+  }
+
   useEffect(() => {
     if (collabSocket) {
       collabSocket.on('editor:update', (data) => {
-        isFromSocket = true;
+        isFromSocket.current = true;
         editorRef.current.getModel().applyEdits(data.changes);
       });
+
+      collabSocket.on('language:update', (data) => {
+        isLanguageFromSocket.current = true;
+        setLanguage(data);
+      });
+    }
+
+    if (!code) {
+      retrieveCodeInfo();
     }
   }, []);
+
+  useEffect(() => {
+    retrieveCodeInfo();
+  }, [language]);
 
   const handleEditorDidMount = (editor) => {
     MonacoServices.install(monaco);
@@ -38,19 +59,28 @@ export default function CodeEditor({
   };
 
   const handleLanguageChange = (event) => {
-    setLanguage(event.target.value);
+    const newLanguage = event.target.value;
+    if (isLanguageFromSocket.current === false) {
+      collabSocket.emit('editor:language', {
+        code: editorRef.current.getValue(),
+        language: newLanguage
+      });
+      setLanguage(newLanguage);
+    } else {
+      isLanguageFromSocket.current = false;
+    }
   };
 
   const handleOnChange = (event, change) => {
     if (collabSocket && !readOnly) {
-      if (isFromSocket === false) {
+      if (isFromSocket.current === false) {
         collabSocket.emit('editor:key', { key: change });
         collabSocket.emit('editor:save', {
           code: editorRef.current.getValue(),
           language: language
         });
       } else {
-        isFromSocket = false;
+        isFromSocket.current = false;
       }
     }
   };
@@ -99,7 +129,7 @@ export default function CodeEditor({
           height={!readOnly ? '60vh' : '85vh'}
           language={language.toLocaleLowerCase()}
           theme="vs"
-          value={code}
+          value={codeValue}
           options={editorOptions}
           onChange={handleOnChange}
           editorDidMount={handleEditorDidMount}

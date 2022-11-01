@@ -34,9 +34,16 @@ function sendSelect(data) {
     this.to(this.room).emit("editor:selection", selection);
 }
 
+async function sendLanguage(data) {
+    const { code, language = 'JavaScript' } = data;
+    logger.debug(`Room ID: ${this.room} change language to ${language}`);
+    upsertCode(client, this.room, code, language);
+    this.to(this.room).emit("language:update", language);
+}
+
 function saveEditor(data) {
     const { code, language = 'JavaScript' } = data;
-    logger.debug(`this.room: ${this.room}, code: ${code}`);
+    logger.debug(`this.room: ${this.room}, code: ${code}, language: ${language}`);
     if (this.room == null || code == null) {
         logger.error(`roomId or code received is null: (${this.room}, ${code})`);
     } else {
@@ -46,21 +53,22 @@ function saveEditor(data) {
 }
 
 async function upsertCode(client, roomId, code, language) {
-    const result = await client.db("collabdb").collection("code").updateOne({ _id: roomId }, { $set: {roomId: roomId, code: code, language} }, { upsert: true });
+    const result = await client.db("collabdb").collection("code").updateOne({ _id: roomId }, { $set: {roomId: roomId, code: code, language: language} }, { upsert: true });
     logger.debug(`Save result: ${JSON.stringify(result)}`);
 }
 
 const router = express.Router()
 // TODO: authenticate with JWT first?
 router.get('/code', async (req, res) => {
-    const { roomId } = req.body;
+    const { roomId } = req.query;
+    logger.debug(`Retrieving code for Room ID: ${roomId}`);
     const code = await client.db("collabdb").collection("code").findOne({ _id: roomId });
     if (code != null) {
         res.status(200).send({code: code.code, language: code.language});
     } else {
-        res.status(200).send({ code: "", language: "Javascript"})
+        res.status(200).send({ code: "", language: "JavaScript"})
     }
 })
 
-export { joinRoom, sendKey, sendSelect, saveEditor, router as MatchRouter };
+export { joinRoom, sendKey, sendSelect, saveEditor, sendLanguage, router as MatchRouter };
 

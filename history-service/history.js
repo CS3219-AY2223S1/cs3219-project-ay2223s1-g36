@@ -27,11 +27,7 @@ export async function getUserMatchHist(req, res) {
                 delete matches[i]["user2Id"];
                 
                 // Collect code for every match in the list
-                const collabResponse = await axios.get(`${process.env.COLLAB_SERVICE_URL}/api/code`, {
-                    data: {
-                        "roomId": matches[i]["roomId"]
-                    }
-                });
+                const collabResponse = await axios.get(`${process.env.COLLAB_SERVICE_URL}/api/code?roomId=${matches[i]["roomId"]}`);
 
                 if (collabResponse && collabResponse.status == 200) {
                     matches[i] = Object.assign(matches[i], collabResponse.data);

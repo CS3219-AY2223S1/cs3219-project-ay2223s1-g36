@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import {createServer} from 'http';
 import {Server} from 'socket.io';
-import { joinRoom, sendKey, sendSelect, saveEditor, MatchRouter } from './editor.js';
+import { joinRoom, sendKey, sendSelect, saveEditor, sendLanguage, MatchRouter } from './editor.js';
 import { sendMessage } from './chat.js';
 import logger from './logger.js';
 
@@ -30,6 +30,7 @@ io.on('connection', (socket) => {
   socket.on('editor:key', sendKey.bind(socket));
   socket.on('editor:selection', sendSelect.bind(socket));
   socket.on('editor:save', saveEditor.bind(socket));
+  socket.on('editor:language', sendLanguage.bind(socket));
   socket.on('message:send', sendMessage.bind(socket));
 });
 

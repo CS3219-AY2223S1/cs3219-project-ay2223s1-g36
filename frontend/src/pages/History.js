@@ -50,6 +50,7 @@ export default function History() {
 
   useEffect(() => {
     handleHistoryFetch();
+    console.log(rows);
   }, [username]);
 
   return (

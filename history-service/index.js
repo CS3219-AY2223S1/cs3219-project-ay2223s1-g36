@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { getUserMatchHist, getUserSubmissionCount, getMatchCode } from './history.js';
+import { getUserMatchHist, getMatchCode } from './history.js';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));

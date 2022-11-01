@@ -38,7 +38,7 @@ export default function MatchLayout() {
   }, []);
 
   if (timer === -3) {
-    navigate('/');
+    navigate('/dashboard');
   }
 
   return (
