@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Page from '../components/Page';
 import WidgetMatch from '../components/widget/WidgetMatch';
 import WidgetSummary from '../components/widget/WidgetSummary';
-import { URL_HIST_SVC_USER_SUBMISSION_COUNT } from '../configs';
+import { URL_HIST_SVC_USER_HIST, URL_HIST_SVC_USER_SUBMISSION_COUNT } from '../configs';
 import { STATUS_CODE_BADREQ, STATUS_CODE_OK, STATUS_SERVER_ERROR } from '../constants';
 import { useAuth } from '../hooks/useAuth';
 
@@ -13,9 +13,9 @@ export default function Dashboard() {
   const username = auth.user.username;
   const [submissionCount, setSubmissionCount] = useState(0);
 
-  // To fetch user submission count
+  // To fetch past attempts count
   const handleSubmissionCountFetch = async () => {
-    const res = await axios.get(URL_HIST_SVC_USER_SUBMISSION_COUNT + username).catch((err) => {
+    const res = await axios.get(URL_HIST_SVC_USER_HIST + username).catch((err) => {
       if (
         err.response.status === STATUS_CODE_BADREQ ||
         err.response.status === STATUS_SERVER_ERROR
@@ -26,8 +26,8 @@ export default function Dashboard() {
       }
     });
     if (res && res.status === STATUS_CODE_OK) {
-      let submissionCountData = res.data;
-      setSubmissionCount(submissionCountData);
+      let submissionArray = res.data;
+      setSubmissionCount(submissionArray?.length || 0);
     }
   };
 
@@ -64,7 +64,7 @@ export default function Dashboard() {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={6}>
+          <Grid item xs={12} sm={12} md={6}>
             <WidgetSummary
               subTitle="Total Submissions"
               title={submissionCount}

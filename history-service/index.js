@@ -18,7 +18,6 @@ app.use('/api/history', router).all((_, res) => {
 })
 
 router.get('/getUserHistory/:userId', getUserMatchHist);
-router.get('/getUserSubmissionCount/:userId', getUserSubmissionCount);
 router.get('/getMatchCode/:roomId', getMatchCode);
 
 const HISTSVC_PORT = process.env.PORT;
