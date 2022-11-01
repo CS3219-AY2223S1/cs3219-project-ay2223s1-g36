@@ -22,4 +22,5 @@ export const URL_QN_SVC_GETDIFF = URL_QN_SVC + '/getQuesForDifficulty/';
 
 export const URL_HIST_SVC = process.env.REACT_APP_URL_HIST_SVC;
 export const URL_HIST_SVC_USER_HIST = URL_HIST_SVC + '/getUserHistory/';
+export const URL_HIST_SVC_USER_SUBMISSION_COUNT = URL_HIST_SVC + '/getUserSubmissionCount/';
 export const URL_HIST_SVC_GET_CODE = URL_HIST_SVC + '/getMatchCode/';

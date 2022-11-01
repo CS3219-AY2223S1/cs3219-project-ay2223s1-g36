@@ -1,12 +1,40 @@
 import { Container, Grid, Typography } from '@mui/material';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import Page from '../components/Page';
 import WidgetMatch from '../components/widget/WidgetMatch';
 import WidgetSummary from '../components/widget/WidgetSummary';
+import { URL_HIST_SVC_USER_SUBMISSION_COUNT } from '../configs';
+import { STATUS_CODE_BADREQ, STATUS_CODE_OK, STATUS_SERVER_ERROR } from '../constants';
 import { useAuth } from '../hooks/useAuth';
 
 export default function Dashboard() {
   const auth = useAuth();
   const username = auth.user.username;
+  const [submissionCount, setSubmissionCount] = useState(0);
+
+  // To fetch user submission count
+  const handleSubmissionCountFetch = async () => {
+    const res = await axios.get(URL_HIST_SVC_USER_SUBMISSION_COUNT + username).catch((err) => {
+      if (
+        err.response.status === STATUS_CODE_BADREQ ||
+        err.response.status === STATUS_SERVER_ERROR
+      ) {
+        console.log(err);
+      } else {
+        console.log('Please try again later');
+      }
+    });
+    if (res && res.status === STATUS_CODE_OK) {
+      let submissionCountData = res.data;
+      setSubmissionCount(submissionCountData);
+    }
+  };
+
+  useEffect(() => {
+    handleSubmissionCountFetch();
+  }, [username]);
+
   return (
     <Page title="Dashboard">
       <Container maxWidth="xl">
@@ -36,23 +64,13 @@ export default function Dashboard() {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={6}>
             <WidgetSummary
-              subTitle="Weekly Solves"
-              title={12000}
+              subTitle="Total Submissions"
+              title={submissionCount}
               color={'rgb(122, 79, 1)'}
               bgColor={'rgb(255, 247, 205)'}
               icon={'ant-design:code-outlined'}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={3}>
-            <WidgetSummary
-              subTitle="Weekly Unique Encounter"
-              title={1000}
-              color={'rgb(6, 27, 100)'}
-              bgColor={'rgb(209, 233, 252)'}
-              icon={'ant-design:user-outlined'}
             />
           </Grid>
         </Grid>

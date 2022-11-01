@@ -63,6 +63,36 @@ export async function getUserMatchHist(req, res) {
     }
 }
 
+export async function getUserSubmissionCount(req, res) {
+    const userId = req.params.userId;
+
+    let matches;
+
+    try {
+        // Get match information for the user requesting from match-service
+        const matchResponse = await axios.get(`${process.env.MATCHING_SERVICE_URL}/api/match/get/user`, {
+            data: {
+                "userId": userId
+            }
+        });
+
+        if (matchResponse && matchResponse.status == 200) {
+            matches = matchResponse.data.matches;
+
+            console.log(`Sending submission count for ${userId}`)
+
+            return res.status(200).json(matches.length);
+
+        } else {
+            console.log(`Matching service returns bad response: ${res}`)
+            return res.status(400).json({ message: `Matching service bad response ${res}` })
+        }
+        
+    } catch (err) {
+        return res.status(400).json({ message: `Problem collecting past submission count. ${err}` })
+    }
+}
+
 export async function getMatchCode(req, res) {
     const roomId = req.params.roomId;
   
@@ -73,7 +103,6 @@ export async function getMatchCode(req, res) {
               "roomId": roomId
           }
       });
-  
   
       if (collabResponse && collabResponse.status == 200) {
           return res.status(200).json(collabResponse.data);
