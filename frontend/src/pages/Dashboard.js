@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Page from '../components/Page';
 import WidgetMatch from '../components/widget/WidgetMatch';
 import WidgetSummary from '../components/widget/WidgetSummary';
-import { URL_HIST_SVC_USER_HIST, URL_HIST_SVC_USER_SUBMISSION_COUNT } from '../configs';
+import { URL_HIST_SVC_USER_HIST } from '../configs';
 import { STATUS_CODE_BADREQ, STATUS_CODE_OK, STATUS_SERVER_ERROR } from '../constants';
 import { useAuth } from '../hooks/useAuth';
 
