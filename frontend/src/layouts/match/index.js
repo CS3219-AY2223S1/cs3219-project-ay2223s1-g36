@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Alert, Box, Snackbar } from '@mui/material';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { URL_MATCH_SVC } from '../../configs';
@@ -41,6 +41,10 @@ export default function MatchLayout() {
     navigate('/dashboard');
   }
 
+  const handleOnMatchExistToastClose = () => {
+    setShowExistingMatchToast(false);
+  };
+
   return (
     <Box
       sx={{
@@ -50,7 +54,22 @@ export default function MatchLayout() {
         background: 'black'
       }}
     >
-      <Outlet context={{ timer, showExistingMatchToast }} />
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={showExistingMatchToast}
+        autoHideDuration={6000}
+        sx={{ height: '35px' }}
+      >
+        <Alert
+          variant="outlined"
+          severity="success"
+          sx={{ width: '100%', color: '#4caf50', fontWeight: '700' }}
+          onClose={handleOnMatchExistToastClose}
+        >
+          Found an existing match...joining now!
+        </Alert>
+      </Snackbar>
+      <Outlet context={{ timer }} />
     </Box>
   );
 }
