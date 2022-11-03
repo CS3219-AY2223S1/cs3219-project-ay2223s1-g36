@@ -47,6 +47,10 @@ export default function Router() {
       ),
       children: [
         {
+          path: '/',
+          element: <Navigate replace to={'/dashboard'} />
+        },
+        {
           path: 'dashboard',
           element: <Dashboard />
         },
