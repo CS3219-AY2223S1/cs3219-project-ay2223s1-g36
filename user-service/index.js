@@ -23,7 +23,7 @@ router.post('/deleteAccount', authenticateUser, deleteUser)
 router.post('/updatePassword', authenticateUser, updatePassword)
 router.post('/logout', authenticateUser, logoutUser)
 
-router.post('/auth', cors(), authenticateUser, (req, res) => {
+router.post('/auth', authenticateUser, (req, res) => {
     res.status(200).send("Welcome!");
 });
 

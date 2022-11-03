@@ -1,18 +1,56 @@
-import { Box, Container, Typography } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
-import { useState } from 'react';
+import { Container, Typography } from '@mui/material';
+import HistoryGrid from '../components/history/HistoryGrid';
+import { useEffect, useState } from 'react';
 import Page from '../components/Page';
-import { qnHistoryCols, rows } from '../const/HistoryGrid';
+import { useAttempt } from '../hooks/useAttempt';
+import { useAuth } from '../hooks/useAuth';
+import { formatDate } from '../utils/history';
+import axios from 'axios';
+import { URL_HIST_SVC_USER_HIST } from '../configs';
+import { STATUS_CODE_OK, STATUS_SERVER_ERROR, STATUS_CODE_BADREQ } from '../constants';
 
 export default function History() {
-  const [pageSize, setPageSize] = useState(10);
+  const attempt = useAttempt();
+  const auth = useAuth();
+  const username = auth.user.username;
+  const [rows, setRows] = useState([]);
 
-  const handleRowClick = (params) => {
-    console.log(params.row.qid);
-    // TODO: open to page containing submission details and code
-    // sample page
-    window.open('./attempt', '_blank');
+  // To fetch list of past attempts from history service
+  const handleHistoryFetch = async () => {
+    const res = await axios.get(URL_HIST_SVC_USER_HIST + username).catch((err) => {
+      if (
+        err.response.status === STATUS_CODE_BADREQ ||
+        err.response.status === STATUS_SERVER_ERROR
+      ) {
+        console.log(err);
+      } else {
+        console.log('Please try again later');
+      }
+    });
+    if (res && res.status === STATUS_CODE_OK) {
+      var hist_arr = res.data;
+      hist_arr.map((item, index) => {
+        item['list_id'] = index + 1;
+      });
+      setRows(res.data);
+    }
   };
+
+  // set attempt context for attempt page to refer to
+  const handleRowClick = (params) => {
+    attempt.add(params.row.id, {
+      questionId: params.row.questionId,
+      code: params.row.code,
+      date: formatDate(params.row.createdAt),
+      language: params.row.language,
+      match: params.row.partner
+    });
+    window.open('./attempt/' + params.row.id);
+  };
+
+  useEffect(() => {
+    handleHistoryFetch();
+  }, [username]);
 
   return (
     <Page title="History">
@@ -33,17 +71,7 @@ export default function History() {
           Submission History
         </Typography>
 
-        <Box sx={{ height: '80vh', width: '100%' }}>
-          <DataGrid
-            rows={rows}
-            columns={qnHistoryCols}
-            onCellClick={handleRowClick}
-            pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[5, 10, 20]}
-            pagination
-          />
-        </Box>
+        <HistoryGrid rows={rows} handleRowClick={handleRowClick} />
       </Container>
     </Page>
   );

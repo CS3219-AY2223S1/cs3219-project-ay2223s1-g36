@@ -8,10 +8,5 @@ export const MENU_OPTIONS = [
     label: 'Profile',
     icon: 'eva:person-fill',
     linkTo: '/profile'
-  },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-    linkTo: '#'
   }
 ];

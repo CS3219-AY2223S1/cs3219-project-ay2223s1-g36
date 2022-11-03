@@ -1,14 +1,16 @@
 import { Box, Typography } from '@mui/material';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 import WidgetMini from '../../components/widget/WidgetMini';
+import { useAttempt } from '../../hooks/useAttempt';
 
 export default function AttemptLayout() {
-  // TODO: Add as props: date, language, match, qid, code
-  const questionId = 1234;
-  const code = 'hi there';
-  const date = '10/10/22';
-  const language = 'Python';
-  const match = 'dummy';
+  const { id } = useParams();
+  const { questionId, code, date, language, match } = useAttempt().attempt[id];
+  // const questionId = 1234;
+  // const code = 'hi there';
+  // const date = '10/10/22';
+  // const language = 'Python';
+  // const match = 'dummy';
   return (
     <>
       <Box sx={{ display: 'flex', width: '100%' }}>

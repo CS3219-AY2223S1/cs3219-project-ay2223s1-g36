@@ -88,6 +88,7 @@ The following requests could be sent to this service:
                 {
                     "id":1,
                     "roomId":"7290b605-a967-4feb-8eaa-bfae89a48e63",
+                    "questionId": 123,
                     "user1Id":"someuuid2",
                     "user2Id":"someuuid",
                     "difficulty":"easy",
@@ -109,6 +110,7 @@ The following requests could be sent to this service:
                 {
                     "id":1,
                     "roomId":"7290b605-a967-4feb-8eaa-bfae89a48e63",
+                    "questionId": 123,
                     "user1Id":"someuuid2",
                     "user2Id":"someuuid",
                     "difficulty":"easy",
@@ -130,6 +132,7 @@ The following requests could be sent to this service:
                 {
                     "id":1,
                     "roomId":"7290b605-a967-4feb-8eaa-bfae89a48e63",
+                    "questionId": 123,
                     "user1Id":"someuuid2",
                     "user2Id":"someuuid",
                     "difficulty":"easy",
