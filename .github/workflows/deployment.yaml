@@ -2,14 +2,13 @@ name: Build and Deploy to Cloud Run
 
 on:
   push:
-    branches:
-      - production
 
 env:
   PROJECT_ID: peerprep-366106 
   GAR_LOCATION: asia-southeast1 
   REPOSITORY: peerprep 
   REGION: asia-southeast1 
+  CD_BRANCH: production
 
 jobs:
   changes:
@@ -41,9 +40,20 @@ jobs:
           frontend:
             - 'frontend/**'
 
-  deploy-matching-service:
+  test-matching-service:
     needs: changes
     if: ${{ needs.changes.outputs.matching-service == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: test
+        run: docker-compose -f matching-service/docker-compose.yaml run --rm test
+
+  deploy-matching-service:
+    needs: test-matching-service
+    if: ${{ github.ref == 'refs/heads/production' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: matching-service 
@@ -93,7 +103,7 @@ jobs:
 
   deploy-question-service:
     needs: changes
-    if: ${{ needs.changes.outputs.question-service == 'true' }}
+    if: ${{ needs.changes.outputs.question-service == 'true' && github.ref == 'refs/heads/production' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: question-service 
@@ -135,7 +145,7 @@ jobs:
 
   deploy-user-service:
     needs: changes
-    if: ${{ needs.changes.outputs.user-service == 'true' }}
+    if: ${{ needs.changes.outputs.user-service == 'true' && github.ref == 'refs/heads/production' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: user-service 
@@ -178,7 +188,7 @@ jobs:
 
   deploy-collab-service:
     needs: changes
-    if: ${{ needs.changes.outputs.collab-service == 'true' }}
+    if: ${{ needs.changes.outputs.collab-service == 'true' && github.ref == 'refs/heads/production' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: collab-service 
@@ -219,7 +229,7 @@ jobs:
 
   deploy-history-service:
     needs: changes
-    if: ${{ needs.changes.outputs.history-service == 'true' }}
+    if: ${{ needs.changes.outputs.history-service == 'true' && github.ref == 'refs/heads/production' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: history-service 
@@ -265,7 +275,7 @@ jobs:
 
   deploy-frontend:
     needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    if: ${{ needs.changes.outputs.frontend == 'true' && github.ref == 'refs/heads/production'}}
     runs-on: ubuntu-latest
     env:
       SERVICE: frontend

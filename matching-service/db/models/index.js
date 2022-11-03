@@ -7,6 +7,7 @@ const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.js')[env];
 const db = {};
+const { Umzug, SequelizeStorage } = require('umzug');
 
 let sequelize;
 if (config.use_env_variable) {
@@ -14,6 +15,29 @@ if (config.use_env_variable) {
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
+
+const migrationPath = __dirname + '/../migrations';
+const umzug = new Umzug({
+  migrations: { 
+    glob: `${migrationPath}/*.js`,
+    resolve: ({ name, path, context }) => {
+      // adjust the migration parameters Umzug will
+      // pass to migration methods, this is done because 
+      // Sequilize-CLI generates migrations that require 
+      // two parameters be passed to the up and down methods
+      // but by default Umzug will only pass the first
+      const migration = require(path || '')
+      return {
+          name,
+          up: async () => migration.up(context, Sequelize),
+          down: async () => migration.down(context, Sequelize),
+      }
+    }
+  },
+  context: sequelize.getQueryInterface(),
+  storage: new SequelizeStorage({ sequelize }),
+  logger: console,
+});
 
 fs
   .readdirSync(__dirname)
@@ -34,4 +58,5 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-module.exports = db;
+exports.db = db;
+exports.umzug = umzug;

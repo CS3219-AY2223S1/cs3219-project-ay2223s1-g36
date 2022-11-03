@@ -1,6 +1,7 @@
 import logger from './logger.js';
 import express from 'express';
-import db from './db/models/index.js';
+// import db from './db/models/index.js';
+import db from './db.js';
 import axios from 'axios';
 import { diffToIntMap, intToDiffMap } from './util.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -74,7 +75,7 @@ async function findMatch(data) {
     }
 
     // find any pending match with same difficulty
-    const pendingMatch = await db.PendingMatch.findOne({
+    const [pendingMatch, created] = await db.PendingMatch.findOrCreate({
         where: {
             userId: {
                 [db.Sequelize.Op.ne]: userId,
@@ -82,8 +83,13 @@ async function findMatch(data) {
             diffInt: diffInt
         },
         order: [['createdAt', 'ASC']], // find the oldest pending match for fairness
+        defaults: { userId: userId, socketId: this.id, diffInt: diffInt }
     });
-    if (pendingMatch) {
+
+    if (created) {
+        logger.debug(`User ${userId} waiting to find a match...`);
+        timeouts[pendingMatch.id] = setTimeout(cancelPendingMatch.bind(this), 30000, pendingMatch);
+    } else {
         logger.debug(`Found a match between user ${userId} and user ${pendingMatch.userId}`);
         // stop the timeout for the previously waiting user
         clearPendingTimeout(pendingMatch.id);
@@ -113,9 +119,6 @@ async function findMatch(data) {
         const payload = {roomId: matchRoomId, questionId: questionId};
         this.io.to(pendingMatch.socketId).emit('match:success', payload);
         this.emit('match:success', payload);
-    } else { // create timeout and join the waiting room
-        const initiator = await db.PendingMatch.create({ userId: userId, socketId: this.id, diffInt: diffInt });
-        timeouts[initiator.id] = setTimeout(cancelPendingMatch.bind(this), 30000, initiator);
     }
 }
 
