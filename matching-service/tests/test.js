@@ -35,6 +35,17 @@ describe("API test", function() {
             done();
         });
   });
+  it("Get existing user", function(done) {
+    chai.request(server)
+        .post('/api/match/get/user')
+        .send({userId: "someuuid"})
+        .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.have.property("matches").that.is.a('array');
+            res.body.should.have.property("matches").that.have.lengthOf(1);
+            done();
+        });
+  });
   it("Get non-exist user", function(done) {
     chai.request(server)
         .post('/api/match/get/user')
@@ -43,6 +54,17 @@ describe("API test", function() {
             res.should.have.status(200);
             res.body.should.have.property("matches").that.is.a('array');
             res.body.should.have.property("matches").that.have.lengthOf(0);
+            done();
+        });
+  });
+  it("Get existing room", function(done) {
+    chai.request(server)
+        .post('/api/match/get/room')
+        .send({roomId: "7290b605-a967-4feb-8eaa-bfae89a48e63"})
+        .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.have.property("matches").that.is.a('array');
+            res.body.should.have.property("matches").that.have.lengthOf(1);
             done();
         });
   });

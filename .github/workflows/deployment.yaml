@@ -53,7 +53,7 @@ jobs:
 
   deploy-matching-service:
     needs: test-matching-service
-    if: ${{ github.ref == format('refs/heads/{0}', github.env.CD_BRANCH) }}
+    if: ${{ github.ref == 'refs/heads/production' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: matching-service 
@@ -103,7 +103,7 @@ jobs:
 
   deploy-question-service:
     needs: changes
-    if: ${{ needs.changes.outputs.question-service == 'true' }}
+    if: ${{ needs.changes.outputs.question-service == 'true' && github.ref == 'refs/heads/production' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: question-service 
@@ -145,7 +145,7 @@ jobs:
 
   deploy-user-service:
     needs: changes
-    if: ${{ needs.changes.outputs.user-service == 'true' }}
+    if: ${{ needs.changes.outputs.user-service == 'true' && github.ref == 'refs/heads/production' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: user-service 
@@ -188,7 +188,7 @@ jobs:
 
   deploy-collab-service:
     needs: changes
-    if: ${{ needs.changes.outputs.collab-service == 'true' }}
+    if: ${{ needs.changes.outputs.collab-service == 'true' && github.ref == 'refs/heads/production' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: collab-service 
@@ -229,7 +229,7 @@ jobs:
 
   deploy-history-service:
     needs: changes
-    if: ${{ needs.changes.outputs.history-service == 'true' }}
+    if: ${{ needs.changes.outputs.history-service == 'true' && github.ref == 'refs/heads/production' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: history-service 
@@ -275,7 +275,7 @@ jobs:
 
   deploy-frontend:
     needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    if: ${{ needs.changes.outputs.frontend == 'true' && github.ref == 'refs/heads/production'}}
     runs-on: ubuntu-latest
     env:
       SERVICE: frontend
