@@ -41,9 +41,19 @@ jobs:
           frontend:
             - 'frontend/**'
 
-  deploy-matching-service:
+  test-matching-service:
     needs: changes
     if: ${{ needs.changes.outputs.matching-service == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: test
+        run: docker-compose -f matching-service/docker-compose.yaml run --rm test
+
+  deploy-matching-service:
+    needs: test-matching-service
     runs-on: ubuntu-latest
     env:
       SERVICE: matching-service 

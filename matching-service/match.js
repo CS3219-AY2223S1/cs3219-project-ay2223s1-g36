@@ -1,6 +1,7 @@
 import logger from './logger.js';
 import express from 'express';
-import db from './db/models/index.js';
+// import db from './db/models/index.js';
+import db from './db.js';
 import axios from 'axios';
 import { diffToIntMap, intToDiffMap } from './util.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -119,42 +120,6 @@ async function findMatch(data) {
         this.io.to(pendingMatch.socketId).emit('match:success', payload);
         this.emit('match:success', payload);
     }
-
-    // if (pendingMatch) {
-    //     logger.debug(`Found a match between user ${userId} and user ${pendingMatch.userId}`);
-    //     // stop the timeout for the previously waiting user
-    //     clearPendingTimeout(pendingMatch.id);
-    //     await pendingMatch.destroy();
-    //     const matchRoomId = uuidv4();  // chance of collision is super low, so I'll just don't handle it for now...
-        
-    //     // get question ID from question service
-    //     let questionId;
-    //     try {
-    //         logger.debug(`Fetching question from ${process.env.QUESTION_SERVICE_URL}/api/question/getQuesForDifficulty/${diffInt}`);
-    //         const res = await axios.get(`${process.env.QUESTION_SERVICE_URL}/api/question/getQuesForDifficulty/${diffInt}`)
-    //         if (res && res.status === 200) {
-    //             questionId = res.data[0].qid;
-    //         } else {
-    //             logger.error(`Question service returns bad response: ${res}`);
-    //             this.emit('match:fail', difficulty);
-    //             return;
-    //         }
-    //     } catch (err) {
-    //         logger.error("Can't contact question service" + err);
-    //         this.emit('match:fail', difficulty);
-    //         return;
-    //     }
-    //     logger.debug(`questionId: ${questionId}`);
-
-    //     await db.Match.create({ roomId: matchRoomId, questionId: questionId, user1Id: pendingMatch.userId, user2Id: userId, difficulty: difficulty.toLowerCase(), ongoing: true });
-    //     const payload = {roomId: matchRoomId, questionId: questionId};
-    //     this.io.to(pendingMatch.socketId).emit('match:success', payload);
-    //     this.emit('match:success', payload);
-    // } else { // create timeout and join the waiting room
-    //     logger.debug(`User ${userId} waiting to find a match...`);
-    //     const initiator = await db.PendingMatch.create({ userId: userId, socketId: this.id, diffInt: diffInt });
-    //     timeouts[initiator.id] = setTimeout(cancelPendingMatch.bind(this), 30000, initiator);
-    // }
 }
 
 // TODO: authenticate with JWT later?

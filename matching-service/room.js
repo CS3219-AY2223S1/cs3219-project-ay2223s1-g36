@@ -1,6 +1,7 @@
 import logger from './logger.js';
 import { intToDiffMap } from './util.js';
-import db from './db/models/index.js';
+// import db from './db/models/index.js';
+import db from './db.js';
 
 async function getOngoingMatch(roomId, userId) {
     return db.Match.findOne({

@@ -16,6 +16,11 @@ $ docker-compose up
 $ docker-compose down
 ```
 
+# Testing
+```sh
+$ docker-compose run --rm test
+```
+
 # Troubleshooting
 If there's some new updates to the code that changes the database layout, errors related to the database migth be thrown when using the service. In that case, try removing the docker volume and restart again by doing:
 ```sh
