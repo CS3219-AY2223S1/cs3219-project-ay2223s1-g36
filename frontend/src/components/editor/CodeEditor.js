@@ -22,7 +22,13 @@ export default function CodeEditor({ readOnly = false, code, collabSocket, roomI
 
   async function retrieveCodeInfo() {
     if (roomId) {
-      const response = await fetch(`${URL_COLLAB_SVC}/api/code?roomId=${roomId}`);
+      const response = await fetch(`${URL_COLLAB_SVC}/api/code`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ roomId })
+      });
       const result = await response.json();
       setLanguage(result.language);
       setCodeValue(result.code);
