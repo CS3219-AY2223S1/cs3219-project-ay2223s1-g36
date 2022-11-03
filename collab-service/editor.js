@@ -66,9 +66,8 @@ async function upsertCode(client, roomId, code, language) {
 
 const router = express.Router()
 // TODO: authenticate with JWT first?
-router.get('/code', async (req, res) => {
-    const { roomId } = req.query;
-    logger.debug(`Retrieving code for Room ID: ${roomId}`);
+router.post('/code', async (req, res) => {
+    const { roomId } = req.body;
     const code = await client.db("collabdb").collection("code").findOne({ _id: roomId });
     if (code != null) {
         res.status(200).send({code: code.code, language: code.language});
