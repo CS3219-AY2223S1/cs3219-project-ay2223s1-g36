@@ -2,14 +2,13 @@ name: Build and Deploy to Cloud Run
 
 on:
   push:
-    branches:
-      - production
 
 env:
   PROJECT_ID: peerprep-366106 
   GAR_LOCATION: asia-southeast1 
   REPOSITORY: peerprep 
   REGION: asia-southeast1 
+  CD_BRANCH: production
 
 jobs:
   changes:
@@ -54,6 +53,7 @@ jobs:
 
   deploy-matching-service:
     needs: test-matching-service
+    if: ${{ github.ref == format('refs/heads/{0}', github.env.CD_BRANCH) }}
     runs-on: ubuntu-latest
     env:
       SERVICE: matching-service 
