@@ -7,10 +7,8 @@ export async function getUserMatchHist(req, res) {
 
     try {
         // Get match information for the user requesting from match-service
-        const matchResponse = await axios.get(`${process.env.MATCHING_SERVICE_URL}/api/match/get/user`, {
-            data: {
-                "userId": userId
-            }
+        const matchResponse = await axios.post(`${process.env.MATCHING_SERVICE_URL}/api/match/get/user`, {
+            "userId": userId
         });
 
         if (matchResponse && matchResponse.status == 200) {
@@ -27,7 +25,9 @@ export async function getUserMatchHist(req, res) {
                 delete matches[i]["user2Id"];
                 
                 // Collect code for every match in the list
-                const collabResponse = await axios.get(`${process.env.COLLAB_SERVICE_URL}/api/code?roomId=${matches[i]["roomId"]}`);
+                const collabResponse = await axios.post(`${process.env.COLLAB_SERVICE_URL}/api/code`, {
+                    "roomId": matches[i]["roomId"]
+                });
 
                 if (collabResponse && collabResponse.status == 200) {
                     matches[i] = Object.assign(matches[i], collabResponse.data);
@@ -64,10 +64,8 @@ export async function getMatchCode(req, res) {
   
     try {
       // Get match information for the user requesting from match-service
-      const collabResponse = await axios.get(`${process.env.COLLAB_SERVICE_URL}/api/code`, {
-          data: {
-              "roomId": roomId
-          }
+      const collabResponse = await axios.post(`${process.env.COLLAB_SERVICE_URL}/api/code`, {
+            "roomId": roomId
       });
   
       if (collabResponse && collabResponse.status == 200) {

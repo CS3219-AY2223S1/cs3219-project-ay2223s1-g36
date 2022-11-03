@@ -52,12 +52,11 @@
 # Rest API
 
 ## Get code from room
-
-- `GET /api/code`
-  - Message: JSON message `{"roomId": "id"}`
-  - Response: JSON message with code in this room, e.g.
-    ```json
-    {
-      "code": "some code here int x = 0;"
-    }
-    ```
+- `POST /api/code`
+    - Message: JSON message `{"roomId": "id"}`
+    - Response: JSON message with code in this room, e.g.
+        ```json
+        {
+            "code": "some code here int x = 0;"
+        }
+        ```

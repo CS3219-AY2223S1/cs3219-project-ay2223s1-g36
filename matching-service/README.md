@@ -101,7 +101,7 @@ The following requests could be sent to this service:
         ```
 
 ## Getting matches for a specific user
-- `GET /api/match/get/user`
+- `POST /api/match/get/user`
     - Message: `{"userId": "id"}`
     - Response: JSON message with list of matches for the user, e.g.
         ```json
@@ -123,7 +123,7 @@ The following requests could be sent to this service:
         ```
 
 ## Getting matches for a specific room
-- `GET /api/match/get/room`
+- `POST /api/match/get/room`
     - Message: `{"roomId": "id"}`
     - Response: JSON message with list of matches (with 1 element since roomId is unique) for the room, e.g.
         ```json
