@@ -1,4 +1,4 @@
-import { formatDate } from '../utils/history';
+// import { formatDate } from '../utils/history';
 
 export const qnHistoryCols = [
   { field: 'list_id', headerName: 'ID', flex: 1 },
@@ -22,7 +22,7 @@ export const qnHistoryCols = [
     headerName: 'Date of Attempt',
     flex: 3,
     valueFormatter: (params) => {
-      return params.value != null ? `${formatDate(params.value)}` : '';
+      return params.value != null ? `${params.value}` : '';
     }
   }
 ];

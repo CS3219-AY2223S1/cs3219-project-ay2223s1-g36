@@ -5,19 +5,13 @@ const AttemptContext = createContext();
 export const AttemptProvider = ({ children }) => {
   const [attempt, setAttempt] = useLocalStorage('attempt', null);
 
-  // call this function when you want to set history attempt id and details
-  const add = (id, data) => {
-    if (attempt === null) {
-      setAttempt({ [id]: data });
-    } else {
-      setAttempt({ ...attempt, [id]: data });
-    }
+  // call this function when you want to set history attempt details
+  const add = (data) => {
+    setAttempt(data);
   };
-
   // call this function to clear attempt
   const clear = () => {
     setAttempt(null);
-    localStorage.clear();
   };
 
   const value = useMemo(

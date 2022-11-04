@@ -1,16 +1,14 @@
 import { Box, Typography } from '@mui/material';
-import { Outlet, useParams } from 'react-router-dom';
+import { Outlet, useParams, Navigate } from 'react-router-dom';
 import WidgetMini from '../../components/widget/WidgetMini';
 import { useAttempt } from '../../hooks/useAttempt';
 
 export default function AttemptLayout() {
   const { id } = useParams();
-  const { questionId, code, date, language, match } = useAttempt().attempt[id];
-  // const questionId = 1234;
-  // const code = 'hi there';
-  // const date = '10/10/22';
-  // const language = 'Python';
-  // const match = 'dummy';
+  const { questionId, code, date, language, partner } = useAttempt().attempt[id - 1] || {};
+  if (!date && !language && !partner) {
+    return <Navigate replace to={'/404'} />;
+  }
   return (
     <>
       <Box sx={{ display: 'flex', width: '100%' }}>
@@ -37,7 +35,7 @@ export default function AttemptLayout() {
         <Box sx={{ px: 2.5, py: 3, display: 'inline-flex', alignItems: 'center' }}>
           <WidgetMini>Date of attempt: {date}</WidgetMini>
           <WidgetMini>Language: {language}</WidgetMini>
-          <WidgetMini>Matched with: @{match}</WidgetMini>
+          <WidgetMini>Matched with: @{partner}</WidgetMini>
         </Box>
       </Box>
 

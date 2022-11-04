@@ -28,24 +28,17 @@ export default function History() {
       }
     });
     if (res && res.status === STATUS_CODE_OK) {
-      var hist_arr = res.data;
-      hist_arr.map((item, index) => {
+      res.data.map((item, index) => {
         item['list_id'] = index + 1;
+        item['date'] = formatDate(item['createdAt']);
       });
       setRows(res.data);
+      attempt.add(res.data);
     }
   };
 
-  // set attempt context for attempt page to refer to
   const handleRowClick = (params) => {
-    attempt.add(params.row.id, {
-      questionId: params.row.questionId,
-      code: params.row.code,
-      date: formatDate(params.row.createdAt),
-      language: params.row.language,
-      match: params.row.partner
-    });
-    window.open('./attempt/' + params.row.id);
+    window.open('./attempt/' + params.row.list_id);
   };
 
   useEffect(() => {
