@@ -1,6 +1,23 @@
+# Collaboration service
+## Running the service
+
+```sh
+$ docker-compose up --build
+```
+
+## Stopping the service
+```sh
+$ docker-compose down
+```
+
+## Testing the service
+```sh
+$ docker-compose -f docker-compose.test.yaml up --build --abort-on-container-exit
+```
+
 # Socket.IO events
 
-## Server listens:
+## Server will listen:
 
 - `room:join`
   - Message: JSON message
@@ -36,7 +53,7 @@
     ```
   - The `userId` is the sender's user ID.
 
-## Client listens:
+## Client should listen:
 
 - `editor:update`
   - Message: IModelContentChangedEvent

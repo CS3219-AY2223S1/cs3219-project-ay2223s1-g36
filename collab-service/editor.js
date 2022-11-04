@@ -76,5 +76,5 @@ router.post('/code', async (req, res) => {
     }
 })
 
-export { joinRoom, sendKey, sendSelect, saveEditor, sendLanguage, leaveRoom, router as MatchRouter };
+export { joinRoom, sendKey, sendSelect, saveEditor, sendLanguage, leaveRoom, client as mongoclient, router as MatchRouter };
 

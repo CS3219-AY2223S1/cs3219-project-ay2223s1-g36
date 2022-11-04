@@ -186,9 +186,20 @@ jobs:
             DB_CLOUD_URI=USER_SERVICE_MONGO_URL:latest
             TOKEN_KEY=USER_SERVICE_JWT_TOKEN:latest
 
-  deploy-collab-service:
+  test-collab-service:
     needs: changes
-    if: ${{ needs.changes.outputs.collab-service == 'true' && github.ref == 'refs/heads/production' }}
+    if: ${{ needs.changes.outputs.collab-service == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: test
+        run: docker-compose -f collab-service/docker-compose.test.yaml up --build --abort-on-container-exit
+
+  deploy-collab-service:
+    needs: test-collab-service
+    if: ${{ github.ref == 'refs/heads/production' }}
     runs-on: ubuntu-latest
     env:
       SERVICE: collab-service 
