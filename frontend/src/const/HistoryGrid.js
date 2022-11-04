@@ -18,7 +18,7 @@ export const qnHistoryCols = [
     }
   },
   {
-    field: 'createdAt',
+    field: 'date',
     headerName: 'Date of Attempt',
     flex: 3,
     valueFormatter: (params) => {
