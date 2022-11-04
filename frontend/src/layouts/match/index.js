@@ -11,8 +11,13 @@ export default function MatchLayout() {
   const { state } = useLocation();
   const difficulty = state ? state.difficulty : 'Not chosen';
   const userId = JSON.parse(localStorage.getItem('user')).username;
+  const hasValidMatchInformation = difficulty !== 'Not chosen';
 
   useEffect(() => {
+    if (!hasValidMatchInformation) {
+      navigate('/dashboard');
+      return;
+    }
     const matchSocket = io(URL_MATCH_SVC);
 
     matchSocket.on('connect', () => {
@@ -45,7 +50,7 @@ export default function MatchLayout() {
     setShowExistingMatchToast(false);
   };
 
-  return (
+  return hasValidMatchInformation ? (
     <Box
       sx={{
         display: 'flex',
@@ -71,5 +76,5 @@ export default function MatchLayout() {
       </Snackbar>
       <Outlet context={{ timer }} />
     </Box>
-  );
+  ) : null;
 }
