@@ -48,7 +48,7 @@ export default function CodeEditor({ readOnly = false, code, collabSocket, roomI
       });
     }
 
-    if (!code) {
+    if (!readOnly) {
       retrieveCodeInfo();
     }
   }, []);

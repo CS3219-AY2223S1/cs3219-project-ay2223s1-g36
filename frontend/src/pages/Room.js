@@ -1,18 +1,18 @@
-import { Alert, Snackbar, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import Split from 'react-split';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
+import ChatBox from '../components/chat';
+import CodeEditor from '../components/editor/CodeEditor';
+import LeaveRoomAlert from '../components/LeaveRoomAlert';
 import Page from '../components/Page';
 import Question from '../components/Question';
-import CodeEditor from '../components/editor/CodeEditor';
-import ChatBox from '../components/chat';
 
 export default function Room() {
   const { roomId, difficulty, questionId, collabSocket } = useOutletContext();
-  const [showUserLeft, setShowUserLeft] = useState(false);
 
   useEffect(() => {
     collabSocket.on('connect', () => {
@@ -20,22 +20,10 @@ export default function Room() {
       console.log(`Joined room: ${roomId}`);
     });
 
-    collabSocket.on('user:leave', () => {
-      setShowUserLeft(true);
-    });
-
     return () => {
       collabSocket.off();
     };
   }, []);
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setShowUserLeft(false);
-  };
 
   return (
     <Page title="Room" navbar={false}>
@@ -82,20 +70,7 @@ export default function Room() {
           <CodeEditor roomId={roomId} collabSocket={collabSocket} />
         </Split>
         <ChatBox collabSocket={collabSocket} />
-        <Snackbar
-          open={showUserLeft}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right'
-          }}
-          autoHideDuration={6000}
-          onClose={handleClose}
-          sx={{ marginTop: '50px' }}
-        >
-          <Alert onClose={handleClose} severity="info" sx={{ width: '100%' }}>
-            Your partner has left the match. The room will close after you leave it.
-          </Alert>
-        </Snackbar>
+        <LeaveRoomAlert collabSocket={collabSocket} />
       </Box>
     </Page>
   );
