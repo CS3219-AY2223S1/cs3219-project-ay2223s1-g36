@@ -3,7 +3,7 @@ import { useAuth } from '../hooks/useAuth';
 
 export const ProtectedRoute = ({ children, redirectPath = '/welcome/login' }) => {
   const { user, checkAuth } = useAuth();
-  if (!user || !checkAuth(user)) {
+  if (!user || !checkAuth(user.username)) {
     return <Navigate replace to={redirectPath} />;
   }
   return children;
