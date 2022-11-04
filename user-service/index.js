@@ -24,7 +24,7 @@ router.post('/updatePassword', authenticateUser, updatePassword)
 router.post('/logout', authenticateUser, logoutUser)
 
 router.post('/auth', authenticateUser, (req, res) => {
-    res.status(200).send("Welcome!");
+    res.status(200).send("Authenticated!");
 });
 
 

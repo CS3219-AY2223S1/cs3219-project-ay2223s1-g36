@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { URL_USER_SVC_AUTH } from '../configs';
@@ -8,7 +8,6 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useLocalStorage('user', null);
-  const [isAuth, setAuthStatus] = useState(false);
   const navigate = useNavigate();
 
   // call this function when you want to authenticate the user
@@ -17,18 +16,19 @@ export const AuthProvider = ({ children }) => {
       .post(URL_USER_SVC_AUTH, { user }, { withCredentials: true })
       .catch((err) => {
         if (err.response.status === STATUS_CODE_UNAUTH) {
-          logout();
+          setUser(null);
+          localStorage.clear();
         }
-        setAuthStatus(false);
+        return false;
       });
     if (res && res.status === STATUS_CODE_OK) {
-      setAuthStatus(true);
+      return true;
     }
   };
 
   const login = async (data) => {
-    setUser(data);
     document.cookie = 'token=' + data.token;
+    setUser(data); // user, token
     navigate('/dashboard');
   };
 
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
       login,
       logout
     }),
-    [user, isAuth]
+    [user]
   );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

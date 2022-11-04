@@ -106,10 +106,10 @@ export async function loginUser(req, res) {
 export async function authenticateUser(req, res, next) {
     try {
         const {token} = req.cookies;
+        console.log(req.cookies);
         if (!token) {
             return res.status(401).json({message: 'Please login to access the data'});
         }
-        console.log(req.cookies);
 
         // Check that token is correct and matches with database
         const validToken  = await _checkToken(token);
