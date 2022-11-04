@@ -85,7 +85,7 @@ async function findMatch(data) {
         order: [['createdAt', 'ASC']], // find the oldest pending match for fairness
         defaults: { userId: userId, socketId: this.id, diffInt: diffInt }
     });
-
+    
     if (created) {
         logger.debug(`User ${userId} waiting to find a match...`);
         timeouts[pendingMatch.id] = setTimeout(cancelPendingMatch.bind(this), 30000, pendingMatch);

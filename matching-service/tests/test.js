@@ -1,17 +1,17 @@
 import { createServer } from "http";
-// import { io as Client } from "socket.io-client";
+import { io as Client } from "socket.io-client";
 import db from "../db.js";
-import { app } from '../app.js';
+import { app, setupIO } from '../app.js';
 import chai from "chai";
 import chaiHttp from 'chai-http';
 
 const should = chai.should();
 const have = chai.have;
-chai.use(chaiHttp);
-const server = createServer(app);
+const assert = chai.assert;
 
 describe("API test", function() {
-  this.timeout(10000);
+  chai.use(chaiHttp);
+  const server = createServer(app);
   before((done) => {
     db.Match.create({ 
         roomId: "7290b605-a967-4feb-8eaa-bfae89a48e63",
@@ -24,6 +24,15 @@ describe("API test", function() {
         done();
     })
   });
+
+  after((done) => {
+    db.Match.destroy({
+      where: {},
+      truncate: true
+    }).then(() => {
+      done();
+    })
+  })
 
   it("Get all matches", function(done) {
     chai.request(server)
@@ -70,32 +79,40 @@ describe("API test", function() {
   });
 });
 
-// describe("Matching test", () => {
-//   let io, clientSocket;
-//   before((done) => {
-//     const httpServer = createServer(app);
-//     io = setupIO(httpServer);
-//     httpServer.listen(() => {
-//       const port = httpServer.address().port;
-//       clientSocket = new Client(`http://localhost:${port}`);
-//       clientSocket.on("connect", done);
-//     });
-//   });
+describe("Matching test", () => {
+  let io, clientSocket;
+  before((done) => {
+    const httpServer = createServer(app);
+    io = setupIO(httpServer);
+    httpServer.listen(() => {
+      const port = httpServer.address().port;
+      clientSocket = new Client(`http://localhost:${port}`);
+      clientSocket.on("connect", done);
+    });
+  });
 
-//   after(() => {
-//     io.close();
-//     clientSocket.close();
-//   })
+  after(() => {
+    io.close();
+    clientSocket.close();
+  })
 
-//   it("Match success when user found match", function(done) {
-//     // this.timeout(30000);
-//     clientSocket.on("match:success", (data) => {
-//       data.should.have.property("roomId");
-//       data.should.have.property("questionId");
-//       done();
-//     });
-//     db.PendingMatch.create({ userId: "user1", socketId: "randomid", diffInt: 1 }).then(() => {
-//       clientSocket.emit("match:find", {userId: "user2", difficulty: "easy"});
-//     });
-//   });
-// });
+  it("Return ongoing match if exists", function(done) {
+    clientSocket.on("match:exists", (data) => {
+      data.should.have.property("roomId").that.is.equal("7290b605-a967-4feb-8eaa-bfae89a48e63");
+      data.should.have.property("questionId").that.is.equal(123);
+      done();
+    });
+
+    db.Match.create({ 
+      roomId: "7290b605-a967-4feb-8eaa-bfae89a48e63",
+      questionId: 123,
+      user1Id: "someuuid",
+      user2Id: "someuuid2",
+      difficulty: "easy",
+      ongoing: true
+    }).then(() => {
+      clientSocket.emit("match:find", {userId: "someuuid", difficulty: "medium"});
+    });
+    
+  });
+});
