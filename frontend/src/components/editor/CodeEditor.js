@@ -131,7 +131,7 @@ export default function CodeEditor({ readOnly = false, code, collabSocket, roomI
       <Box sx={{ border: '1px #d9d9d9 solid' }}>
         <MonacoEditor
           width="100%"
-          height={!readOnly ? '60vh' : '85vh'}
+          height={!readOnly ? '64vh' : '85vh'}
           language={language.toLocaleLowerCase()}
           theme="vs"
           value={codeValue}

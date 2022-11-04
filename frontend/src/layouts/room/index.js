@@ -1,18 +1,26 @@
 import { Box } from '@mui/material';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import RoomNavBar from '../../components/RoomNavBar';
 import { URL_MATCH_SVC, URL_COLLAB_SVC } from '../../configs';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export default function RoomLayout() {
   const { state } = useLocation();
+  const navigate = useNavigate();
   const roomId = state ? state.roomId : 'Not found';
   const difficulty = state ? state.difficulty : 'Not chosen';
   const questionId = state ? state.questionId : '0';
   const collabSocket = useMemo(() => io(URL_COLLAB_SVC), [roomId]);
-
   const userId = JSON.parse(localStorage.getItem('user')).username;
+  const hasValidRoomInformation = roomId !== 'Not found' && difficulty !== 'Not chosen';
+
+  useEffect(() => {
+    if (!hasValidRoomInformation) {
+      navigate('/dashboard');
+      return;
+    }
+  }, []);
 
   const handleOnLeaveRoom = () => {
     const matchSocket = io(URL_MATCH_SVC);
@@ -20,7 +28,7 @@ export default function RoomLayout() {
     collabSocket.emit('room:leave');
   };
 
-  return (
+  return hasValidRoomInformation ? (
     <Box
       sx={{
         display: 'flex',
@@ -41,5 +49,5 @@ export default function RoomLayout() {
         <Outlet context={{ roomId, difficulty, questionId, collabSocket }} />
       </Box>
     </Box>
-  );
+  ) : null;
 }
