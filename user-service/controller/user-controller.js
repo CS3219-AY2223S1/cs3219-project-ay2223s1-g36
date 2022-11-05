@@ -90,7 +90,7 @@ export async function loginUser(req, res) {
             const [tokenSaved, token] = await _saveToken(username);
             if (tokenSaved) {
                 console.log(`Successful login!`);
-                return res.status(200).cookie('token', token).json({message: `${username} is logged in.`, username: username, token: token});
+                return res.status(200).cookie('token', token, {sameSite: 'none', httpOnly: true, secure: true}).json({message: `${username} is logged in.`, username: username, token: token});
             } else {
                 return res.status(500).json({message: 'Error creating JWT token'});
             }
