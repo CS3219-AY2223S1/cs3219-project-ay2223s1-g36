@@ -74,7 +74,7 @@ export async function loginUser(req, res) {
         // Locate user and authenticate the login
         if (credMatch) {
             // Prevents user from logging in via the same token
-            const cookieToken = req.cookies.token;
+            const cookieToken = req.body.token;
             try {
                 if (userDetails.token == cookieToken && await _checkToken(cookieToken)) {
                     return res.status(400).json({message: 'User is already logged in!'})
@@ -90,7 +90,7 @@ export async function loginUser(req, res) {
             const [tokenSaved, token] = await _saveToken(username);
             if (tokenSaved) {
                 console.log(`Successful login!`);
-                return res.status(200).cookie('token', token, {sameSite: 'none', httpOnly: true, secure: true}).json({message: `${username} is logged in.`, username: username, token: token});
+                return res.status(200).json({message: `${username} is logged in.`, username: username, token: token});
             } else {
                 return res.status(500).json({message: 'Error creating JWT token'});
             }
@@ -113,8 +113,8 @@ export async function loginUser(req, res) {
 // Middleware for user authentication before action takes place
 export async function authenticateUser(req, res, next) {
     try {
-        const {token} = req.cookies;
-        console.log(req.cookies);
+        const token = req.body.token;
+        console.log(req.body.token);
         if (!token) {
             return res.status(401).json({message: 'Please login to access the data'});
         }

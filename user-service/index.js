@@ -16,13 +16,6 @@ app.use(cors({
 
 app.use(cookieParser())
 
-app.use(cookieSession({
-    secret:'thisisasecret',
-    sameSite: 'none',
-    secure: true,
-    httpOnly: true,
-}),)
-
 const router = express.Router()
 
 // Controller will contain all the User-defined Routes
