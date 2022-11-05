@@ -26,6 +26,7 @@ export default function RoomLayout() {
     const matchSocket = io(URL_MATCH_SVC);
     matchSocket.emit('room:leave', { userId, roomId });
     collabSocket.emit('room:leave');
+    localStorage.removeItem('partner_status');
   };
 
   return hasValidRoomInformation ? (

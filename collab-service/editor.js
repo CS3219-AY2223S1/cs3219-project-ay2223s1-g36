@@ -19,7 +19,15 @@ function joinRoom(data) {
         logger.debug(`Joining room ${roomId}...`);
         this.room = roomId;
         this.join(roomId);
+        const totalUsers = this.io.sockets.adapter.rooms.get(roomId).size;
+        this.to(roomId).emit("room:join:success", totalUsers);
     }
+}
+
+function disconnectRoom() {
+    logger.debug(`Connection ${this.id} is closed.`);
+    this.to(this.room).emit("user:disconnect");
+    this.leave(this.room);
 }
 
 function leaveRoom() {
@@ -76,5 +84,5 @@ router.post('/code', async (req, res) => {
     }
 })
 
-export { joinRoom, sendKey, sendSelect, saveEditor, sendLanguage, leaveRoom, client as mongoclient, router as MatchRouter };
+export { joinRoom, disconnectRoom, sendKey, sendSelect, saveEditor, sendLanguage, leaveRoom, client as mongoclient, router as MatchRouter };
 

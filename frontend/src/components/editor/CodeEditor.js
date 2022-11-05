@@ -5,6 +5,7 @@ import { MonacoServices } from 'monaco-languageclient';
 import { useEffect, useRef, useState } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import { URL_COLLAB_SVC } from '../../configs';
+import UserOnlineStatus from '../UserOnlineStatus';
 import { CODE_EDITOR_LANGUAGE, CODE_EDITOR_OPTIONS } from './EditorConfig';
 
 export default function CodeEditor({ readOnly = false, code, collabSocket, roomId = '' }) {
@@ -103,30 +104,33 @@ export default function CodeEditor({ readOnly = false, code, collabSocket, roomI
       }}
     >
       {!readOnly && (
-        <FormControl sx={{ margin: '10px 0', paddingLeft: '1%' }}>
-          <InputLabel id="demo-simple-select-label" sx={{ marginLeft: '5%' }}>
-            Language
-          </InputLabel>
-          <Box display={'flex'}>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="Language"
-              value={language}
-              placeholder="Select Language"
-              onChange={handleLanguageChange}
-              sx={{ minWidth: '150px', maxHeight: '40px' }}
-            >
-              {CODE_EDITOR_LANGUAGE.map((element) => {
-                return (
-                  <MenuItem key={element} value={element}>
-                    {element}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </Box>
-        </FormControl>
+        <>
+          <FormControl sx={{ margin: '10px 0', paddingLeft: '1%' }}>
+            <InputLabel id="demo-simple-select-label" sx={{ marginLeft: '5%' }}>
+              Language
+            </InputLabel>
+            <Box display={'flex'}>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Language"
+                value={language}
+                placeholder="Select Language"
+                onChange={handleLanguageChange}
+                sx={{ minWidth: '150px', maxHeight: '40px' }}
+              >
+                {CODE_EDITOR_LANGUAGE.map((element) => {
+                  return (
+                    <MenuItem key={element} value={element}>
+                      {element}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </Box>
+          </FormControl>
+          <UserOnlineStatus collabSocket={collabSocket} />
+        </>
       )}
       <Box sx={{ border: '1px #d9d9d9 solid' }}>
         <MonacoEditor

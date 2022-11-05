@@ -10,6 +10,7 @@ import CodeEditor from '../components/editor/CodeEditor';
 import LeaveRoomAlert from '../components/LeaveRoomAlert';
 import Page from '../components/Page';
 import Question from '../components/Question';
+import { USER_STATUS_DISCONNECTED } from '../const/UserStatus';
 
 export default function Room() {
   const { roomId, difficulty, questionId, collabSocket } = useOutletContext();
@@ -18,6 +19,10 @@ export default function Room() {
     collabSocket.on('connect', () => {
       collabSocket.emit('room:join', { roomId });
       console.log(`Joined room: ${roomId}`);
+      const currentPartnerStatus = localStorage.getItem('partner_status');
+      if (currentPartnerStatus == null) {
+        localStorage.setItem('partner_status', USER_STATUS_DISCONNECTED);
+      }
     });
 
     return () => {
