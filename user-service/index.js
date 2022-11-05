@@ -31,7 +31,9 @@ router.post('/auth', authenticateUser, (req, res) => {
 app.use('/api/user', router).all((req, res, next) => {
     res.setHeader('content-type', 'application/json')
     res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
-    res.setHeader('Access-Control-Allow-Credentials', true)
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', true);
+    return next();
 })
 
 app.listen(PORT, () => console.log(`user-service listening on port ${PORT}`));
