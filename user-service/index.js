@@ -8,8 +8,9 @@ const app = express();
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cors({
-    origin: ['http://localhost', 'https://frontend-lpaj6pcqsa-as.a.run.app/', 'https://user-service-lpaj6pcqsa-as.a.run.app/'],
-    credentials: true
+    origin: 'https://frontend-lpaj6pcqsa-as.a.run.app/',
+    credentials: true,
+    preflightContinue: true
 }))
 
 app.use(cookieParser())
@@ -28,11 +29,11 @@ router.post('/auth', authenticateUser, (req, res) => {
     res.status(200).send("Authenticated!");
 });
 
-app.use('/api/user', (req, res, next) => {
+app.use('/api/user', router, (req, res, next) => {
     res.setHeader('content-type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', 'https://frontend-lpaj6pcqsa-as.a.run.app/');
     res.header('Access-Control-Allow-Credentials', true);
     return next();
-}, router)
+})
 
 app.listen(PORT, () => console.log(`user-service listening on port ${PORT}`));
