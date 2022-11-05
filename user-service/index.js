@@ -8,7 +8,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cors({
-    origin: 'https://frontend-lpaj6pcqsa-as.a.run.app/',
+    origin: 'https://frontend-lpaj6pcqsa-as.a.run.app',
     credentials: true,
     preflightContinue: true
 }))
