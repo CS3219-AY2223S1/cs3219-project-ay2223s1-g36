@@ -73,7 +73,7 @@ export async function loginUser(req, res) {
         // Locate user and authenticate the login
         if (credMatch) {
             // Prevents user from logging in via the same token
-            const {cookieToken} = req.cookies;
+            const cookieToken = req.cookies.token;
             if (userDetails.token == cookieToken && await _checkToken(cookieToken)) {
                 return res.status(400).json({message: 'User is already logged in!'})
             } 
