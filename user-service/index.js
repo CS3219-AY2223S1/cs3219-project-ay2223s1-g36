@@ -9,8 +9,9 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cors({
     origin: process.env.CORS_ORIGIN.split("|"),
-    credentials: true,
+    credentials: true
 }))
+
 app.use(cookieParser())
 
 const router = express.Router()
@@ -27,11 +28,9 @@ router.post('/auth', authenticateUser, (req, res) => {
     res.status(200).send("Authenticated!");
 });
 
-
-app.use('/api/user', router).all((req, res, next) => {
-    res.setHeader('content-type', 'application/json')
-    res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+app.use('/api/user', router, (req, res, next) => {
+    res.setHeader('content-type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Credentials', true);
     return next();
 })
