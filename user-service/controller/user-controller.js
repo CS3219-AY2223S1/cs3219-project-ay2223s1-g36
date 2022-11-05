@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken'
 import { ormCreateUser as _createUser } from '../model/user-orm.js'
 import { ormCheckUserExistence as _checkUser } from '../model/user-orm.js'
 import { ormCheckCredentials as _checkCredentials } from '../model/user-orm.js'
@@ -74,9 +75,16 @@ export async function loginUser(req, res) {
         if (credMatch) {
             // Prevents user from logging in via the same token
             const cookieToken = req.cookies.token;
-            if (userDetails.token == cookieToken && await _checkToken(cookieToken)) {
-                return res.status(400).json({message: 'User is already logged in!'})
-            } 
+            try {
+                if (userDetails.token == cookieToken && await _checkToken(cookieToken)) {
+                    return res.status(400).json({message: 'User is already logged in!'})
+                } 
+            } catch (err) {
+                // Proceeds to generate if token expired and login is attempted
+                if (!(err instanceof jwt.TokenExpiredError)) {
+                    return res.status(400).json({message: 'Error checking database!'})
+                }
+            }
 
             // Generate JWT and send the cookie to user
             const [tokenSaved, token] = await _saveToken(username);

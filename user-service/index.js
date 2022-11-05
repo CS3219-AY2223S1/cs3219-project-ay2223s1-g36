@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { authenticateUser, createUser, loginUser, deleteUser, updatePassword, logoutUser } from './controller/user-controller.js';
 import cookieParser from 'cookie-parser';
+import cookieSession from 'cookie-session'
 
 const PORT = process.env.PORT;
 const app = express();
@@ -14,6 +15,13 @@ app.use(cors({
 }))
 
 app.use(cookieParser())
+
+app.use(cookieSession({
+    secret:'thisisasecret',
+    sameSite: 'none',
+    secure: true,
+    httpOnly: true,
+}),)
 
 const router = express.Router()
 
