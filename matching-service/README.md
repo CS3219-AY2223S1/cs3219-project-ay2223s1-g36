@@ -1,5 +1,5 @@
 # Matching Service
-A PeerPrep matching microservice that works on Socket.io
+A PeerPrep matching microservice.
 
 # Prerequisites
 - Docker
