@@ -31,6 +31,7 @@ export default function Profile() {
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
 
   const username = auth.user.username;
+  const token = auth.user.token;
 
   const handlePWchange = async () => {
     if (newPassword != '' && !validatePasswordStrength(newPassword)) {
@@ -41,7 +42,7 @@ export default function Profile() {
     }
     setIsPWChangeSuccess(false);
     const res = await axios
-      .post(URL_USER_SVC_UPDATEPW, { username, newPassword }, { withCredentials: true })
+      .post(URL_USER_SVC_UPDATEPW, { username, newPassword, token }, { withCredentials: true })
       .catch((err) => {
         if (err.response.status === STATUS_CODE_BADREQ) {
           setErrorDialog(res.data.message);
@@ -59,7 +60,7 @@ export default function Profile() {
   const handleAccDelete = async () => {
     setIsDeleteSuccess(false);
     const res = await axios
-      .post(URL_USER_SVC_DELETE, { username }, { withCredentials: true })
+      .post(URL_USER_SVC_DELETE, { username, token }, { withCredentials: true })
       .catch((err) => {
         if (err.response.status === STATUS_CODE_BADREQ) {
           setErrorDialog(res.data.message);

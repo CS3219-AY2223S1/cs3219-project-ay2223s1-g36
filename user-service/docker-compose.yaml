@@ -13,7 +13,7 @@ services:
       DB_LOCAL_URI: "mongodb://user-mongo:27017/mydb"
       # TOKEN_KEY: ""  # if this is not provided, TOKEN_KEY_FILE will be used
       TOKEN_KEY_FILE: /run/secrets/jwt_token
-      CORS_ORIGIN: "http://localhost|https://frontend-lpaj6pcqsa-as.a.run.app/"
+      CORS_ORIGIN: "http://localhost:3000|https://frontend-lpaj6pcqsa-as.a.run.app/"
   user-mongo:
     image: mongo:4.2.23-rc1
     volumes:

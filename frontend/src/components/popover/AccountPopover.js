@@ -13,10 +13,13 @@ export default function AccountPopover() {
   const anchorRef = useRef(null);
   const auth = useAuth();
   let username = null;
+  let token = null;
   try {
     username = auth.user.username;
+    token = auth.user.token;
   } catch {
     username = '';
+    token = '';
   }
 
   const [open, setOpen] = useState(null);
@@ -31,7 +34,7 @@ export default function AccountPopover() {
 
   const handleLogout = async () => {
     const res = await axios
-      .post(URL_USER_SVC_LOGOUT, { username }, { withCredentials: true })
+      .post(URL_USER_SVC_LOGOUT, { username, token }, { withCredentials: true })
       .catch((err) => {
         if (err.response.status === STATUS_CODE_BADREQ) {
           console.log('Request could not be processed.');
