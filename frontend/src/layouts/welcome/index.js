@@ -123,7 +123,10 @@ export default function WelcomeLayout() {
           flexDirection: 'column',
           justifyContent: 'center',
           mx: 'auto',
-          width: '30%'
+          width: '80%',
+          '@media only screen and (min-width: 750px)': {
+            width: '30%'
+          }
         }}
       >
         {pathname === SIGNUP_PATH && (
