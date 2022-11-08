@@ -105,8 +105,6 @@ export async function ormSaveToken(username) {
 
 export async function ormCheckToken(token) {
     try {
-        // TODO: Implement redisclient blacklisting later on
-
         // Terminate operation if token is undefined
         if (token == null) {
             return false;
