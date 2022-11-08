@@ -25,6 +25,7 @@ export default function Profile() {
   const auth = useAuth();
   const [newPassword, setNewPassword] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMsg, setDialogMsg] = useState('');
   const [isPWChangeSuccess, setIsPWChangeSuccess] = useState(false);
@@ -57,8 +58,8 @@ export default function Profile() {
       setIsPWChangeSuccess(true);
     }
   };
+
   const handleAccDelete = async () => {
-    setIsDeleteSuccess(false);
     const res = await axios
       .post(URL_USER_SVC_DELETE, { username, token }, { withCredentials: true })
       .catch((err) => {
@@ -71,11 +72,13 @@ export default function Profile() {
         }
       });
     if (res && res.status === STATUS_CODE_OK) {
-      setSuccessDialog(res.data.message);
       setIsDeleteSuccess(true);
+      closeConfirmation();
     }
   };
 
+  const openConfirmation = () => setIsConfirmOpen(true);
+  const closeConfirmation = () => setIsConfirmOpen(false);
   const closeDialog = () => setIsDialogOpen(false);
 
   const setSuccessDialog = (msg) => {
@@ -182,7 +185,7 @@ export default function Profile() {
               permanent and non-reversible.
             </Typography>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'start'}>
-              <Button variant={'contained'} color={'error'} onClick={handleAccDelete}>
+              <Button variant={'contained'} color={'error'} onClick={openConfirmation}>
                 Delete Account
               </Button>
             </Box>
@@ -200,6 +203,23 @@ export default function Profile() {
             ) : (
               <Button onClick={closeDialog}>Try Again</Button>
             )}
+          </DialogActions>
+        </Dialog>
+
+        <Dialog maxWidth={'xs'} open={isConfirmOpen} onClose={closeConfirmation}>
+          <DialogTitle>Delete your Account</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              This action is permanent. Are you sure you want to proceed?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained" color="error" onClick={closeConfirmation}>
+              No
+            </Button>
+            <Button variant="contained" color="primary" onClick={handleAccDelete} autoFocus>
+              Yes
+            </Button>
           </DialogActions>
         </Dialog>
       </Container>
