@@ -7,7 +7,14 @@ export const qnHistoryCols = [
     headerName: 'Question Title',
     flex: 3
   },
-  { field: 'difficulty', headerName: 'Difficulty Level', flex: 2 },
+  {
+    field: 'difficulty',
+    headerName: 'Difficulty Level',
+    flex: 2,
+    valueFormatter: (params) => {
+      return params.value.charAt(0).toUpperCase() + params.value.slice(1);
+    }
+  },
   { field: 'language', headerName: 'Language', flex: 2 },
   {
     field: 'partner',

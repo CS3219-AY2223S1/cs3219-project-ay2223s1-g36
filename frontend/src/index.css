@@ -41,11 +41,12 @@ code {
 
 .chatbox-message > div {
   margin-right: 5px;
-  background-color: #3376FF;
+  background-color: #3376ff;
   color: #fff;
 }
 
-.chatbox-message-others > div > span:first-of-type, .chatbox-message > div > span:first-of-type {
+.chatbox-message-others > div > span:first-of-type,
+.chatbox-message > div > span:first-of-type {
   display: block;
   margin-bottom: 5px;
   font-weight: 700;

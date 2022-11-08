@@ -44,16 +44,6 @@ export default function Sidebar({ isOpen, onClose, isHidden = false }) {
             <Typography variant="subtitle2" sx={{ color: 'rgb(33, 43, 54)', fontWeight: '600' }}>
               {username}
             </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'rgb(99, 115, 129)',
-                fontWeight: '600',
-                fontSize: '0.75rem'
-              }}
-            >
-              Amateur
-            </Typography>
           </Box>
         </Box>
       </Box>
