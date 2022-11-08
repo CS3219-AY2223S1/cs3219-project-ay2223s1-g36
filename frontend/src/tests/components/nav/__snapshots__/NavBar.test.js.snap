@@ -1,0 +1,117 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NavBar renders correctly 1`] = `
+<div
+  className="MuiBox-root css-0"
+>
+  <ul
+    className="MuiList-root css-1lu02n7-MuiList-root"
+  >
+    <a
+      className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters css-80lifd-MuiButtonBase-root-MuiListItemButton-root"
+      components={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        }
+      }
+      href="/dashboard"
+      onBlur={[Function]}
+      onContextMenu={[Function]}
+      onDragLeave={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      tabIndex={0}
+      to="/dashboard"
+    >
+      <div
+        className="MuiListItemIcon-root css-xh62yl-MuiListItemIcon-root"
+      >
+        <span />
+      </div>
+      <div
+        className="MuiListItemText-root css-tlelie-MuiListItemText-root"
+      >
+        dashboard
+      </div>
+    </a>
+    <a
+      className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters css-80lifd-MuiButtonBase-root-MuiListItemButton-root"
+      components={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        }
+      }
+      href="/history"
+      onBlur={[Function]}
+      onContextMenu={[Function]}
+      onDragLeave={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      tabIndex={0}
+      to="/history"
+    >
+      <div
+        className="MuiListItemIcon-root css-xh62yl-MuiListItemIcon-root"
+      >
+        <span />
+      </div>
+      <div
+        className="MuiListItemText-root css-tlelie-MuiListItemText-root"
+      >
+        history
+      </div>
+    </a>
+    <a
+      className="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters css-80lifd-MuiButtonBase-root-MuiListItemButton-root"
+      components={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        }
+      }
+      href="/profile"
+      onBlur={[Function]}
+      onContextMenu={[Function]}
+      onDragLeave={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      tabIndex={0}
+      to="/profile"
+    >
+      <div
+        className="MuiListItemIcon-root css-xh62yl-MuiListItemIcon-root"
+      >
+        <span />
+      </div>
+      <div
+        className="MuiListItemText-root css-tlelie-MuiListItemText-root"
+      >
+        profile
+      </div>
+    </a>
+  </ul>
+</div>
+`;
