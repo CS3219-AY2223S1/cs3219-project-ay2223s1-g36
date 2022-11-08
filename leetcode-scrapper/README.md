@@ -1,5 +1,7 @@
 # Leetcode Questions Scraper
 
+Note: This repo originated from https://github.com/Bishalsarang/Leetcode-Questions-Scraper and we made modifications to the Python scraping program to suit our need of obtaining all the questions in a single JSON file.
+
 > Note: If you want to download daily updated problems you can visit my repo [Leetcode Questions](https://github.com/Bishalsarang/Leetcode-Questions) which basically checks leetcode daily and dowloads new problems if available. Here is the preview link for latest html https://bishalsarang.github.io/Leetcode-Questions/out.html
 
 
