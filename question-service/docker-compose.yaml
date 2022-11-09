@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  question-service:
+    build: .
+    depends_on:
+      - question-mongo
+    ports:
+      - "8003:8003"
+    environment:
+      PORT: 8003
+      DB_LOCAL_URI: "mongodb://question-mongo:27017/mydb"
+      CORS_ORIGIN: "http://localhost:3000"
+      
+  question-mongo:
+    image: mongo:4.2.23-rc1
+    volumes:
+      - question_mongo_volume:/data/db
+  
+networks:
+  default:
+    name: peerprep-net
+
+volumes:
+  question_mongo_volume:

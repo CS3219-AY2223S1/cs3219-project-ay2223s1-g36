@@ -1,17 +1,11 @@
-import express from 'express';
-import cors from 'cors';
 import { createServer } from 'http';
+import logger from './logger.js';
+import { app, setupIO } from './app.js';
 
-const app = express();
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
-app.use(cors()) // config cors so that front-end can use
-app.options('*', cors())
+const PORT = process.env.PORT;
+const httpServer = createServer(app);
+const io = setupIO(httpServer);
 
-app.get('/', (req, res) => {
-    res.send('Hello World from matching-service');
-});
+httpServer.listen(PORT);
+logger.info(`Server starts listening on port ${PORT}`);
 
-const httpServer = createServer(app)
-
-httpServer.listen(8001);

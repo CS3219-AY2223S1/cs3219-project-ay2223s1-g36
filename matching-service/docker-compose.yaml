@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  matching-service:
+    build: .
+    volumes:
+      - matching_sqlite_volume:/app/db/db
+    ports:
+      - "8001:8001"
+    environment:
+      - PORT=8001
+      - NODE_ENV=development
+      - QUESTION_SERVICE_URL=http://question-service:8003
+  test:
+    build: 
+      context: .
+      target: test
+    environment:
+      - NODE_ENV=test
+    profiles:
+      - test
+
+networks:
+  default:
+    name: peerprep-net
+    
+volumes:
+  matching_sqlite_volume:

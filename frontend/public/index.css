@@ -1,0 +1,87 @@
+body {
+  background-color: rgba(249, 250, 251, 0.72);
+}
+
+.jumping-dots span {
+  position: relative;
+  bottom: 0px;
+  animation: jump 11s infinite;
+}
+.jumping-dots .dot-1 {
+  animation-delay: 500ms;
+}
+.jumping-dots .dot-2 {
+  animation-delay: 1000ms;
+}
+.jumping-dots .dot-3 {
+  animation-delay: 1500ms;
+}
+.jumping-dots .dot-4 {
+  animation-delay: 2000ms;
+}
+.jumping-dots .dot-5 {
+  animation-delay: 2500ms;
+}
+.jumping-dots .dot-6 {
+  animation-delay: 3000ms;
+}
+.jumping-dots .dot-7 {
+  animation-delay: 3500ms;
+}
+.jumping-dots .dot-8 {
+  animation-delay: 4000ms;
+}
+.jumping-dots .dot-9 {
+  animation-delay: 4500ms;
+}
+.jumping-dots .dot-10 {
+  animation-delay: 5000ms;
+}
+.jumping-dots .dot-11 {
+  animation-delay: 5500ms;
+}
+.jumping-dots .dot-12 {
+  animation-delay: 6000ms;
+}
+.jumping-dots .dot-13 {
+  animation-delay: 6500ms;
+}
+.jumping-dots .dot-14 {
+  animation-delay: 7000ms;
+}
+.jumping-dots .dot-15 {
+  animation-delay: 7500ms;
+}
+.jumping-dots .dot-16 {
+  animation-delay: 8000ms;
+}
+.jumping-dots .dot-17 {
+  animation-delay: 8500ms;
+}
+.jumping-dots .dot-18 {
+  animation-delay: 9000ms;
+}
+.jumping-dots .dot-19 {
+  animation-delay: 9500ms;
+}
+.jumping-dots .dot-20 {
+  animation-delay: 10000ms;
+}
+.jumping-dots .dot-21 {
+  animation-delay: 10500ms;
+}
+.jumping-dots .dot-22 {
+  animation-delay: 11000ms;
+}
+
+@keyframes jump {
+  0% {
+    bottom: 0px;
+  }
+  1% {
+    bottom: 10px;
+  }
+  2% {
+    bottom: 0px;
+  }
+}

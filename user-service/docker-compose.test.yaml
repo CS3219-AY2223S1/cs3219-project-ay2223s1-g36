@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  test:
+    build: 
+      context: .
+      target: test
+    depends_on:
+      - test-mongo
+    environment:
+      - NODE_ENV=test
+      - DB_LOCAL_URI=mongodb://test-mongo:27017
+      - TOKEN_KEY=thisisakey
+      - CORS_ORIGIN=http://localhost:3000
+  test-mongo:
+    image: mongo:4.2.23-rc1
